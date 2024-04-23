@@ -1,0 +1,194 @@
+<div class="c-payment">
+  <div class="c-payment_wrapper" *ngIf="paymentData">
+    <div class="__ta-r __mb-2">
+      <span class="c-payment_countdown" [class.c-payment_countdown__warning]="timeLeft <= 180000">
+        {{ timeLeft | date:'mm:ss' }}
+      </span>
+    </div>
+
+    <p class="__mt-0 __mb-05 __line-height-normal __color-accent __fw-medium" [ngSwitch]="paymentData.type">
+      <ng-container *ngSwitchCase="bookingTypes.hotel">{{ paymentData.hotel.hotelName }}</ng-container>
+      <ng-container *ngSwitchCase="bookingTypes.transfer">
+        {{ paymentData.transfer.pickUpAddress }} - {{ paymentData.transfer.dropDownAddress }}
+      </ng-container>
+    </p>
+
+    <div class="flex-row">
+      <ng-container *ngIf="paymentData.type === bookingTypes.hotel">
+        <dl class="__line-height-normal __mt-0 __mb-0 __mr-4">
+          <dt class="__fs-xxxs __fw-bold">Check-in</dt>
+          <dd class="__fs-s __color-gray __ma-0">{{ paymentData.hotel.checkInDate | date:'dd MMM yyyy' }}</dd>
+        </dl>
+        <dl class="__line-height-normal __ma-0">
+          <dt class="__fs-xxxs __fw-bold">Check-out</dt>
+          <dd class="__fs-s __color-gray __ma-0">{{ paymentData.hotel.checkOutDate | date:'dd MMM yyyy' }}</dd>
+        </dl>
+      </ng-container>
+      <ng-container *ngIf="paymentData.type === bookingTypes.transfer">
+        <dl class="__line-height-normal __mt-0 __mb-0 __mr-4">
+          <dt class="__fs-xxxs __fw-bold">Date</dt>
+          <dd class="__fs-s __color-gray __ma-0">
+            {{ paymentData.transfer.pickUpDateTime | date:'dd MMM yyyy HH:mm' }}
+          </dd>
+        </dl>
+        <!--        <dl class="__line-height-normal __ma-0">-->
+        <!--          <dt class="__fs-xxxs __fw-bold">Local time</dt>-->
+        <!--          <dd class="__fs-s __color-gray __ma-0">{{ bookingData.localTime }}</dd>-->
+        <!--        </dl>-->
+      </ng-container>
+      <div class="w-spacer">&nbsp;</div>
+      <dl class="__line-height-normal __ma-0">
+        <dt class="__fs-xxxs __fw-bold">Total amount</dt>
+        <dd class="__fs-s __color-accent __fw-bold __ma-0">{{ paymentData.totalAmount.cost | number: '1.2-2' }} {{ paymentData.totalAmount.currency }}</dd>
+      </dl>
+    </div>
+
+    <!-- Payment type -->
+    <div class="c-payment_payment-types __mv-4">
+      <div class="c-payment_payment-type"
+           mat-ripple
+           tabindex="0"
+           *ngIf="paymentData.paymentAccess.hasPayVision"
+           [matRippleColor]="tabColor"
+           [class.__is-active]="paymentType === paymentTypes.card"
+           (click)="setPaymentType(paymentTypes.card)">
+        <img src="./assets/img/payment-system-visa.svg" alt="Visa" class="c-payment_payment-type-thumb" />
+        <img src="./assets/img/payment-system-mastercard.svg" alt="MasterCard" class="c-payment_payment-type-thumb" />
+        <img src="./assets/img/payment-system-amex.svg" alt="Amex" class="c-payment_payment-type-thumb" />
+      </div>
+      <div class="c-payment_payment-type"
+           mat-ripple
+           tabindex="0"
+           [matRippleColor]="tabColor"
+           *ngIf="paymentData.paymentAccess.hasAirPlus"
+           [class.__is-active]="paymentType === paymentTypes.airPlus"
+           (click)="setPaymentType(paymentTypes.airPlus)">
+        <img src="./assets/img/payment-system-airplus.svg" alt="Air Plus"/>
+      </div>
+      <div class="c-payment_payment-type"
+           mat-ripple
+           tabindex="0"
+           *ngIf="paymentData.paymentAccess.hasBta"
+           [matRippleColor]="tabColor"
+           [class.__is-active]="paymentType === paymentTypes.bta"
+           (click)="setPaymentType(paymentTypes.bta)">
+        <span>BTA</span>
+      </div>
+    </div>
+
+
+    <div class="c-payment_forms-container">
+      <!-- Pay vision -->
+      <div [hidden]="paymentType !== paymentTypes.card" class="c-payment_form-wrapper">
+        <div class="c-payment_widget-container __mb-3">
+          <form action="https://book.horse21.com/checkresult"
+                class="paymentWidgets"
+                data-brands="VISA MASTER AMEX">
+          </form>
+        </div>
+        <button type="button" mat-stroked-button color="primary" class="__ph-4" (click)="onCancel()">
+          Cancel booking
+        </button>
+      </div>
+
+      <!-- Air plus -->
+      <div [hidden]="paymentType !== paymentTypes.airPlus" class="c-payment_form-wrapper">
+        <form [formGroup]="airPlusForm" (submit)="onSubmit(airPlusForm, 'pendingAir')">
+          <mat-form-field color="primary" [appearance]="formFieldAppearance" class="__w-100 h21-mat-form-field_never-float" floatLabel="never">
+            <mat-select #airPlusSelect formControlName="id" (selectionChange)="onCardChange($event.value, airPlusForm)">
+              <mat-option *ngFor="let card of cards$ | async; trackBy: trackByFn" [value]="card.id" class="c-payment_card-option">
+                <span class="c-payment_card-option-content">
+                  <span class="c-payment_card-option-name" *ngIf="airPlusSelect.panelOpen">
+                    {{ card.cardName }}
+                  </span>
+                  <span class="c-payment_card-option-number">
+                    {{ card.cardNumber | h21CardFormat }} <ng-container *ngIf="card.expiryDate">({{ card.expiryDate | date: 'MM/yy' }})</ng-container>
+                  </span>
+                </span>
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <div formArrayName="referencesActual">
+            <ng-container *ngFor="let ref of airPlusForm.get('referencesActual')['controls']; trackBy: trackByFnArray; let i = index;">
+              <div class="row" [formGroupName]="i">
+
+                <div class="col-5 c-payment_reference-field-label">
+                  {{ ref.get('name').value }} ({{ ref.get('referenceName').value }}) <span *ngIf="ref.get('isRequired').value" class="__color-ui-warn">*</span>
+                </div>
+
+                <div class="col-7">
+                  <mat-form-field class="__w-100 h21-mat-form-field_never-float" floatLabel="never" color="primary" [appearance]="formFieldAppearance">
+                    <input type="text" autocomplete="off" matInput formControlName="value" placeholder=""/>
+                    <mat-error *ngIf="ref.get('value').hasError('required')">
+                      You must enter a value
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+              </div>
+            </ng-container>
+          </div>
+
+          <div class="flex-row __mt-2">
+            <button type="button" mat-stroked-button color="primary" class="__ph-4" (click)="onCancel()">
+              Cancel booking
+            </button>
+            <div class="w-spacer">&nbsp;</div>
+            <button type="submit" mat-flat-button color="primary" class="__ph-4" [disabled]="pendingAir">Pay now</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- BTA -->
+      <div [hidden]="paymentType !== paymentTypes.bta" class="c-payment_form-wrapper">
+        <form [formGroup]="btaForm" (submit)="onSubmit(btaForm, 'pendingBta')">
+          <mat-form-field color="primary" [appearance]="formFieldAppearance" class="__w-100 h21-mat-form-field_never-float" floatLabel="never">
+            <mat-select #btaSelect formControlName="id" (selectionChange)="onCardChange($event.value, btaForm)">
+              <mat-option *ngFor="let card of cards$ | async; trackBy: trackByFn" [value]="card.id" class="c-payment_card-option">
+                <span class="c-payment_card-option-content">
+                  <span class="c-payment_card-option-name" *ngIf="btaSelect.panelOpen">
+                    {{ card.cardName }}
+                  </span>
+                  <span class="c-payment_card-option-number">
+                    {{ card.cardNumber | h21CardFormat }} <ng-container *ngIf="card.expiryDate">({{ card.expiryDate | date: 'MM/yy' }})</ng-container>
+                  </span>
+                </span>
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <div formArrayName="referencesActual">
+            <ng-container *ngFor="let ref of btaForm.get('referencesActual')['controls']; trackBy: trackByFnArray; let i = index;">
+              <div class="row" [formGroupName]="i">
+
+                <div class="col-5 c-payment_reference-field-label">
+                  {{ ref.get('name').value }} ({{ ref.get('referenceName').value }}) <span class="__color-ui-warn">*</span>
+                </div>
+
+                <div class="col-7">
+                  <mat-form-field class="__w-100 h21-mat-form-field_never-float" floatLabel="never" color="primary" [appearance]="formFieldAppearance">
+                    <input type="text" autocomplete="off" matInput formControlName="value" placeholder=""/>
+                    <mat-error *ngIf="ref.get('value').hasError('required')">You must enter a value</mat-error>
+                  </mat-form-field>
+                </div>
+
+              </div>
+            </ng-container>
+          </div>
+
+          <div class="flex-row __mt-2">
+            <button type="button" mat-stroked-button color="primary" class="__ph-4" (click)="onCancel()">
+              Cancel booking
+            </button>
+            <div class="w-spacer">&nbsp;</div>
+            <button type="submit" mat-flat-button color="primary" class="__ph-4" [disabled]="pendingBta">Pay now</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+

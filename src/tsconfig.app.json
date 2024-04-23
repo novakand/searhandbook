@@ -1,0 +1,51 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../out-tsc/app",
+    "baseUrl": "./",
+    "module": "es2015",
+    "types": [],
+    "paths": {
+      "@angular/": [
+        "../node_modules/@angular/"
+      ],
+      "@app/*": [
+        "app/*"
+      ],
+      "@animation/*": [
+        "app/animations/*"
+      ],
+      "@components/*": [
+        "app/components/*"
+      ],
+      "@search/*": [
+        "app/components/search/*"
+      ],
+      "@hotel/*": [
+        "app/components/search/hotel/*"
+      ],
+      "@transfer/*": [
+        "app/components/search/transfer/*"
+      ],
+      "@services/*": [
+        "app/core/services/*"
+      ],
+      "@models/*": [
+        "app/core/models/*"
+      ],
+      "@environments/*": [
+        "environments/*"
+      ],
+      "@core/*": [
+        "app/core/*"
+      ],
+      "@shared/*": [
+        "app/shared/*"
+      ]
+    }
+  },
+  "exclude": [
+    "test.ts",
+    "**/*.spec.ts"
+  ]
+}

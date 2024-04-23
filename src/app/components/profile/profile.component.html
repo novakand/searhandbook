@@ -1,0 +1,117 @@
+<script src="profile.component.ts"></script>
+<mat-progress-bar *ngIf="importInProgress"
+                  [@toggleVisibility]
+                  mode="determinate"
+                  [value]="importProgress"
+                  class="page_content-preloader"
+></mat-progress-bar>
+
+<div class="c-profile" *ngIf="profile$ | async as profile">
+  <mat-card class="c-profile_card">
+    <div class="c-profile_card-header">
+      <h2>{{ profile.firstName }} {{ profile.lastName }}</h2>
+      <mat-card-header>
+        <h21-profile-image mat-card-avatar
+                           [firstName]="profile.firstName"
+                           [lastName]="profile.lastName"
+                           [fileHash]="profile.avatar?.fileHash"
+                           [withBorder]="true"
+                           (fileChange)="onAvatarChanged($event)"
+                           [readonly]="mode === viewMode.View"
+                           size='large'></h21-profile-image>
+        <div class="c-profile_meta-data-box">
+          <div class="row">
+            <div class="col-12 col-xl-6">
+              <div class="row no-gutters c-profile_meta-data">
+                <div class="col-7">Date and time of registration</div>
+                <div class="col-5"><b>{{ utils.getFormattedDate(profile.createDate, true) }}</b></div>
+              </div>
+              <div class="row no-gutters c-profile_meta-data">
+                <div class="col-7">Date and time of update</div>
+                <div class="col-5"><b>{{ utils.getFormattedDate(profile.updateDate, true) }}</b></div>
+              </div>
+            </div>
+            <div class="col-12 col-xl-6">
+              <div class="row no-gutters c-profile_meta-data">
+                <div class="col-6 col-xl-4">Identity user ID</div>
+                <div class="col-6 col-xl-8">{{ profile.identityUserId }}<b></b></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-card-header>
+    </div>
+    <mat-card-content>
+      <form [formGroup]="form">
+        <h2>General info</h2>
+        <div class="row h21-mb-1">
+          <ng-container [ngTemplateOutlet]="userControl" [ngTemplateOutletContext]="{ label: 'Email', control: 'email' }"></ng-container>
+          <ng-container [ngTemplateOutlet]="selectControl" [ngTemplateOutletContext]="{ label: 'Country', control: 'countryCode', dataSource: countries$, key: 'code' }"></ng-container>
+        </div>
+        <div class="row h21-mb-1">
+          <ng-container [ngTemplateOutlet]="userControl" [ngTemplateOutletContext]="{ label: 'First name', control: 'firstName' }"></ng-container>
+          <ng-container [ngTemplateOutlet]="selectControl" [ngTemplateOutletContext]="{ label: 'City', control: 'cityCode', dataSource: cities$, key: 'code' }"></ng-container>
+        </div>
+        <div class="row h21-mb-1">
+          <ng-container [ngTemplateOutlet]="userControl" [ngTemplateOutletContext]="{ label: 'Last name', control: 'lastName' }"></ng-container>
+          <ng-container [ngTemplateOutlet]="selectControl" [ngTemplateOutletContext]="{ label: 'Timezone', control: 'timeZoneId', dataSource: zones$, key: 'id' }"></ng-container>
+        </div>
+        <div class="row h21-mb-1">
+          <ng-container [ngTemplateOutlet]="userControl" [ngTemplateOutletContext]="{ label: 'Middle name', control: 'middleName' }"></ng-container>
+          <ng-container [ngTemplateOutlet]="userControl" [ngTemplateOutletContext]="{ label: 'Phone', control: 'phone' }"></ng-container>
+        </div>
+        <div class="row h21-mb-1">
+          <div class="col-6">
+            <mat-form-field color="primary" class="__w-100" [class.__is-readonly]="form.get('birthDate').disabled">
+              <input matInput
+                     autocomplete="off"
+                     placeholder="Birth date"
+                     [max]="now"
+                     [matDatepicker]="birthDateDatePicker"
+                     formControlName="birthDate" />
+              <mat-datepicker #birthDateDatePicker></mat-datepicker>
+              <button mat-icon-button matSuffix (click)="birthDateDatePicker.open()" [disabled]="mode === viewMode.View">
+                <mat-icon>date_range</mat-icon>
+              </button>
+            </mat-form-field>
+          </div>
+          <ng-container [ngTemplateOutlet]="selectControl" [ngTemplateOutletContext]="{ label: 'Language', control: 'languageCode', dataSource: languages$, key: 'code' }"></ng-container>
+        </div>
+        <div class="row h21-mb-1">
+          <div class="col-6">&nbsp;</div>
+          <ng-container [ngTemplateOutlet]="selectControl" [ngTemplateOutletContext]="{ label: 'Gender', control: 'genderId', dataSource: genders$, key: 'id' }"></ng-container>
+        </div>
+
+        <ng-template #userControl let-label="label" let-control="control">
+          <div class="col-6">
+            <mat-form-field class="__w-100" [class.__is-readonly]="form.controls[control].disabled">
+              <input matInput
+                     [placeholder]="label"
+                     [formControlName]="control"/>
+              <mat-error *ngIf="form.controls[control].hasError('required')">
+                You must enter a value
+              </mat-error>
+              <mat-error *ngIf="form.controls[control].hasError('pattern')">
+                Phone format is digit only
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </ng-template>
+
+        <ng-template #selectControl let-label="label" let-control="control" let-dataSource="dataSource" let-key="key">
+          <div class="col-6">
+            <mat-form-field color="primary" class="__w-100" [class.__is-readonly]="form.controls[control].disabled">
+              <mat-select [placeholder]="label"
+                          panelClass="h21-select-panel"
+                          [formControlName]="control">
+                <mat-option *ngFor="let item of dataSource | async; trackBy: trackByFn" [value]="item[key]">
+                  {{ item.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </ng-template>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

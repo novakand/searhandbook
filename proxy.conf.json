@@ -1,0 +1,12 @@
+{
+  "/api/*": {
+    "target": "https://acaptureservices.com",
+    "secure": false,
+    "cookiePathRewrite": "/",
+    "changeOrigin": true,
+    "logLevel": "debug",
+    "pathRewrite": {
+      "^/api": ""
+    }
+  }
+}

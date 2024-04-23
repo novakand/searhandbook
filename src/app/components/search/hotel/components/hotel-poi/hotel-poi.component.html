@@ -1,0 +1,81 @@
+<div class="c-hotel-poi"
+     infiniteScroll
+     [scrollWindow]="false"
+     [infiniteScrollThrottle]="throttle"
+     (scrolled)="onScroll()">
+  <mat-progress-bar *ngIf="inProgress"
+                    mode="indeterminate"
+                    color="primary"
+                    class="c-hotel-poi_progress">
+  </mat-progress-bar>
+
+  <div class="c-hotel-poi_wrapper">
+    <mat-form-field [appearance]="formFieldAppearance" color="primary" class="__w-100">
+      <mat-label>Enter name or tag</mat-label>
+      <input type="text"
+             matInput
+             autocomplete="off"
+             [formControl]="searchCtrl">
+      <mat-icon matSuffix *ngIf="!inProgress">search</mat-icon>
+      <mat-icon matSuffix *ngIf="inProgress" class="progress-indicator-icon">sync</mat-icon>
+    </mat-form-field>
+
+    <ng-container *ngIf="inProgress || noProgress">
+      <h21-items-list-loader [small]="true" [showNoResult]="noProgress"></h21-items-list-loader>
+    </ng-container>
+
+    <ng-container *ngIf="poiList$ | async as poiList">
+      <ng-container *ngIf="!inProgress && !noProgress">
+        <div class="h21-hotel-card" *ngFor="let item of poiList; trackBy: trackByFn;"
+             (mouseenter)="animatePoi(item.id, animateType.poi)" (mouseleave)="animatePoi(item.id, null)">
+          <div [ngClass]="{ '__pa-2 __position-relative': !tabletMode }">
+            <ng-container *ngIf="!tabletMode"
+                          [ngTemplateOutlet]="actions"
+                          [ngTemplateOutletContext]="{ poi: item }">
+            </ng-container>
+
+            <div [ngClass]="{ '__flex-row': !tabletMode }">
+              <div class="h21-hotel-card_flex-photo h21-hotel-card_flex-photo__mh-150">
+                <ng-container *ngIf="item.location?.image?.fileHash && poiImages[item.id] | async as img">
+                  <img [src]="img | safeResourceUrl"/>
+                </ng-container>
+                <img *ngIf="!item.location?.image?.fileHash" src="./assets/img/hotel-none-photo.svg"/>
+              </div>
+              <div class="__position-relative" [ngClass]="{ '__flex-fill': !tabletMode, '__pa-2': tabletMode }">
+                <ng-container *ngIf="tabletMode"
+                              [ngTemplateOutlet]="actions"
+                              [ngTemplateOutletContext]="{ poi: item }">
+                </ng-container>
+
+                <p *ngIf="item.location.cityName" class="__mb-1 __color-gray __fs-xxs __line-height-normal">{{ item.location.cityName }}</p>
+                <p class="__mb-0 __fs-xs __fw-bold __line-height-normal">{{ item.name }}</p>
+                <p class="__mb-1 __color-gray __fs-xxs __line-height-normal">{{ item.location.latitude }} {{ item.location.longitude }}</p>
+                <p *ngIf="item.comment" class="__mb-2 __color-gray __fs-xs __line-height-normal"
+                   [matTooltip]="item.comment.length > 50 ? item.comment : null">{{ item.comment | truncate:50 }}</p>
+                <ng-container *ngIf="!!item.arrayTags && !!item.arrayTags.length">
+                  <mat-chip-list [selectable]="false" class="h21-chip-list h21-chip-list__color-contrast">
+                    <mat-chip class="h21-chip" *ngFor="let tag of item.arrayTags; trackBy: trackByFn;">
+                      {{ tag }}
+                    </mat-chip>
+                  </mat-chip-list>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </ng-container>
+  </div>
+</div>
+
+<ng-template #actions let-poi="poi">
+  <div class="h21-hotel-card_actions" *ngIf="isShowActions(poi.id)">
+    <button mat-icon-button class="__color-accent __size-s" (click)="openPoi(poi, viewMode.Edit)">
+      <mat-icon>edit</mat-icon>
+    </button>
+    <button mat-icon-button class="__color-accent __size-s" (click)="deletePoi(poi.id)">
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
+</ng-template>
+

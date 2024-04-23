@@ -1,0 +1,240 @@
+<ng-container *ngIf="loadInProgress">
+  <h21-card-loader></h21-card-loader>
+</ng-container>
+
+<ng-container *ngIf="!loadInProgress">
+  <div class="c-bookings-order fixed-sidenav-container"
+       #sidenavContainer
+       (scroll)="onScroll()"
+       *ngIf="order$ | async as order">
+
+    <div class="fixed-sidenav" #sidenav>
+      <mat-action-list class="h21-profile-card_sidenav">
+        <ng-container *ngIf="order$ | async" [ngTemplateOutlet]="btn" [ngTemplateOutletContext]="{title: 'Order info', field: 'orderInfo'}"></ng-container>
+        <ng-container [ngTemplateOutlet]="btn" [ngTemplateOutletContext]="{title: 'Payment info', field: 'paymentInfo'}"></ng-container>
+        <ng-container [ngTemplateOutlet]="btn" [ngTemplateOutletContext]="{title: 'Travellers', field: 'travellers'}"></ng-container>
+        <ng-container [ngTemplateOutlet]="btn" [ngTemplateOutletContext]="{title: 'Booking details', field: 'bookingDetails'}"></ng-container>
+
+        <button *ngIf="order.orderItemReferencesActual?.length" mat-list-item [ngx-scroll-to]="'references'" [class.__is-selected]="activeAnchorName === 'references'">
+          References
+        </button>
+        <button *ngIf="order.voucherReportId || order.billDetailsReportId"
+                mat-list-item
+                [ngx-scroll-to]="'documents'"
+                [class.__is-selected]="activeAnchorName === 'documents'">
+          Documents
+        </button>
+<!--        <button mat-list-item [ngx-scroll-to]="'history'" [class.__is-selected]="activeAnchorName === 'history'">-->
+<!--          History-->
+<!--        </button>-->
+      </mat-action-list>
+    </div>
+
+    <ng-template #btn let-title="title" let-field="field">
+      <button mat-list-item [ngx-scroll-to]="field" [class.__is-selected]="activeAnchorName === field">
+        {{ title }}
+      </button>
+    </ng-template>
+
+    <div class="fixed-sidenav-content" (scroll)="onScroll()">
+      <div class="__pa-3">
+
+        <!-- Order caption -->
+        <div class="flex-row __align-items-center __mb-1">
+          <mat-icon class="__color-accent __mr-2">
+            <ng-container [ngSwitch]="order.bookingType">
+              <mat-icon *ngSwitchCase="bookingTypes.Air" matTooltip="Aero booking">local_airport</mat-icon>
+              <mat-icon *ngSwitchCase="bookingTypes.Hotel" matTooltip="Hotel booking">domain</mat-icon>
+              <mat-icon *ngSwitchCase="bookingTypes.Transfer" matTooltip="Transfer booking">directions_car</mat-icon>
+            </ng-container>
+          </mat-icon>
+          <h2 class="__mb-0">Order {{ order.viewOrderNumber }}</h2>
+        </div>
+
+        <div class="flex-row __align-items-center __justify-content-start">
+          <span class="__mr-3 __fs-s __color-gray">Trip name</span>
+          <span class="__mr-3">{{ order.tripName }}</span>
+          <button mat-flat-button color="primary" class="__hide-on-print" (click)="openSelectTripDialog()">Move to trip</button>
+        </div>
+
+        <!-- Order info -->
+
+        <ng-container *ngIf="order$ | async as order">
+          <mat-divider id="orderInfo" class="h21-profile-card_separator"></mat-divider>
+          <h21-bookings-order-info [order]="order"></h21-bookings-order-info>
+        </ng-container>
+
+        <!-- Payment info -->
+        <mat-divider id="paymentInfo" class="h21-profile-card_separator"></mat-divider>
+        <h21-bookings-order-payment-info [order]="order"></h21-bookings-order-payment-info>
+
+        <!-- Travellers -->
+        <mat-divider id="travellers" class="h21-profile-card_separator"></mat-divider>
+        <h3 class="__mb-2 __fw-medium">Travellers ({{ order.travelerLinks.length }})</h3>
+        <h21-bookings-order-travelers [order]="order"></h21-bookings-order-travelers>
+
+        <!-- Booking details -->
+        <mat-divider id="bookingDetails" class="h21-profile-card_separator"></mat-divider>
+        <h3 class="__mb-2 __fw-medium">Booking details</h3>
+        <h21-bookings-order-transfer-details [order]="order" *ngIf="order.bookingType === bookingTypes.Transfer"></h21-bookings-order-transfer-details>
+        <h21-bookings-order-hotel-details [order]="order" *ngIf="order.bookingType === bookingTypes.Hotel"></h21-bookings-order-hotel-details>
+
+        <!-- References -->
+        <ng-container *ngIf="order.orderItemReferencesActual as references">
+          <ng-container *ngIf="references.length">
+            <mat-divider id="references" class="h21-profile-card_separator"></mat-divider>
+            <h3 class="__mb-2 __fw-medium">References</h3>
+            <table width="100%">
+              <tbody>
+                <tr *ngFor="let reference of references; trackBy: trackByFn;">
+                  <td width="208px" class="__pb-2 __pr-1">
+                    <mat-chip-list [multiple]="true" [selectable]="false" class="h21-chip-list">
+                      <mat-chip class="h21-chip" color="primary" [selectable]="false" [selected]="true" *ngIf="reference.isShowInIndividualInvoice">
+                        Indiv. Invoice
+                      </mat-chip>
+                      <mat-chip class="h21-chip" color="primary" [selectable]="false" [selected]="true" *ngIf="reference.isShowInMyBookings">
+                        My bookings
+                      </mat-chip>
+                    </mat-chip-list>
+                  </td>
+                  <td width="20%" class="__pb-2 __ph-1 __color-accent">{{ reference.name }}</td>
+                  <td class="__pb-2 __ph-1">{{ reference.value }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </ng-container>
+        </ng-container>
+
+        <!-- Documents -->
+        <ng-container *ngIf="order.voucherReportId || order.billDetailsReportId">
+          <mat-divider id="documents" class="h21-profile-card_separator"></mat-divider>
+          <h21-bookings-order-documents [order]="order"></h21-bookings-order-documents>
+        </ng-container>
+
+        <!-- History -->
+<!--        <mat-divider id="history" class="h21-profile-card_separator"></mat-divider>-->
+<!--        <h3 class="__mb-2 __fw-medium">History</h3>-->
+
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+
+<!--<mat-card class="h21-profile-card">-->
+  <!--<div class="h21-profile-card_header h21-profile-card_header__with-border" #cardHeader>-->
+
+    <!--<mat-card-title class="h21-profile-card_title">-->
+      <!--&lt;!&ndash;            <ng-container [ngSwitch]="order.orderCancellationState">&ndash;&gt;-->
+      <!--&lt;!&ndash;              <mat-icon *ngSwitchCase="'none'" class="h21-bookings_cancellation-mark"&ndash;&gt;-->
+      <!--&lt;!&ndash;                        matTooltip="Non-refundable booking">&ndash;&gt;-->
+      <!--&lt;!&ndash;                lens&ndash;&gt;-->
+      <!--&lt;!&ndash;              </mat-icon>&ndash;&gt;-->
+      <!--&lt;!&ndash;              <mat-icon *ngSwitchCase="'warning'"&ndash;&gt;-->
+      <!--&lt;!&ndash;                        class="h21-bookings_cancellation-mark h21-bookings_cancellation-mark__warning"&ndash;&gt;-->
+      <!--&lt;!&ndash;                        matTooltip="Free cancel date is coming">&ndash;&gt;-->
+      <!--&lt;!&ndash;                lens&ndash;&gt;-->
+      <!--&lt;!&ndash;              </mat-icon>&ndash;&gt;-->
+      <!--&lt;!&ndash;              <mat-icon *ngSwitchCase="'alarm'"&ndash;&gt;-->
+      <!--&lt;!&ndash;                        class="h21-bookings_cancellation-mark h21-bookings_cancellation-mark_alarm"&ndash;&gt;-->
+      <!--&lt;!&ndash;                        matTooltip="Cancellation with penalty">&ndash;&gt;-->
+      <!--&lt;!&ndash;                lens&ndash;&gt;-->
+      <!--&lt;!&ndash;              </mat-icon>&ndash;&gt;-->
+      <!--&lt;!&ndash;            </ng-container>&ndash;&gt;-->
+      <!--Bookings details-->
+    <!--</mat-card-title>-->
+
+    <!--<button mat-mini-fab-->
+            <!--color="primary"-->
+            <!--class="h21-profile-card_header-collapse-toggle"-->
+            <!--(click)="toggleCardHeaderVisibility()"-->
+            <!--[matTooltip]="animationState === animationStateType.COLLAPSED ? 'Expand card header': 'Collapse card header'"-->
+            <!--matTooltipPosition="below"-->
+            <!--[ngSwitch]="animationState">-->
+      <!--<mat-icon *ngSwitchCase="animationStateType.COLLAPSED">expand_more</mat-icon>-->
+      <!--<mat-icon *ngSwitchCase="animationStateType.EXPANDED">expand_less</mat-icon>-->
+    <!--</button>-->
+
+    <!--<div [@toggleMatExpansion]="animationState">-->
+      <!--<mat-card-header>-->
+        <!--<div class="h21-profile-card_meta-data-box">-->
+          <!--<div class="row large-gutters">-->
+            <!--<div class="col-12 col-xxl-6">-->
+              <!--<ng-container [ngTemplateOutlet]="cash"-->
+                            <!--[ngTemplateOutletContext]="{label: 'Order #', value: order.viewOrderNumber, isMoney: false}"></ng-container>-->
+              <!--<ng-container [ngTemplateOutlet]="cash"-->
+                            <!--[ngTemplateOutletContext]="{label: 'Client', value: order.customer.shortName, isMoney: false}"></ng-container>-->
+              <!--&lt;!&ndash;                    <ng-container [ngTemplateOutlet]="cash"&ndash;&gt;-->
+              <!--&lt;!&ndash;                                  [ngTemplateOutletContext]="{label: 'Status', value: order.stateName, isMoney: false}"></ng-container>&ndash;&gt;-->
+              <!--<ng-container [ngTemplateOutlet]="cash"-->
+                            <!--[ngTemplateOutletContext]="{label: 'Payment', value: order.paymentStateName, isMoney: false}"></ng-container>-->
+              <!--&lt;!&ndash;                    <ng-container [ngTemplateOutlet]="cash"&ndash;&gt;-->
+              <!--&lt;!&ndash;                                  [ngTemplateOutletContext]="{label: 'Invoice #', value: order.invoiceNumber, isMoney: false}"></ng-container>&ndash;&gt;-->
+            <!--</div>-->
+            <!--<div class="col-12 col-xxl-6">-->
+              <!--<ng-container [ngTemplateOutlet]="cash"-->
+                            <!--[ngTemplateOutletContext]="{label: 'Base Cost', value: order.baseCost, isMoney: true}"></ng-container>-->
+              <!--<ng-container [ngTemplateOutlet]="cash"-->
+                            <!--[ngTemplateOutletContext]="{label: 'Horse Cost', value: order.horseCost, isMoney: true}"></ng-container>-->
+              <!--<ng-container [ngTemplateOutlet]="cash"-->
+                            <!--[ngTemplateOutletContext]="{label: 'Invoice Cost', value: order.invoiceCost, isMoney: true}"></ng-container>-->
+              <!--<ng-container [ngTemplateOutlet]="cash"-->
+                            <!--[ngTemplateOutletContext]="{label: 'Final Cost', value: order.finalCost, isMoney: true}"></ng-container>-->
+            <!--</div>-->
+          <!--</div>-->
+        <!--</div>-->
+      <!--</mat-card-header>-->
+    <!--</div>-->
+  <!--</div>-->
+  <!--<mat-card-content>-->
+
+    <!--<mat-divider id="details" class="c-bookings-details_first-anchor"></mat-divider>-->
+
+    <!--<h21-bookings-transfer-details [data]="order.details"></h21-bookings-transfer-details>-->
+
+    <!--<mat-divider id="travellers" class="h21-profile-card_separator"></mat-divider>-->
+
+    <!--&lt;!&ndash; Travellers &ndash;&gt;-->
+    <!--<h3 class="h21-mb-3">Travellers ({{ order.travelers.length }}) for {{ order.corporateName }}</h3>-->
+    <!--<h21-bookings-travelers-list [data]="order.travelers"></h21-bookings-travelers-list>-->
+
+    <!--&lt;!&ndash;          <mat-divider id="customer" class="h21-profile-card_separator"></mat-divider>&ndash;&gt;-->
+
+    <!--&lt;!&ndash; Customer &ndash;&gt;-->
+    <!--&lt;!&ndash;          <h3 class="h21-mb-3">Customer</h3>&ndash;&gt;-->
+    <!--&lt;!&ndash;          <h21-bookings-customer [data]="order.customer"></h21-bookings-customer>&ndash;&gt;-->
+
+    <!--&lt;!&ndash;         todo: раздел спрятан 04.09.2019 для релиза&ndash;&gt;-->
+
+    <!--&lt;!&ndash;          <mat-divider id="finance" class="h21-profile-card_separator"></mat-divider>&ndash;&gt;-->
+
+    <!--&lt;!&ndash;          &lt;!&ndash; Finance &ndash;&gt;&ndash;&gt;-->
+    <!--&lt;!&ndash;          <h3 class="h21-mb-3">Finance</h3>&ndash;&gt;-->
+    <!--&lt;!&ndash;          <div style="height:600px;"></div>&ndash;&gt;-->
+
+    <!--&lt;!&ndash;         todo: раздел спрятан 04.09.2019 для релиза&ndash;&gt;-->
+
+    <!--&lt;!&ndash;          <mat-divider id="comments" class="h21-profile-card_separator"></mat-divider>&ndash;&gt;-->
+
+    <!--&lt;!&ndash;          &lt;!&ndash; Comments &ndash;&gt;&ndash;&gt;-->
+    <!--&lt;!&ndash;          <h3 class="h21-mb-3">Comments</h3>&ndash;&gt;-->
+    <!--&lt;!&ndash;          <div style="height:600px;"></div>&ndash;&gt;-->
+
+    <!--&lt;!&ndash;         todo: раздел спрятан 04.09.2019 для релиза&ndash;&gt;-->
+
+    <!--&lt;!&ndash;          <mat-divider id="history" class="h21-profile-card_separator"></mat-divider>&ndash;&gt;-->
+
+    <!--&lt;!&ndash;          &lt;!&ndash; History &ndash;&gt;&ndash;&gt;-->
+    <!--&lt;!&ndash;          <h3 class="h21-mb-3">history</h3>&ndash;&gt;-->
+    <!--&lt;!&ndash;          <div style="height:900px;">&ndash;&gt;-->
+    <!--&lt;!&ndash;            <h21-history [entityrefid]="order.id"></h21-history>&ndash;&gt;-->
+    <!--&lt;!&ndash;          </div>&ndash;&gt;-->
+
+    <!--<mat-divider id="сancellationPolicy" class="h21-profile-card_separator"></mat-divider>-->
+
+    <!--&lt;!&ndash; Cancellation policy &ndash;&gt;-->
+    <!--<h3 class="h21-mb-3">Cancellation policy</h3>-->
+    <!--<h21-bookings-cancellation-policy></h21-bookings-cancellation-policy>-->
+
+  <!--</mat-card-content>-->
+<!--</mat-card>-->

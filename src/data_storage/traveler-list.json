@@ -1,0 +1,46 @@
+[
+  {
+    "id" : 1,
+    "imageLink" : "https://horse21pro.com/Content/Images/Logo/9637b_13987_1173_34li5xo.jpg",
+    "email" : "support@horse21.net",
+    "firstName" : "Guest",
+    "middleName" : "",
+    "lastName" : "Testovich",
+    "companyName" : "777",
+    "function" : "Room Service Cleaner",
+    "h21ProLogin" : 8724
+  },
+  {
+    "id" : 82,
+    "imageLink" : "",
+    "email" : "ilaria.caselli@sofidel.com",
+    "firstName" : "Ilaria",
+    "middleName" : "",
+    "lastName" : "Caselli",
+    "companyName" : "Sofidel Soffass",
+    "function" : "Agent",
+    "h21ProLogin" : 13709
+  },sudo
+  {
+    "id" : 83,
+    "imageLink" : "",
+    "email" : "traveloffice.holding@sofidel.it",
+    "firstName" : "ILARIA",
+    "middleName" : "",
+    "lastName" : "PARISI",
+    "companyName" : "Sofidel",
+    "function" : "Agent",
+    "h21ProLogin" : 11087
+  },
+  {
+    "id" : 84,
+    "imageLink" : "",
+    "email" : "letizia.baccelli@sofidel.it",
+    "firstName" : "ILARIA",
+    "middleName" : "",
+    "lastName" : "PARISI",
+    "companyName" : "Soffass",
+    "function" : "Agent",
+    "h21ProLogin" : 8724
+  }
+]

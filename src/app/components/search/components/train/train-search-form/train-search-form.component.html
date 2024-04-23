@@ -1,0 +1,120 @@
+<div class="h21-search-form">
+
+  <!-- Toolbar -->
+  <div class="h21-search-form_toolbar">
+    <h21-search-form-toolbar [selectedTravelers]="selectedTravelers" [booker]="booker" [bookerVisibility]="true"></h21-search-form-toolbar>
+  </div>
+
+  <!-- Form -->
+  <div class="h21-search-form_content">
+    <form [formGroup]="form">
+      <mat-radio-group formControlName="return" class="h21-search-form_radio-group">
+        <mat-radio-button color="primary" [value]="true">Return</mat-radio-button>
+        <mat-radio-button color="primary" [value]="false">Single</mat-radio-button>
+      </mat-radio-group>
+      <div class="row medium-gutters">
+        <div class="col-6">
+          <mat-form-field class="__w-100" color="primary" [appearance]="formFieldAppearance">
+            <mat-label>From</mat-label>
+            <input type="text"
+                   matInput
+                   autocomplete="off"
+                   formControlName="from" />
+            <mat-icon matSuffix>location_on</mat-icon>
+            <mat-error *ngIf="form.get('from').hasError('required')">
+              You must enter a value
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-6 h21-search-form_swap-button-wrapper">
+          <button type="button" mat-icon-button class="h21-search-form_swap-button">
+            <mat-icon>swap_horiz</mat-icon>
+          </button>
+
+          <mat-form-field class="__w-100" color="primary" [appearance]="formFieldAppearance">
+            <mat-label>To</mat-label>
+            <input type="text"
+                   matInput
+                   autocomplete="off"
+                   formControlName="to" />
+            <mat-icon matSuffix>location_on</mat-icon>
+            <mat-error *ngIf="form.get('to').hasError('required')">
+              You must enter a value
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row medium-gutters">
+        <div class="col-6">
+          <div class="row small-gutters">
+            <div class="col-6">
+              <h21-two-month-calendar [rangeSelectMode]="false"
+                                      [fromLabel]="'Depart date'"
+                                      [formFieldAppearance]="formFieldAppearance"
+                                      [required]="true"
+                                      [(selectedFromDate)]="departDate"
+                                      (selectedFromDateChange)="onSelectDepartDate($event)">
+              </h21-two-month-calendar>
+            </div>
+            <div class="col-6">
+              <mat-form-field class="__w-100" color="primary" [appearance]="formFieldAppearance">
+                <mat-label>Departure</mat-label>
+                <input type="text"
+                       matInput
+                       autocomplete="off"
+                       formControlName="departTime"/>
+                <mat-icon matSuffix>access_time</mat-icon>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="row small-gutters">
+            <div class="col-6">
+              <h21-two-month-calendar [rangeSelectMode]="false"
+                                      [fromLabel]="'Return date'"
+                                      [formFieldAppearance]="formFieldAppearance"
+                                      [required]="true"
+                                      [(selectedFromDate)]="departDate"
+                                      (selectedFromDateChange)="onSelectReturnDate($event)">
+              </h21-two-month-calendar>
+            </div>
+            <div class="col-6">
+              <mat-form-field class="__w-100" color="primary" [appearance]="formFieldAppearance">
+                <mat-label>Departure</mat-label>
+                <input type="text"
+                       matInput
+                       autocomplete="off"
+                       formControlName="returnTime"/>
+                <mat-icon matSuffix>access_time</mat-icon>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+      </div>
+      <mat-form-field class="__w-100" color="primary" [appearance]="formFieldAppearance">
+        <mat-label>VIA (optional)</mat-label>
+        <input type="text"
+               matInput
+               maxlength="100"
+               autocomplete="off"
+               formControlName="via"/>
+      </mat-form-field>
+    </form>
+  </div>
+
+  <!-- Action buttons -->
+  <div class="h21-search-form_actions">
+    <button type="button" mat-stroked-button color="primary" (click)="openTripRequestDialog()">
+      Add to trip request
+    </button>
+    <div class="w-spacer">&nbsp;</div>
+    <button type="button" mat-button color="primary" (click)="clear()">
+      Clear
+    </button>
+    <button type="button" mat-flat-button color="primary" (click)="submit()">
+      Search
+    </button>
+  </div>
+
+</div>

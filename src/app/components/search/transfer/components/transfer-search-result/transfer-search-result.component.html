@@ -1,0 +1,43 @@
+<div class="c-transfer-search-result h21-search-result-list">
+  <div class="h21-search-result-list_wrapper">
+    <mat-toolbar class="c-transfer-search-result_toolbar" *ngIf="!inProgress && !noProgress">
+      <div>{{ location?.address }}: <b>{{ totalCount }}</b> cars found</div>
+
+      <div class="w-spacer">&nbsp;</div>
+
+      <mat-form-field class="h21-sort-by-field" [appearance]="formFieldAppearance">
+        <mat-select panelClass="h21-select-panel" placeholder="Sort by" [disabled]="isPending" (selectionChange)="onSortChange($event.value)" [(ngModel)]="currentSortField">
+          <mat-select-trigger>
+            {{ currentSortField?.name }}
+            <mat-icon *ngIf="currentSortField"
+                      class="h21-sort-by-field_sort-icon"
+                      [class.h21-sort-by-field_sort-icon__asc]="!currentSortField.desc"
+                      [class.h21-sort-by-field_sort-icon__desc]="currentSortField.desc">
+              sort
+            </mat-icon>
+          </mat-select-trigger>
+          <mat-option *ngFor="let field of sortByList" class="h21-sort-by-field_sort-option" [value]="field">
+            {{ field.name }}
+            <mat-icon class="h21-sort-by-field_sort-icon"
+                      [class.h21-sort-by-field_sort-icon__asc]="!field.desc"
+                      [class.h21-sort-by-field_sort-icon__desc]="field.desc">
+              sort
+            </mat-icon>
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </mat-toolbar>
+
+    <ng-container *ngIf="inProgress || noProgress">
+      <h21-items-list-loader [showNoResult]="noProgress" [showToolbar]="true"></h21-items-list-loader>
+    </ng-container>
+
+    <ng-container *ngIf="!inProgress && !noProgress">
+      <h21-transfer-search-result-item
+        [filter]="filter"
+        *ngFor="let item of dataSource$ | async; trackBy: trackByFn"
+        [data]="item">
+      </h21-transfer-search-result-item>
+    </ng-container>
+  </div>
+</div>

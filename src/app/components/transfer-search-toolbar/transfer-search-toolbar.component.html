@@ -1,0 +1,165 @@
+<div class="c-transfer-search-toolbar" *ngIf="filter$ | async as filter">
+  <div class="flex-row __justify-content-start">
+    <button mat-button class="c-transfer-search-toolbar_item c-transfer-search-toolbar_flex-fill-button"
+            #fromMenu="matMenuTrigger" [matMenuTriggerFor]="fromMenu">
+      <mat-icon>location_on</mat-icon>
+      <span>{{ filter.routes[0].fromLocation.address }}</span>
+    </button>
+
+    <button type="button" mat-icon-button (click)="swapTripPoints(filter)">
+      <mat-icon>swap_horiz</mat-icon>
+    </button>
+
+    <button mat-button class="c-transfer-search-toolbar_item c-transfer-search-toolbar_flex-fill-button" #toMenu="matMenuTrigger" [matMenuTriggerFor]="toMenu">
+      <mat-icon>location_on</mat-icon>
+      <span>{{ filter.routes[0].toLocation.address }}</span>
+    </button>
+
+    <mat-divider [vertical]="true"></mat-divider>
+
+    <button mat-button class="c-transfer-search-toolbar_item" (click)="calendar.openDialog()">
+      <mat-icon>date_range</mat-icon>
+      <span>{{ filter.routes[0].fromDate | h21Date }}</span>
+    </button>
+
+    <mat-divider [vertical]="true"></mat-divider>
+
+    <button mat-button class="c-transfer-search-toolbar_item"  #localTimeMenuBtn="matMenuTrigger" [matMenuTriggerFor]="localTimeMenu">
+      <mat-icon>access_time</mat-icon>
+      <span>{{ filter.routes[0].fromDate.time }}</span>
+    </button>
+
+    <mat-divider [vertical]="true"></mat-divider>
+
+    <button mat-button class="c-transfer-search-toolbar_item" #travelersMenuBtn="matMenuTrigger" [matMenuTriggerFor]="travelersMenu">
+      <mat-icon svgIcon="traveler-account"></mat-icon>
+      <span>{{ filter.travelersQuantity ? filter.travelersQuantity : 1 }}</span>
+    </button>
+
+    <button mat-stroked-button color="primary" class="__ml-4 __flex-none" [disabled]="hasError || isPending" (click)="update(filter)">
+      Search
+    </button>
+  </div>
+
+  <div style="display: none;">
+    <h21-two-month-calendar #calendar
+                            fromLabel="Date"
+                            [selectedFromDate]="transferDate"
+                            [required]="true"
+                            [isSB]="true"
+                            [rangeSelectMode]="false"
+                            [datePattern]="'dd MMM yyyy'"
+                            (selectedFromDateChange)="onDateChange($event, filter)">
+    </h21-two-month-calendar>
+  </div>
+
+  <mat-menu #fromMenu="matMenu" class="c-transfer-search-toolbar_destination-menu">
+    <ng-template matMenuContent>
+      <ng-container [ngTemplateOutlet]="locationMenu"
+                    [ngTemplateOutletContext]="{ control: fromLocationCtrl, points: fromLocations$, type: locationType.pickUp, name: 'fromLocationCtrl' }"></ng-container>
+    </ng-template>
+  </mat-menu>
+
+  <mat-menu #toMenu="matMenu" class="c-transfer-search-toolbar_destination-menu">
+    <ng-template matMenuContent>
+      <ng-container [ngTemplateOutlet]="locationMenu"
+                    [ngTemplateOutletContext]="{ control: toLocationCtrl, points: toLocations$, type: locationType.dropDown, name: 'toLocationCtrl' }"></ng-container>
+    </ng-template>
+  </mat-menu>
+
+  <ng-template #locationMenu let-control="control" let-points="points" let-type="type" let-name="name">
+    <div (click)="$event.stopPropagation();">
+      <div class="__pa-2">
+        <mat-form-field appearance="outline" color="primary" class="h21-simplified-form-field c-transfer-search-toolbar_menu-form-field">
+          <input type="text" matInput autocomplete="off" [formControl]="control" />
+          <mat-icon matSuffix class="__color-accent" *ngIf="!control.value">search</mat-icon>
+          <button matSuffix mat-icon-button type="button" *ngIf="control.value" (click)="control.reset()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+      </div>
+    </div>
+    <ng-container *ngIf="points | async as destinations; else notingFound;">
+      <button mat-menu-item
+              class="c-transfer-search-toolbar_menu-item"
+              *ngFor="let point of destinations; trackBy: trackByFn;"
+              (click)="onSelect(filter, point, type, name)">
+        <span class="c-transfer-search-toolbar_menu-item-wrapper">
+          <mat-icon class="c-transfer-search-toolbar_menu-item-icon">{{ iconType[point.subtype] }}</mat-icon>
+          <span class="c-transfer-search-toolbar_menu-item-text">
+            <span class="c-transfer-search-toolbar_menu-item-text-name">{{ point.name }}</span>
+            <span *ngIf="point.address?.description" class="c-transfer-search-toolbar_menu-item-text-destination">{{ point.address?.description }}</span>
+          </span>
+        </span>
+      </button>
+    </ng-container>
+  </ng-template>
+
+  <ng-template #notingFound>
+    <div class="c-transfer-search-toolbar_menu-empty-label" (click)="$event.stopPropagation();">
+      <mat-icon>not_interested</mat-icon>
+      <p>Nothing found</p>
+    </div>
+  </ng-template>
+
+  <mat-menu #localTimeMenu="matMenu" class="c-transfer-search-toolbar_time-menu">
+    <ng-template matMenuContent>
+      <div class="c-transfer-search-toolbar_time-menu-wrapper">
+        <div class="c-transfer-search-toolbar_time-menu-input" (click)="$event.stopPropagation();">
+          <mat-form-field appearance="outline" color="primary" class="h21-simplified-form-field c-transfer-search-toolbar_menu-form-field">
+            <input type="text" matInput autocomplete="off" [formControl]="localTimeCtrl" />
+            <mat-icon matSuffix class="__color-accent">access_time</mat-icon>
+          </mat-form-field>
+        </div>
+
+        <div class="c-transfer-search-toolbar_time-menu-buttons">
+          <ng-container *ngIf="filteredTimeDictionary$ | async; else error">
+            <button mat-menu-item
+                    *ngFor="let time of filteredTimeDictionary$ | async; trackBy: trackByFn;"
+                    (click)="selectTime(time, filter)">
+              {{ time }}
+            </button>
+          </ng-container>
+          <ng-template #error>
+            <div class="c-transfer-search-toolbar_menu-empty-label __color-ui-warn" (click)="$event.stopPropagation();">
+              <mat-icon>warning</mat-icon>
+              <p>Nothing found</p>
+            </div>
+          </ng-template>
+          <ng-template #error>
+            <div class="c-transfer-search-toolbar_menu-empty-label __color-ui-warn" (click)="$event.stopPropagation();">
+              <mat-icon>warning</mat-icon>
+              <p>Nothing found</p>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+    </ng-template>
+  </mat-menu>
+
+  <mat-menu #travelersMenu="matMenu" class="c-transfer-search-toolbar_menu">
+    <ng-template matMenuContent>
+      <div (click)="$event.stopPropagation();">
+        <div class="row __mb-2">
+          <div class="col-6 __fs-xs __align-self-center">Travellers</div>
+          <div class="col-6">
+            <h21-counter min="1" max="8" [value]="filter.travelersQuantity" (changed)="filter.travelersQuantity = $event"></h21-counter>
+          </div>
+        </div>
+        <div class="row __mb-2">
+          <div class="col-6 __fs-xs __align-self-center">Luggage</div>
+          <div class="col-6">
+            <h21-counter min="0" [value]="filter.luggageQuantity" (changed)="filter.luggageQuantity = $event"></h21-counter>
+          </div>
+        </div>
+        <div class="row __mb-2">
+          <div class="col-6 __fs-xs __align-self-center">Pets</div>
+          <div class="col-6">
+            <h21-counter min="0" [value]="filter.petQuantity" (changed)="filter.petQuantity = $event"></h21-counter>
+          </div>
+        </div>
+        <mat-checkbox color="primary" class="__fs-xs" [(ngModel)]="filter.isWheelChair">Wheel chair</mat-checkbox>
+      </div>
+    </ng-template>
+  </mat-menu>
+</div>

@@ -1,0 +1,57 @@
+<div class="c-hotel-rooms-list-item" [style.borderLeftColor]="providerColor">
+  <div class="c-hotel-rooms-list-item_flex">
+    <div class="c-hotel-rooms-list-item_provider">
+      <img *ngIf="showProviderImg" [src]="item.supplier?.fileUrl" (error)="showProviderImg = false" alt="" />
+      <span *ngIf="!showProviderImg">{{ item.supplier?.fileName }}</span>
+      <div *ngIf="item.boardingName" class="h21-search-check-label __mb-1">{{ item.boardingName }}</div>
+      <div class="c-hotel-rooms-list-item_cancellation-policy-loader" *ngIf="item.isRefundable === null || (item.isRefundable === true && !item.penaltyDate)">
+        <div class="c-hotel-rooms-list-item_cancellation-policy-loader-indicator"></div>
+        <div class="c-hotel-rooms-list-item_cancellation-policy-loader-text">Cancellation policy</div>
+      </div>
+      <div class="h21-search-check-label" *ngIf="item.isRefundable === true && !isAfter && item.penaltyDate">
+        <span>Free cancellation before {{ item.penaltyDate | date:'dd.MM.yyyy' }}</span>
+      </div>
+      <div class="h21-search-check-label h21-search-check-label__no-check"
+           *ngIf="item.isRefundable === false || ((item.isRefundable === true) && isAfter && item.penaltyDate)"
+           [matTooltip]="nonRefundableTooltip"
+           matTooltipClass="non-refundable-tooltip"
+           matTooltipPosition="after">
+           Non-refundable
+      </div>
+    </div>
+    <div class="c-hotel-rooms-list-item_description">
+      <h4 [innerHTML]="item.roomType | safeHtml"></h4>
+      <p [innerHTML]="item.description | safeHtml"></p>
+    </div>
+    <div class="c-hotel-rooms-list-item_price">
+      <div class="row no-gutters">
+        <div class="col-6 __fs-xxxs __color-gray __ta-r __fw-bold">Price per night</div>
+        <div class="col-6 __fs-m __fw-bold __color-accent __ta-r">{{ item.averagePerNightCost | h21NumberFormat }} {{ item.currency }}</div>
+        <div class="col-6 __fs-xxxs __color-gray __ta-r">Total price ({{ item.nightQuantity }} nights)</div>
+        <div class="col-6 __fs-s __fw-medium __color-accent __ta-r">{{ item.totalCost | h21NumberFormat }} {{ item.currency }}</div>
+      </div>
+      <div class="__mt-2 __ta-r">
+
+        <ng-container *ngIf="item.isAllowedToBook; else policy">
+          <button [routerLink]="['/search/hotel/order']"
+                  [queryParams]="{ hotel: item.id }"
+                  mat-flat-button
+                  color="primary"
+                  class="c-hotel-rooms-list-item_booking-button">
+            Book a room
+          </button>
+        </ng-container>
+
+        <ng-template #policy>
+          <button [disabled]="true"
+                  type="button"
+                  mat-flat-button
+                  color="primary"
+                  class="c-hotel-rooms-list-item_booking-button">
+            Out of policy
+          </button>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>

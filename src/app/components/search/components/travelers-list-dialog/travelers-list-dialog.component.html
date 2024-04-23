@@ -1,0 +1,64 @@
+<div class="c-travelers-list-dialog h21-dialog-panel"
+     #container
+     tabindex="0"
+     cdkTrapFocus
+     [@toggleSlide]="animationState"
+     (@toggleSlide.start)="onAnimation($event)"
+     (@toggleSlide.done)="onAnimation($event)">
+
+  <mat-progress-bar *ngIf="inProgress"
+                    mode="indeterminate"
+                    color="primary"
+                    class="h21-dialog-panel_progress"
+  ></mat-progress-bar>
+
+  <button mat-icon-button
+          (click)="close()"
+          class="h21-dialog-panel_close __size-l">
+    <mat-icon>close</mat-icon>
+  </button>
+
+  <div class="h21-dialog-panel_title">
+    <h2>{{ title }}</h2>
+  </div>
+
+  <div class="h21-dialog-panel_content">
+    <div class="h21-dialog-panel_full-width" *ngIf="inProgress">
+      <h21-card-list-loader></h21-card-list-loader>
+    </div>
+
+    <ng-container *ngIf="!inProgress">
+      <mat-list class="h21-card-list">
+        <mat-list-item *ngFor="let item of data; trackBy: trackByFn" tabindex="-1">
+          <mat-card class="h21-card-list_card"
+                    [class.__is-focused]="inFocus(item)"
+                    (mouseover)="clearFocus()"
+                    tabindex="-1">
+            <mat-card-header>
+              <h21-profile-image mat-card-avatar
+                                 [firstName]="item.firstName"
+                                 [lastName]="item.lastName"
+                                 [fileHash]="item.photoFileHash"
+                                 size="medium"
+              ></h21-profile-image>
+              <mat-card-title>{{ item | h21ConcatFields:['firstName', 'middleName', 'lastName'] }}</mat-card-title>
+              <mat-card-subtitle>{{ item.jobTitle }}</mat-card-subtitle>
+              <span class="h21-card-list_card-additionally">{{ item.company | getCompanyNameText }}</span>
+            </mat-card-header>
+
+            <mat-card-actions *ngIf="mode === viewModeType.Edit" class="h21-card-list_card-float-buttons">
+              <button mat-flat-button
+                      class="h21-card-list_card-button-select"
+                      color="warn"
+                      (click)="remove(item)"
+                      (focus)="focus(item)">
+                <mat-icon>close</mat-icon>
+              </button>
+            </mat-card-actions>
+          </mat-card>
+        </mat-list-item>
+      </mat-list>
+    </ng-container>
+  </div>
+
+</div>

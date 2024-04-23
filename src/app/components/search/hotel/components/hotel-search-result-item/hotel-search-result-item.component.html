@@ -1,0 +1,138 @@
+<div class="c-hotel-search-result-item">
+  <div class="h21-hotel-card">
+    <div class="h21-hotel-card_flex" [class.selected-hotel-color]="selectedHotelId === item.id">
+
+      <div class="h21-hotel-card_flex-photo h21-hotel-card_flex-photo__big __mr-0">
+        <img *ngIf="item.image?.fileUrl" [src]="item.image.fileUrl" alt="" (click)="redirectToCard()"/>
+        <img *ngIf="!item.image?.fileUrl" src="./assets/img/hotel-none-photo.svg" alt="" (click)="redirectToCard()"/>
+        <button mat-icon-button class="h21-hotel-card_favorite-mark"
+                [disabled]="sending"
+                [class.__is-active]="item.isFavorite"
+                (click)="updFavoriteState(item)">
+          <mat-icon>favorite</mat-icon>
+        </button>
+      </div>
+
+      <div class="h21-hotel-card_flex-content">
+        <div class="h21-hotel-card_flex-content-wrapper">
+          <div class="flex-row __align-items-center __mb-1 __line-height-normal" *ngIf="item.hotelRating">
+            <h21-rate *ngIf="item.hotelRating" size="s" [rate]="item.hotelRating" class="h21-hotel-card_rating"></h21-rate>
+            <div class="__flex-fill"></div>
+
+            <!-- todo: use after functional implementation
+            <div class="h21-hotel-card_marks-wrapper" *ngIf="false">
+              <div *ngIf="true" class="h21-hotel-card_mark h21-hotel-card_mark__genius">
+                Genius
+              </div>
+              <div *ngIf="true" class="h21-hotel-card_mark h21-hotel-card_mark__negotiated">
+                Negotiated rate
+              </div>
+            </div>
+            -->
+          </div>
+
+          <h3 class="h21-hotel-card_title cursor-pointer" (click)="redirectToCard()">{{ item.hotelName }}</h3>
+          <div class="h21-hotel-card_location">
+            <mat-icon class="__cursor-default" (click)="redirectToSearch(item.hotelLocation)">location_on</mat-icon>
+            <p>{{ item.hotelAddress }}</p>
+          </div>
+
+          <div *ngIf="mainFacilities" class="__mb-1">
+            <span class="__d-ib __mr-2 __mb-1" *ngFor="let item of mainFacilities; trackBy: trackByFn;">
+              <mat-icon color="primary" class="__size-s __va-m __cursor-default" [matTooltip]="item.name">{{ item.icon }}</mat-icon>
+            </span>
+          </div>
+
+          <ng-container *ngIf="history$ | async as history">
+            <ng-container *ngIf="selectedHotelId !== item.id && (history.point?.subtype === 'poi' || history.hotelId)">
+              <div class="__mb-2 __nowrap" *ngIf="item.distanceByFeet || item.distanceByCar">
+                <span class="__mr-3 __fs-xs" *ngIf="item.distanceByFeet">
+                  <mat-icon class="__size-s __color-accent __mr-05 __va-tt" [matTooltip]="'Distance to ' + (history.point?.subtype === 'poi' ? 'POI' : 'Hotel') + ' by foot'">
+                    directions_walk
+                  </mat-icon>
+                  {{ item.distanceByFeet }} km
+                </span>
+                <span class="__mr-3 __fs-xs" *ngIf="item.distanceByCar">
+                  <mat-icon class="__size-s __color-accent __mr-05 __va-tt" [matTooltip]="'Distance to ' + (history.point?.subtype === 'poi' ? 'POI' : 'Hotel') + ' by car'">
+                    directions_car
+                  </mat-icon>
+                    {{ item.distanceByCar }} km
+                </span>
+              </div>
+            </ng-container>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="h21-hotel-card_flex-additional">
+        <div class="flex-row __align-items-center">
+          <div class="h21-hotel-card_ecology-state">
+            <ng-container *ngIf="item.ecoLabel && isFootprintVisible$ | async">
+              <mat-icon class="ecology-green"
+                        *ngIf="item.ecoLabel.stayGreenCheck && validateStayGreenCheck(item.ecoLabel.stayGreenCheck)"
+                        [svgIcon]="'quatrefoil_' + item.ecoLabel.stayGreenCheck">
+              </mat-icon>
+              <ng-container *ngIf="item.ecoLabel.carbonFootprintCode">
+                <ng-container [ngSwitch]="item.ecoLabel.carbonFootprintCode">
+                  <mat-icon *ngSwitchCase="carbonFootprintTypes.green" class="ecology-green" svgIcon="footprint"></mat-icon>
+                  <mat-icon *ngSwitchCase="carbonFootprintTypes.white" class="ecology-white" svgIcon="footprint_outline"></mat-icon>
+                </ng-container>
+              </ng-container>
+              <span *ngIf="+item.ecoLabel.carbonFootprintCo2">{{ item.ecoLabel.carbonFootprintCo2 }} kg <b>CO2</b></span>
+            </ng-container>
+          </div>
+
+          <div class="__flex-fill">&nbsp;</div>
+
+          <div class="h21-booking-rating" *ngIf="item.providerRating && item.providerRating.rating">
+            <div class="h21-booking-rating_text">{{ item.providerRating.description }}</div>
+            <div class="h21-booking-rating_counter">{{ item.providerRating.rating }}</div>
+          </div>
+        </div>
+
+        <div class="h21-hotel-card_flex-additional-separator">&nbsp;</div>
+        <div class="__flex-fill __lh-1">&nbsp;</div>
+
+        <div class="__mb-1">
+          <div class="flex-row __align-items-center __justify-content-between __line-height-normal">
+            <img *ngIf="showProviderImg" [src]="item.rooms.supplier?.fileUrl" class="h21-hotel-card_provider-logo __flex-none" (error)="showProviderImg = false"/>
+            <span *ngIf="!showProviderImg">{{ item.rooms.supplier.fileName }}</span>
+            <span class="__fw-bold __fs-m __color-accent" *ngIf="item.rooms && filter$ | async as filter">
+            <ng-container *ngIf="filter.filter.priceCalculation === priceType.perNight; else minTotalCost">
+              {{ item.rooms.minCost | h21NumberFormat }}
+              <ng-container *ngIf="item.rooms.minCost">
+                {{ item.rooms.currency }}
+              </ng-container>
+            </ng-container>
+            <ng-template #minTotalCost>
+              {{ item.rooms.minTotalCost | h21NumberFormat }}
+              <ng-container *ngIf="item.rooms.minTotalCost">
+                {{ item.rooms.currency }}
+              </ng-container>
+            </ng-template>
+          </span>
+          </div>
+          <div *ngIf="item.rooms.minCost || item.rooms.minTotalCost"
+               class="__color-gray __fs-xs __text-right __line-height-normal __nowrap">
+            Possible lower rate inside
+          </div>
+        </div>
+
+        <button mat-flat-button
+                color="primary"
+                class="__w-100"
+                [disabled]="searchRooms"
+                [ngSwitch]="detailsVisibility"
+                (click)="toggleDetailsVisibility()">
+          <ng-container *ngSwitchCase="false">Show rooms</ng-container>
+          <ng-container *ngSwitchCase="true">Hide rooms</ng-container>
+        </button>
+      </div>
+    </div>
+
+    <div [class.h21-hotel-card_details]="detailsVisibility" [@toggleMatExpansion]="animationState">
+      <h21-hotel-details *ngIf="detailsVisibility" [selectedTab]="detailsSelectedTab" [batchId]="batchId" [items]="items" [data]="item"
+                         (emitData)="updateItem($event)" (hideDetails)="onHideDetails()"></h21-hotel-details>
+    </div>
+  </div>
+</div>

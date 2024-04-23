@@ -1,0 +1,276 @@
+<h21-three-line-preloader message="We proceeding the payment" *ngIf="isPending"></h21-three-line-preloader>
+<h21-failed *ngIf="tooLongRequest" [link]="routerLink" [btnTitle]="btnTitle"></h21-failed>
+<div class="c-transfer-order sb-order-page page_content-wrapper" *ngIf="filter && !tooLongRequest">
+  <div class="sb-order-page_flex">
+    <div class="sb-order-page_flex-content">
+      <form [formGroup]="form">
+
+        <h2>Create trip</h2>
+
+        <!-- Trip name -->
+        <div class="sb-order-page_trip-name __mb-4">
+          <mat-form-field [appearance]="formFieldAppearance" color="primary" class="h21-simplified-form-field" [class.sb-readonly-form-field]="!!form.get('trip').get('id').value">
+            <input type="text" autocomplete="off" matInput placeholder="Trip name" [formControl]="form.get('trip').get('name')" [readonly]="!!form.get('trip').get('id').value" />
+            <button type="button" mat-icon-button matSuffix *ngIf="form.get('trip').get('id').value" (click)="clearTrip()">
+              <mat-icon>close</mat-icon>
+            </button>
+          </mat-form-field>
+          <button type="button" mat-flat-button color="primary" (click)="openSelectTripDialog()">
+            Add to existing trip
+          </button>
+        </div>
+
+        <h2 id="travelers">Booking info</h2>
+
+        <!-- Travelers list -->
+        <mat-radio-group formControlName="primaryTravelerIndex" (change)="onPrimaryTravelerChange($event.value)">
+          <div formArrayName="travelers">
+            <ng-container *ngFor="let item of form.get('travelers')['controls']; trackBy: trackByFn; let i = index">
+              <div class="flex-row">
+                <div [formGroupName]="i" class="__w-100">
+                  <div class="flex-row __align-items-center">
+                    <span class="__fs-s __color-accent">Traveller {{ i + 1 }}</span>
+                    <div class="w-spacer">&nbsp;</div>
+                    <mat-radio-button color="primary" class="__fs-xs" *ngIf="!hasDefaultPrimaryTraveler" [value]="i">Primary traveller</mat-radio-button>
+                  </div>
+                  <div class="row small-gutters">
+
+                    <div class="col-4">
+                      <mat-form-field [appearance]="formFieldAppearance"
+                                      color="primary"
+                                      class="__w-100"
+                                      [class.sb-readonly-form-field]="(!!item.get('id').value && form.get('primaryTravelerIndex').value === i)  || (i === 0 && hasDefaultPrimaryTraveler)">
+                        <mat-label>First name</mat-label>
+                        <input type="text"
+                               autocomplete="off"
+                               matInput
+                               formControlName="firstName"
+                               [readonly]="!!item.get('id').value  || (i === 0 && hasDefaultPrimaryTraveler)" />
+                        <mat-error *ngIf="item.get('firstName').hasError('required')">
+                          You must enter a value
+                        </mat-error>
+                      </mat-form-field>
+                    </div>
+
+                    <div class="col-4">
+                      <mat-form-field [appearance]="formFieldAppearance"
+                                      color="primary"
+                                      class="__w-100"
+                                      [class.sb-readonly-form-field]="(!!item.get('id').value && form.get('primaryTravelerIndex').value === i)  || (i === 0 && hasDefaultPrimaryTraveler)">
+                        <mat-label>Last name</mat-label>
+                        <input type="text"
+                               autocomplete="off"
+                               matInput
+                               formControlName="lastName"
+                               [readonly]="!!item.get('id').value  || (i === 0 && hasDefaultPrimaryTraveler)" />
+                        <mat-error *ngIf="item.get('lastName').hasError('required')">
+                          You must enter a value
+                        </mat-error>
+                      </mat-form-field>
+                    </div>
+
+                    <div class="col-4">
+                      <mat-form-field [appearance]="formFieldAppearance" color="primary" class="__w-100">
+                        <mat-label>Email</mat-label>
+                        <input type="text" autocomplete="off" matInput formControlName="email" [required]="form.get('primaryTravelerIndex').value === i" />
+                        <mat-error *ngIf="item.get('email').hasError('required')">
+                          You must enter a value
+                        </mat-error>
+                        <mat-error *ngIf="item.get('email').hasError('pattern')">
+                          Incorrect value
+                        </mat-error>
+                      </mat-form-field>
+                    </div>
+
+                    <div class="col-4" *ngIf="form.get('primaryTravelerIndex').value === i">
+                      <mat-form-field [appearance]="formFieldAppearance" color="primary" class="__w-100">
+                        <mat-label>Phone</mat-label>
+                        <input type="text" autocomplete="off" matInput formControlName="mobilePhone" />
+                        <mat-error *ngIf="item.get('mobilePhone').hasError('required')">
+                          You must enter a value
+                        </mat-error>
+                        <mat-error *ngIf="item.get('mobilePhone').hasError('pattern')">
+                          Incorrect value
+                        </mat-error>
+                      </mat-form-field>
+                    </div>
+                  </div>
+
+                </div>
+                <div class="__pl-2" style="padding-top: 28px;">
+                  <ng-container *ngIf="hasDefaultPrimaryTraveler && i !== 0">
+                    <button type="button" mat-icon-button *ngIf="!!item.get('id').value; else selectTraveler" class="__color-accent" (click)="clearTravelerFields(i)">
+                      <mat-icon>close</mat-icon>
+                    </button>
+                    <ng-template #selectTraveler>
+                      <button type="button" mat-icon-button class="__color-accent" (click)="openSelectTravelersDialog(i)">
+                        <mat-icon>person_add</mat-icon>
+                      </button>
+                    </ng-template>
+                  </ng-container>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </mat-radio-group>
+
+        <!-- Message for driver -->
+        <mat-form-field [appearance]="formFieldAppearance" color="primary" class="__w-100">
+          <mat-label>Message for driver</mat-label>
+          <textarea matInput rows="6" autocomplete="off" formControlName="comment"></textarea>
+        </mat-form-field>
+
+        <!-- References -->
+        <div id="references">
+          <mat-expansion-panel class="sb-order-page_references-panel __mb-5" [expanded]="true">
+            <mat-expansion-panel-header collapsedHeight="60px" expandedHeight="60px">
+              References
+            </mat-expansion-panel-header>
+            <ng-template matExpansionPanelContent>
+              <button type="button"
+                      mat-flat-button
+                      color="primary"
+                      class="button-with-icon"
+                      *ngIf="isAllowedControlRefs"
+                      (click)="addReferenceFields()"
+                      [disabled]="form.get('references')['controls'].length > 5">
+                <mat-icon class="__size-s __mr-1">add_circle</mat-icon>
+                <span>Add reference</span>
+              </button>
+
+              <div formArrayName="references">
+                <ng-container
+                  *ngFor="let item of form.controls['references'].controls; trackBy: trackByFnArray; let i = index">
+                  <div class="sb-order-page_reference-wrapper" [formGroupName]="i">
+                    <div class="flex-row __align-items-center __mb-2">
+                      <div>
+                        <mat-chip-list [multiple]="true" [selectable]="true" class="h21-chip-list __d-b">
+                          <mat-chip class="h21-chip cursor-pointer"
+                                    color="primary"
+                                    [disabled]="!isAllowedControlRefs"
+                                    [selectable]="true"
+                                    [selected]="form.get('references')['controls'][i].get(referenceTypes.isInvoice).value"
+                                    (click)="selectType(referenceTypes.isInvoice, i)">
+                            Indiv. Invoice
+                          </mat-chip>
+                          <mat-chip class="h21-chip cursor-pointer"
+                                    color="primary"
+                                    [disabled]="!isAllowedControlRefs"
+                                    [selectable]="true"
+                                    [selected]="form.get('references')['controls'][i].get(referenceTypes.myBookings).value"
+                                    (click)="selectType(referenceTypes.myBookings, i)">
+                            My bookings
+                          </mat-chip>
+                        </mat-chip-list>
+                      </div>
+                      <div class="w-spacer">&nbsp;</div>
+                      <button type="button" *ngIf="isAllowedControlRefs" mat-icon-button class="__color-accent" (click)="removeReferenceFields(i)">
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                    </div>
+                    <div class="row large-gutters">
+                      <div class="col-6">
+                        <mat-form-field color="primary" class="__w-100" [appearance]="formFieldAppearance">
+                          <mat-label>Name</mat-label>
+                          <input type="text" matInput autocomplete="off" formControlName="name"/>
+                          <span matSuffix class="__pl-1 __fs-s __fw-medium __color-accent">
+                          <span [class.__color-ui-warn]="item.get('name').hasError('maxlength')">
+                            {{ !!item.get('name').value ? item.get('name').value.length : '0' }}
+                          </span><!--
+                          -->/{{ '20' }}
+                          </span>
+                          <mat-error *ngIf="item.get('name').hasError('required')">
+                            You must enter a value
+                          </mat-error>
+                          <mat-error *ngIf="item.get('name').hasError('maxlength')">
+                            Limits are exceeded
+                          </mat-error>
+                        </mat-form-field>
+                      </div>
+                      <div class="col-6">
+                        <ng-container *ngIf="form.get('references')['controls'][i].get('valuesActual').value?.length > 1">
+                          <mat-form-field color="primary" class="__w-100" [appearance]="formFieldAppearance">
+                            <mat-label>Value</mat-label>
+                            <mat-select panelClass="h21-select-panel" formControlName="value">
+                              <mat-option>None</mat-option>
+                              <mat-option
+                                *ngFor="let el of form.get('references')['controls'][i].get('valuesActual').value; trackBy: trackByFn;"
+                                [value]="el.value">
+                                {{ el.value }}
+                              </mat-option>
+                            </mat-select>
+
+                            <mat-error *ngIf="item.get('value').hasError('required')">
+                              You must enter a value
+                            </mat-error>
+                          </mat-form-field>
+                        </ng-container>
+                        <ng-container *ngIf="form.get('references')['controls'][i].get('valuesActual').value?.length <= 1">
+                          <mat-form-field color="primary" class="__w-100" [appearance]="formFieldAppearance">
+                            <mat-label>Value</mat-label>
+                            <input type="text" matInput autocomplete="off" formControlName="value"/>
+                            <span matSuffix class="__pl-1 __fs-s __fw-medium __color-accent">
+                              <span [class.__color-ui-warn]="item.get('value').hasError('maxlength')">
+                                {{ !!item.get('value').value ? item.get('value').value.length : '0' }}
+                              </span><!--
+                              -->/{{ '200' }}
+                            </span>
+                            <mat-error *ngIf="item.get('value').hasError('required')">
+                              You must enter a value
+                            </mat-error>
+                            <mat-error *ngIf="item.get('value').hasError('maxlength')">
+                              Limits are exceeded
+                            </mat-error>
+                          </mat-form-field>
+                        </ng-container>
+                      </div>
+                    </div>
+                  </div>
+                </ng-container>
+              </div>
+            </ng-template>
+          </mat-expansion-panel>
+        </div>
+
+        <!-- 'I agree' checkbox -->
+        <div class="sb-order-page_i-agree-checkbox __mt-3 __mb-4">
+          <mat-checkbox [checked]="userAgrees" (change)="userAgrees = !userAgrees" color="primary">
+            I agree with terms of booking and cancellation policy
+          </mat-checkbox>
+        </div>
+
+        <!-- Actions -->
+        <div class="sb-order-page_actions">
+          <div class="__flex-fill">&nbsp;</div>
+          <div [matTooltip]="!userAgrees ? 'To keep booking, you should agree with terms' : ''"
+               matTooltipClass="non-refundable-tooltip">
+<!--            <button type="button"-->
+<!--                    (click)="onSubmit(PaymentMethod.PayLater)"-->
+<!--                    mat-flat-button-->
+<!--                    color="primary"-->
+<!--                    class="__ml-2"-->
+<!--                    [disabled]="!userAgrees || isPending">-->
+<!--              Pay later-->
+<!--            </button>-->
+            <button type="button"
+                    (click)="onSubmit()"
+                    mat-flat-button
+                    color="primary"
+                    class="__ml-2"
+                    [disabled]="!userAgrees || isPending">
+              Book
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="sb-order-page_flex-aside">
+      <h21-transfer-search-result-item [data]="car"
+                                       [filter]="filter"
+                                       [compactView]="true"
+                                       [showBookButton]="false">
+      </h21-transfer-search-result-item>
+    </div>
+  </div>
+</div>

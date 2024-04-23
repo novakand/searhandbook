@@ -1,0 +1,17 @@
+<div class="c-bookings-travelers-list">
+  <mat-list class="h21-card-list" *ngIf="!!data && data.length > 0">
+    <mat-list-item *ngFor="let item of data; trackBy: trackByFn">
+      <mat-card class="h21-card-list_card" tabindex="-1">
+        <mat-card-header>
+          <h21-profile-image mat-card-avatar
+                             [firstName]="item.firstName"
+                             [lastName]="item.lastName"
+                             [fileHash]="item.photoFileHash"
+                             size='medium'></h21-profile-image>
+          <mat-card-title>{{ item.firstName }} {{ item.middleName }} {{ item.lastName }}</mat-card-title>
+        </mat-card-header>
+      </mat-card>
+    </mat-list-item>
+  </mat-list>
+</div>
+

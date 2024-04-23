@@ -1,0 +1,30 @@
+<h3 class="__mb-2 __fw-medium">Documents</h3>
+<table width="100%" class="c-bookings-order_documents-table">
+  <tbody>
+  <tr class="mat-row" *ngIf="order.voucherReportId">
+    <td>{{ 'Voucher_' + order.viewOrderNumber + '.pdf' }}</td>
+    <td width="40%">{{ order.voucherReportSize | size:0 }}</td>
+    <td width="10%" class="c-bookings-order_documents-table-actions-cell">
+      <button type="button" mat-icon-button (click)="onOpenLoadedDocument(documentType.Voucher, order)">
+        <mat-icon>visibility</mat-icon>
+      </button>
+      <button type="button" mat-icon-button class="__hide-on-print" (click)="onDownloadDocument(documentType.Voucher, order)">
+        <mat-icon>save_alt</mat-icon>
+      </button>
+    </td>
+  </tr>
+
+  <tr class="mat-row" *ngIf="order.billDetailsReportId">
+    <td>{{ 'Billing_details_' + order.viewOrderNumber + '.pdf' }}</td>
+    <td width="40%">{{ order.billDetailsReportSize | size:0 }}</td>
+    <td width="10%" class="c-bookings-order_documents-table-actions-cell">
+      <button type="button" mat-icon-button (click)="onOpenLoadedDocument(documentType.BillingDetails, order)">
+        <mat-icon>visibility</mat-icon>
+      </button>
+      <button type="button" mat-icon-button class="__hide-on-print" (click)="onDownloadDocument(documentType.BillingDetails, order)">
+        <mat-icon>save_alt</mat-icon>
+      </button>
+    </td>
+  </tr>
+  </tbody>
+</table>

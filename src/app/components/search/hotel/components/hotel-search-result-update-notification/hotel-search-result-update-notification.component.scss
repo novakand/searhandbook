@@ -1,0 +1,55 @@
+//----------------------------------------------------------------------------------------------------------------------
+// Hotel search result update notification
+
+::ng-deep .hotel-search-result-update-notification_panel.mat-snack-bar-container {
+  margin: 16px 16px 16px 50px;
+  padding: 12px 16px;
+  background-color: var(--primary-hex);
+  color: var(--on-primary-hex);
+  box-shadow: 0 2px 15px rgba(var(--foregraund-rgb), 0.15);
+  min-width: 380px;
+  width: 380px;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+
+  &.hotel-search-result-update-notification_panel__on-map {
+    margin-bottom: 40px;
+    margin-left: 20px;
+  }
+}
+
+.c-hotel-search-result-update-notification .c-hotel-search-result-update-notification_fab {
+  height: 36px;
+  min-width: 36px;
+  line-height: 36px;
+  background-color: var(--warn-hex);
+  color: var(--on-warn-hex);
+  font-weight: 700;
+  border-radius: 18px;
+  text-align: center;
+  padding: 0 8px;
+  font-size: 16px;
+  margin-right: 8px;
+}
+
+::ng-deep .c-hotel-search-result-update-notification .mat-button {
+  background-color: var(--on-primary-hex);
+}
+
+::ng-deep .mat-snack-bar-handset .hotel-search-result-update-notification_panel.mat-snack-bar-container {
+  position: static;
+  top: auto;
+  left: auto;
+}
+
+@media (max-width: 1100px) {
+  ::ng-deep .hotel-search-result-update-notification_panel.mat-snack-bar-container {
+    margin: 16px 16px 16px -190px;
+  }
+}
+
+::ng-deep .mat-snack-bar-handset .hotel-search-result-update-notification_panel.mat-snack-bar-container {
+  margin: 16px auto;
+  left: auto;
+}

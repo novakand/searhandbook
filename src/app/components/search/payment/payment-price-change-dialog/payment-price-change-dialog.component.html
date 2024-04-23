@@ -1,0 +1,27 @@
+<div class="sb-payment-dialog">
+  <mat-dialog-content>
+    <div class="__ta-c __fs-l __line-height-normal">
+      <p class="__ma-0">We regret to inform you that the supplier</p>
+      <div class="sb-payment-dialog_provider-logo __mv-3">
+        <img *ngIf="showImg" [src]="data.providerLogoUrl" (error)="showImg = false" [alt]="data.providerName || ''"/>
+        <span *ngIf="!showImg">{{ data.providerName }}</span>
+      </div>
+      <p class="__ma-0">
+        has raised the rate.<br/>
+        <ng-container *ngIf="data.paymentMethod !== 'BankTransfer'">Would you like to continue the payment?</ng-container>
+        <ng-container *ngIf="data.paymentMethod === 'BankTransfer'">Would you like to continue the reservation?</ng-container>
+      </p>
+    </div>
+
+    <div class="__ta-c __mv-3">
+      <div class="sb-payment-dialog_price">New rate {{ data.message }}</div>
+    </div>
+
+    <div class="__ta-c">
+      <button type="button" mat-stroked-button color="primary" class="__mh-1" (click)="cancel()">Back to search</button>
+      <button type="button" mat-flat-button color="primary" class="__mh-1" (click)="pay()" [disabled]="pending">
+        {{ data.paymentMethod === 'BankTransfer' ? 'Book' : 'Pay' }}
+      </button>
+    </div>
+  </mat-dialog-content>
+</div>

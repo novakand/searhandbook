@@ -1,0 +1,175 @@
+<section class="c-hotel-card" *ngIf="hotelImgUrl && hotel$ | async as hotel">
+  <div class="c-hotel-card_wrapper">
+    <div class="__flex-row __mb-3">
+      <div class="__flex-fill __flex-column">
+        <div class="__flex-row __align-items-center">
+          <h21-rate *ngIf="hotel.hotelRating" [rate]="hotel.hotelRating" class="__mr-3"></h21-rate>
+          <div class="__flex-fill"></div>
+          <button type="button"
+                  mat-icon-button
+                  class="c-hotel-card_favorite-mark"
+                  [class.c-hotel-card_favorite-mark__active]="hotel.isFavorite"
+                  [disabled]="sending"
+                  (click)="updFavoriteState()">
+            <mat-icon>favorite</mat-icon>
+          </button>
+        </div>
+
+        <h3 class="__color-accent __fw-medium">{{ hotel.hotelName }}</h3>
+        <div class="__flex-row __mb-3">
+          <div class="__flex-none __mr-05">
+            <mat-icon class="__color-accent __size-s __mt-05">location_on</mat-icon>
+          </div>
+          <div class="__fs-xs __color-gray">
+            {{ hotel.hotelAddress }}
+          </div>
+          <div class="__flex-fill"></div>
+          <div class="__flex-none __nowrap" *ngIf="hotel.distanceByFeet || hotel.distanceByCar">
+            <span class="__fs-xs" *ngIf="hotel.distanceByFeet">
+              <mat-icon class="__size-s __color-accent __mr-05 __va-tt" [matTooltip]="'Distance to hotel by foot'">directions_walk</mat-icon>
+              {{ hotel.distanceByFeet }} km
+            </span>
+            <span class="__ml-3 __fs-xs" *ngIf="hotel.distanceByCar">
+              <mat-icon class="__size-s __color-accent __mr-05 __va-tt" [matTooltip]="'Distance to hotel by car'">directions_car</mat-icon>
+              {{ hotel.distanceByCar }} km
+            </span>
+          </div>
+        </div>
+
+        <div class="__flex-fill"></div>
+
+        <div class="row small-gutters">
+          <div class="col-6">
+            <div class="c-hotel-card_picture" [lightbox]="0" [gallery]="galleryId">
+              <img *ngIf="hotel.images[0]?.fileUrl" [src]="hotel.images[0]?.fileUrl" alt=""/>
+              <img *ngIf="!hotel.images[0]?.fileUrl" src="./assets/img/hotel-none-photo.svg" alt=""/>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="row small-gutters">
+              <ng-container *ngFor="let x of picturesCount; trackBy: trackByFn; let i = index; let l = last;">
+                <div class="col-6" [class.__mb-2]="i < 2" [lightbox]="x" [gallery]="galleryId">
+                  <div class="c-hotel-card_picture c-hotel-card_picture__thumb"
+                       [class.__visibility-hidden]="!hotel.images || !hotel.images[x]">
+                    <img [src]="hotel.images[x]?.fileUrl" alt="" />
+                    <div class="c-hotel-card_picture-more" *ngIf="l && hotel.images.length > (x + 1)">
+                      <span>View {{ hotel.images.length - (x + 1) }} +</span>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="c-hotel-card_additional-info">
+        <div class="__flex-column __h-100">
+          <div class="__flex-none __mb-3">
+            <div class="row __mb-2 __text-right __align-items-center">
+              <div class="col-6">
+                <ng-container *ngIf="hotel.ecoLabel && isFootprintVisible$ | async">
+                  <mat-icon class="ecology-green __va-m"
+                            *ngIf="hotel.ecoLabel.stayGreenCheck && validateStayGreenCheck(hotel.ecoLabel.stayGreenCheck)"
+                            [svgIcon]="'quatrefoil_' + hotel.ecoLabel.stayGreenCheck">
+                  </mat-icon>
+                  <ng-container *ngIf="hotel.ecoLabel.carbonFootprintCode">
+                    <ng-container [ngSwitch]="hotel.ecoLabel.carbonFootprintCode">
+                      <mat-icon *ngSwitchCase="carbonFootprintTypes.green" class="ecology-green __va-m" svgIcon="footprint"></mat-icon>
+                      <mat-icon *ngSwitchCase="carbonFootprintTypes.white" class="ecology-white __va-m" svgIcon="footprint_outline"></mat-icon>
+                    </ng-container>
+                  </ng-container>
+                  <span class="__fs-xxs __va-m" *ngIf="+hotel.ecoLabel.carbonFootprintCo2">
+                    {{ hotel.ecoLabel.carbonFootprintCo2 }} kg <b>CO2</b>
+                  </span>
+                </ng-container>
+              </div>
+              <div class="col-6 __ta-r">
+                <div class="h21-booking-rating" *ngIf="hotel.providerRating">
+                  <div class="h21-booking-rating_text">{{ hotel.providerRating.description }}</div>
+                  <div class="h21-booking-rating_counter">{{ hotel.providerRating.rating }}</div>
+                </div>
+              </div>
+            </div>
+            <div class="row __text-right __color-gray __fs-xxs __mb-1">
+              <div class="col-6">Check-in:</div>
+              <div class="col-6">Check-out:</div>
+            </div>
+            <div class="row __text-right __color-accent">
+              <div class="col-6">from {{ '15:00' }} – {{ '20:00' }}</div>
+              <div class="col-6">until {{ '9:00' }} – {{ '12:00' }}</div>
+            </div>
+          </div>
+          <div class="__flex-fill">
+            <img [src]="hotelImgUrl" class="c-hotel-card_map-picture" alt="" (click)="onClickImage()"/>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <mat-tab-group class="mat-tab-group__h21-style-1"
+                   [selectedIndex]="selectedTabIndex"
+                   (selectedIndexChange)="selectedTabIndex = $event">
+
+      <!-- Rooms tab -->
+      <mat-tab label="Rooms">
+        <div class="c-hotel-card_rooms-filter-toolbar __mt-3">
+          <h21-two-month-calendar #calendar
+                                  class="__mr-4"
+                                  [formFieldAppearance]="formFieldAppearance"
+                                  fromLabel="Check-in"
+                                  toLabel="Check-out"
+                                  [required]="true"
+                                  [maxRangeInDays]="30"
+                                  [isSB]="true"
+                                  [datePattern]="'dd MMM yyyy'"
+                                  [selectedFromDate]="filter.arrival"
+                                  [selectedToDate]="filter.departure"
+                                  (selectedFromDateChange)="filter.arrival = $event"
+                                  (selectedToDateChange)="filter.departure = $event">
+          </h21-two-month-calendar>
+          <div class="__flex-row __align-items-center __mr-4">
+            <span class="__fs-xs __mr-2 __nowrap">Adults per room</span>
+            <h21-counter [min]="1"
+                         [max]="9"
+                         [value]="filter.adultsPerRoom"
+                         (changed)="filter.adultsPerRoom = $event">
+            </h21-counter>
+          </div>
+          <div class="__flex-row __align-items-center __mr-4">
+            <span class="__fs-xs __mr-2 __nowrap">Amount of rooms</span>
+            <h21-counter [min]="1"
+                         [max]="6"
+                         [value]="filter.amountOfRooms"
+                         (changed)="filter.amountOfRooms = $event">
+            </h21-counter>
+          </div>
+          <button type="button" mat-flat-button color="primary" (click)="getBatchId(true)" [disabled]="sending">
+            Check availability
+          </button>
+        </div>
+
+        <h21-hotel-rooms-list [filter]="filter" [data]="hotel" [batchId]="batchId" [hotelCardMode]="true"></h21-hotel-rooms-list>
+      </mat-tab>
+
+      <!-- Hotel info tab -->
+      <mat-tab label="Hotel info">
+        <h21-hotel-info [info]="hotel"></h21-hotel-info>
+      </mat-tab>
+
+      <!-- Location tab -->
+      <mat-tab label="Location">
+        <ng-template matTabContent>
+          <h21-hotel-location [data]="hotel"></h21-hotel-location>
+        </ng-template>
+      </mat-tab>
+
+      <!-- Reviews tab -->
+<!--      <mat-tab label="Reviews">-->
+<!--        <ng-template matTabContent>-->
+<!--          <h21-in-development></h21-in-development>-->
+<!--        </ng-template>-->
+<!--      </mat-tab>-->
+    </mat-tab-group>
+  </div>
+</section>

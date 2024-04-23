@@ -1,0 +1,24 @@
+<div class="c-hotel-info" *ngIf="descriptionLoaded; else loader">
+  <div class="__mb-2">
+    <div class="row">
+      <div class="col-4" *ngFor="let item of mainFacilities; trackBy: trackByFn;">
+        <div class="__mb-2">
+          <mat-icon class="__color-accent __mr-1 __va-m __cursor-default">{{ item.icon }}</mat-icon>
+          <span class="__fs-xs">{{ item.name }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-4" *ngFor="let item of optionalFacilities; trackBy: trackByFn;">
+        <div class="c-hotel-info_option-disc __fs-xs">{{ item.name }}</div>
+      </div>
+    </div>
+  </div>
+
+  <p class="c-hotel-info_text" *ngIf="info.hotelDescription" [innerHTML]="info.hotelDescription | safeHtml"></p>
+</div>
+
+<ng-template #loader>
+  <mat-progress-bar mode="indeterminate" color="primary"></mat-progress-bar>
+</ng-template>

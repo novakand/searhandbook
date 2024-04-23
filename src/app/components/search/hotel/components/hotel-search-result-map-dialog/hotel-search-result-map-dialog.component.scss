@@ -1,0 +1,115 @@
+//----------------------------------------------------------------------------------------------------------------------
+// Hotel search result on map dialog style
+
+.c-hotel-search-result-map-dialog {
+  position: relative;
+  height: 100%;
+}
+
+.c-hotel-search-result-map-dialog_progress.mat-progress-bar {
+  position: absolute;
+  width: 100%;
+  left: 0;
+  top: 0;
+  z-index: 2;
+}
+
+.c-hotel-search-result-map-dialog_wrapper {
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+}
+
+.c-hotel-search-result-map-dialog_sidebar {
+  float: none;
+  width: 420px;
+  position: relative;
+}
+
+.c-hotel-search-result-map-dialog_sidebar-toolbar {
+  padding: 0 16px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 56px;
+  background-color: rgba(var(--foregraund-rgb), 0.04);
+
+  .mat-button {
+    .mat-icon {
+      margin-right: 4px;
+    }
+  }
+}
+
+.c-hotel-search-result-map-dialog_sidebar-content {
+  height: calc(100% - 56px);
+  box-sizing: border-box;
+  overflow: auto;
+
+  .mat-tab-group {
+    height: 100%;
+
+    .mat-tab-body-wrapper {
+      height: 100%;
+    }
+  }
+
+  .h21-search-filter_content {
+    padding: 16px;
+  }
+}
+
+.c-hotel-search-result-map-dialog_map-container {
+  flex-grow: 1;
+}
+
+.c-hotel-search-result-map-dialog_photo {
+  height: 140px;
+  background-color: rgba(var(--foregraund-rgb), 0.07);
+  position: relative;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-position: center;
+    object-fit: cover;
+  }
+
+  .h21-hotel-card_favorite-mark {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  .h21-booking-rating {
+    display: block;
+    position: absolute;
+    top: 8px;
+    right: 8px;
+  }
+}
+
+::ng-deep .c-hotel-search-result-map-dialog_close-button.mat-fab {
+  position: absolute;
+  top: -23px;
+  right: -23px;
+  z-index: 3;
+  background-color: var(--background-hex);
+  color: var(--textAccent-hex);
+}
+
+::ng-deep .hotel-search-result-map-dialog_panel {
+  .mat-dialog-container {
+    padding: 0;
+    margin: 24px;
+    height: calc(100% - 48px);
+    overflow: visible;
+  }
+
+  .h21-hotel-card_marks-wrapper {
+    margin-right: -16px;
+  }
+}

@@ -1,0 +1,85 @@
+<div class="c-trip-request-filter h21-dialog-panel"
+     #container
+     tabindex="0"
+     cdkTrapFocus
+     [@toggleSlide]="animationState"
+     (@toggleSlide.start)="onAnimation($event)"
+     (@toggleSlide.done)="onAnimation($event)">
+
+  <button mat-icon-button
+          (click)="close()"
+          class="h21-dialog-panel_close __size-l">
+    <mat-icon>close</mat-icon>
+  </button>
+
+  <div class="h21-dialog-panel_title">
+    <h2>Filter</h2>
+  </div>
+
+  <div class="h21-dialog-panel_content">
+    <form [formGroup]="form">
+      <!-- Name -->
+      <mat-form-field color="primary" class="__w-100" [appearance]="formFieldAppearance">
+        <mat-label>Name</mat-label>
+        <input type="text" matInput autocomplete="off" formControlName="name" />
+      </mat-form-field>
+
+      <!-- Departure -->
+      <mat-form-field color="primary" class="__w-100" [appearance]="formFieldAppearance">
+        <mat-label>Departure</mat-label>
+        <input type="text" matInput autocomplete="off" formControlName="departure" />
+      </mat-form-field>
+
+      <!-- Arrival -->
+      <mat-form-field color="primary" class="__w-100" [appearance]="formFieldAppearance">
+        <mat-label>Arrival</mat-label>
+        <input type="text" matInput autocomplete="off" formControlName="arrival" />
+      </mat-form-field>
+
+      <!-- City -->
+      <mat-form-field color="primary" class="__w-100" [appearance]="formFieldAppearance">
+        <mat-label>City</mat-label>
+        <input type="text" matInput autocomplete="off" formControlName="city" />
+      </mat-form-field>
+
+      <!-- Pick up -->
+      <mat-form-field color="primary" class="__w-100" [appearance]="formFieldAppearance">
+        <mat-label>Pick up</mat-label>
+        <input type="text" matInput autocomplete="off" formControlName="pickUp" />
+      </mat-form-field>
+
+      <!-- Drop off -->
+      <mat-form-field color="primary" class="__w-100" [appearance]="formFieldAppearance">
+        <mat-label>Drop off</mat-label>
+        <input type="text" matInput autocomplete="off" formControlName="dropDown" />
+      </mat-form-field>
+
+      <!-- From -->
+      <mat-form-field color="primary" class="__w-100" [appearance]="formFieldAppearance">
+        <mat-label>From</mat-label>
+        <input type="text" matInput autocomplete="off" formControlName="from" />
+      </mat-form-field>
+
+      <!-- To -->
+      <mat-form-field color="primary" class="__w-100" [appearance]="formFieldAppearance">
+        <mat-label>To</mat-label>
+        <input type="text" matInput autocomplete="off" formControlName="to" />
+      </mat-form-field>
+    </form>
+  </div>
+
+  <div class="h21-dialog-panel_actions">
+    <button type="button"
+            mat-button
+            color="primary"
+            (click)="clear()">
+      Clear filter
+    </button>
+    <button type="button"
+            mat-flat-button
+            color="primary"
+            (click)="submit()">
+      Filter
+    </button>
+  </div>
+</div>

@@ -1,0 +1,45 @@
+<mat-toolbar class="c-search-form-toolbar">
+  <mat-toolbar-row>
+    <div class="c-search-form-toolbar_half-space">
+      <button type="button"
+              mat-button
+              class="c-search-form-toolbar_travelers-btn"
+              [disabled]="!selectedTravelers.length"
+              (click)="openTravelersListDialog(viewModeType.View)">
+        <span>Travellers</span>
+        <mat-icon class="__size-s __ml-1">visibility</mat-icon>
+      </button>
+      <div class="w-spacer"></div>
+      <h21-counter class="c-search-form-toolbar_counter"
+                   [min]="0"
+                   [max]="99"
+                   [value]="selectedTravelers.length"
+                   [increaseOnlyProgrammatically]="true"
+                   [reduceOnlyProgrammatically]="true"
+                   (reduced)="openTravelersListDialog(viewModeType.Edit)"
+                   (increased)="onOpenSelectTravelersDialog()"></h21-counter>
+    </div>
+    <div class="c-search-form-toolbar_middle-spacer">&nbsp;</div>
+    <div class="c-search-form-toolbar_half-space">
+      <div *ngIf="invalid"
+           class="c-search-form-toolbar_hint"
+           [class.c-search-form-toolbar_hint__error]="hasError">
+        {{ hint }}
+      </div>
+
+      <div *ngIf="bookerVisibility && booker" class="c-search-form-toolbar_booker">
+        <span>Booker</span>
+        <button type="button"
+                mat-button
+                class="c-search-form-toolbar_booker-button"
+                color="primary"
+                (click)="openSelectBookerDialog()">
+          <div class="c-search-form-toolbar_booker-button-content">
+            <span>{{ booker.firstName }} {{ booker.lastName }}</span>
+            <mat-icon class="__size-s">edit</mat-icon>
+          </div>
+        </button>
+      </div>
+    </div>
+  </mat-toolbar-row>
+</mat-toolbar>

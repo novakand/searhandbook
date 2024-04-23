@@ -1,0 +1,89 @@
+//----------------------------------------------------------------------------------------------------------------------
+// Search history component style
+
+$air-color: #0044d6;
+$transfer-color: #ffa800;
+$train-color: #000;
+$hotel-color: #1e9a50;
+
+.c-search-history {
+  height: 100%;
+  position: relative;
+  width: 600px;
+}
+
+.c-search-history_progress.mat-progress-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+.c-search-history_wrapper {
+  box-sizing: border-box;
+  padding: 24px;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.c-search-history_item {
+  border: 1px solid rgba(var(--textAccent-rgb), 0.39);
+  border-radius: 3px;
+  box-sizing: border-box;
+  font-size: 13px;
+  padding: 16px;
+  transition: all 120ms;
+  cursor: pointer;
+  position: relative;
+
+  &:not(:last-of-type) {
+    margin-bottom: 24px;
+  }
+
+  &:focus,
+  &:hover {
+    border-color: var(--primary-hex);
+    box-shadow: 0 2px 8px rgba(var(--primary-rgb), 0.2);
+  }
+}
+
+.c-search-history_type-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  color: white;
+  background-color: var(--accent-hex);
+  display: inline-block;
+
+  &.c-search-history_type-icon__air {
+    background-color: $air-color;
+  }
+
+  &.c-search-history_type-icon__hotel {
+    background-color: $hotel-color;
+  }
+
+  &.c-search-history_type-icon__transfer {
+    background-color: $transfer-color;
+  }
+
+  .mat-icon {
+    margin: 4px;
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
+    line-height: 16px;
+  }
+}
+
+@media (max-width: 1100px) {
+  .c-search-history {
+    width: 400px;
+  }
+
+  .c-search-history_type-icon {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+  }
+}

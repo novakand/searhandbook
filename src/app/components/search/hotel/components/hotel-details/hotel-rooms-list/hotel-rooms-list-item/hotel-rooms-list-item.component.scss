@@ -1,0 +1,123 @@
+//----------------------------------------------------------------------------------------------------------------------
+// Hotel rooms list item component style
+
+.c-hotel-rooms-list-item {
+  padding: 24px;
+  border-bottom: 1px solid rgba(var(--textAccent-rgb), 0.39);
+  border-left: 3px solid rgba(var(--foregraund-rgb), 0.14);
+}
+
+h21-hotel-rooms-list-item:last-of-type .c-hotel-rooms-list-item {
+  border-bottom: none;
+}
+
+.c-hotel-rooms-list-item_flex {
+  display: flex;
+}
+
+.c-hotel-rooms-list-item_provider {
+  flex: none;
+  width: 170px;
+
+  img {
+    max-width: 110px;
+    max-height: 32px;
+    display: block;
+    margin-bottom: 16px;
+  }
+}
+
+.c-hotel-rooms-list-item_provider-logo {
+  max-width: 60%;
+}
+
+.c-hotel-rooms-list-item_description {
+  flex-grow: 1;
+  padding: 0 16px;
+
+  h3 {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: normal;
+    color: var(--textAccent-hex) !important;
+    margin-bottom: 16px;
+  }
+
+  p {
+    font-size: 13px;
+    color: rgba(var(--foregraund-rgb), 0.46);
+    line-height: 1.4em;
+    margin: 0;
+  }
+}
+
+.c-hotel-rooms-list-item_price {
+  flex: none;
+  width: 240px;
+}
+
+.c-hotel-rooms-list-item_price-value {
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(var(--foregraund-rgb), 0.46);
+  text-align: right;
+}
+
+.c-hotel-rooms-list-item_base-price {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--textAccent-hex);
+  text-align: right;
+}
+
+.c-hotel-rooms-list-item_booking-button.mat-flat-button {
+  min-width: 120px;
+
+  &[disabled] {
+    opacity: 1 !important;
+    background-color: rgba(var(--textAccent-rgb), 0.1);
+    color: var(--warn-hex);
+  }
+}
+
+@keyframes grow-animation {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.c-hotel-rooms-list-item_cancellation-policy-loader {
+  color: rgba(var(--foregraund-rgb), 0.46);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  .c-hotel-rooms-list-item_cancellation-policy-loader-indicator {
+    flex: none;
+    margin-right: 4px;
+    height: 16px;
+    width: 16px;
+    background-color: currentColor;
+    display: block;
+    border-radius: 50%;
+    opacity: 0;
+    animation: grow-animation .75s linear infinite;
+  }
+
+  .c-hotel-rooms-list-item_cancellation-policy-loader-text {
+    font-size: 13px;
+    line-height: 18px !important;
+  }
+}
+
+.non-refundable-tooltip.mat-tooltip {
+  font-size: 14px;
+  font-weight: 500;
+  margin-left: -20px;
+  max-width: 200px;
+  text-align: center;
+  padding: 16px;
+}

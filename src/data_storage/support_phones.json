@@ -1,0 +1,82 @@
+[
+	{
+		"countryCode" : "AT",
+		"flagUrl" : "./assets/flags/at.svg",
+      "phoneNumber": "0800291753"
+	},
+	{
+		"countryCode" : "AU",
+		"flagUrl" : "./assets/flags/au.svg",
+      "phoneNumber": "1800584228"
+	},
+	{
+		"countryCode" : "BE",
+		"flagUrl" : "./assets/flags/be.svg",
+      "phoneNumber": "080074791"
+	},
+	{
+		"countryCode" : "CA",
+		"flagUrl" : "./assets/flags/ca.svg",
+      "phoneNumber": "18887457295"
+	},
+	{
+		"countryCode" : "CH",
+		"flagUrl" : "./assets/flags/ch.svg",
+      "phoneNumber": "0800837789"
+	},
+	{
+		"countryCode" : "CZ",
+		"flagUrl" : "./assets/flags/cz.svg",
+      "phoneNumber": "800142415"
+	},
+	{
+		"countryCode" : "ES",
+		"flagUrl" : "./assets/flags/es.svg",
+      "phoneNumber": "900984987"
+	},
+	{
+		"countryCode" : "FR",
+		"flagUrl" : "./assets/flags/fr.svg",
+      "phoneNumber": "0800915006"
+	},
+	{
+		"countryCode" : "IT",
+		"flagUrl" : "./assets/flags/it.svg",
+      "phoneNumber": "800795960"
+	},
+	{
+		"countryCode" : "LU",
+		"flagUrl" : "./assets/flags/lu.svg",
+      "phoneNumber": "80026467"
+	},
+	{
+		"countryCode" : "NL",
+		"flagUrl" : "./assets/flags/nl.svg",
+		"phoneNumber" : "0206711913"
+	},
+	{
+		"countryCode" : "PL",
+		"flagUrl" : "./assets/flags/pl.svg",
+      "phoneNumber": "008004911692"
+	},
+	{
+		"countryCode" : "RU",
+		"flagUrl" : "./assets/flags/ru.svg",
+      "phoneNumber": "74956642371"
+	},
+	{
+		"countryCode" : "UK",
+		"flagUrl" : "./assets/flags/gb.svg",
+      "phoneNumber": "08081011546"
+	},
+	{
+		"countryCode" : "US",
+		"flagUrl" : "./assets/flags/us.svg",
+      "phoneNumber": "18887457295"
+	},
+	{
+		"countryCode" : "ZA",
+		"flagUrl" : "./assets/flags/za.svg",
+      "phoneNumber": "0800984130"
+	}
+]

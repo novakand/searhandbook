@@ -1,0 +1,96 @@
+<div class="c-hotel-favorites">
+  <mat-progress-bar *ngIf="inProgress"
+                    mode="indeterminate"
+                    color="primary"
+                    class="c-hotel-favorites_progress">
+  </mat-progress-bar>
+
+  <div class="c-hotel-favorites_wrapper">
+
+    <mat-form-field [appearance]="'outline'" color="primary" class="__w-100">
+      <mat-label>Enter hotel name or address</mat-label>
+      <input type="text" matInput autocomplete="off" [formControl]="destinationCtrl" placeholder="">
+      <mat-icon matSuffix *ngIf="!inProgress">search</mat-icon>
+      <mat-icon matSuffix *ngIf="inProgress" class="progress-indicator-icon">sync</mat-icon>
+    </mat-form-field>
+
+    <ng-container *ngIf="inProgress || noProgress">
+      <h21-items-list-loader [small]="true" [showNoResult]="noProgress"></h21-items-list-loader>
+    </ng-container>
+
+    <ng-container *ngIf="favorites$ | async as favorites">
+      <ng-container *ngIf="!inProgress && !noProgress">
+        <div class="h21-hotel-card" *ngFor="let item of favorites; trackBy: trackByFn;"
+             (mouseenter)="animateFavorite(item.id, animateType.poi)" (mouseleave)="animateFavorite(item.id, null)">
+          <div [ngClass]="{ '__pa-2 __position-relative': !tabletMode }">
+            <div [ngClass]="{ '__flex-row': !tabletMode }">
+              <div class="h21-hotel-card_flex-photo h21-hotel-card_flex-photo__mh-150">
+                <ng-container *ngIf="item.hotelGeneralInfo.smallImage && item.hotelGeneralInfo?.smallImage.fileUrl; else defaultImg">
+                  <img [src]="item.hotelGeneralInfo?.smallImage.fileUrl" alt=""/>
+                </ng-container>
+                <button mat-icon-button class="h21-hotel-card_favorite-mark __is-active"
+                        (click)="cancelFavoriteState(item.hotelGeneralInfo.id, destinationCtrl)">
+                  <mat-icon>favorite</mat-icon>
+                </button>
+                <div class="h21-booking-rating"
+                     *ngIf="tabletMode && item.hotelGeneralInfo?.providerRating">
+                  <div class="h21-booking-rating_counter">
+                    {{ item.hotelGeneralInfo.providerRating.rating }}
+                  </div>
+                </div>
+              </div>
+              <div class="__position-relative" [ngClass]="{ '__flex-fill': !tabletMode, '__pa-2': tabletMode }">
+                <div class="__flex-row __mb-1 align-items-center">
+                  <h3 class="__fs-xs __color-accent __mb-0 __fw-medium __line-height-normal">
+                    {{ item.hotelGeneralInfo?.hotelGeneralInfoLanguages[0].name }}
+                  </h3>
+                  <div class="w-spacer"></div>
+                  <h21-rate size="s" class="h21-hotel-card_rating __flex-none"
+                            *ngIf="item.hotelGeneralInfo?.ratings?.starRating"
+                            [rate]="item.hotelGeneralInfo?.ratings?.starRating">
+                  </h21-rate>
+                </div>
+                <div class="h21-hotel-card_location" [ngClass]="{ '__mb-2': !tabletMode, '__mb-1': tabletMode }">
+                  <mat-icon>location_on</mat-icon>
+                  <p>{{ item.hotelGeneralInfo?.hotelGeneralInfoLanguages[0].address }}</p>
+                </div>
+                <div class="__flex-row __align-items-center" *ngIf="item.hotelGeneralInfo?.ratings">
+                  <div class="h21-hotel-card_ecology-state">
+                    <ng-container *ngIf="item.hotelGeneralInfo?.ratings?.ecoLabel">
+                      <ng-container *ngIf="item.hotelGeneralInfo?.ratings?.ecoLabel?.stayGreenCheck">
+                        <mat-icon class="ecology-green"
+                                  *ngIf="item.hotelGeneralInfo?.ratings?.ecoLabel?.stayGreenCheck && validateStayGreenCheck(item.hotelGeneralInfo.ratings.ecoLabel.stayGreenCheck)"
+                                  [svgIcon]="'quatrefoil_' + item.hotelGeneralInfo.ratings.ecoLabel.stayGreenCheck">
+                        </mat-icon>
+                      </ng-container>
+                      <ng-container *ngIf="item.hotelGeneralInfo?.ratings?.ecoLabel?.carbonFootprintCode">
+                        <ng-container [ngSwitch]="item.hotelGeneralInfo?.ratings?.ecoLabel?.carbonFootprintCode">
+                          <mat-icon *ngSwitchCase="carbonFootprintTypes.green" class="ecology-green" svgIcon="footprint"></mat-icon>
+                          <mat-icon *ngSwitchCase="carbonFootprintTypes.white" class="ecology-white" svgIcon="footprint_outline"></mat-icon>
+                        </ng-container>
+                      </ng-container>
+                      <span>
+                        <ng-container *ngIf="item.hotelGeneralInfo?.ratings?.ecoLabel?.carbonFootprintCo2">
+                          {{ item.hotelGeneralInfo?.ratings?.ecoLabel.carbonFootprintCo2 }} kg <b>CO2</b>
+                        </ng-container>
+                      </span>
+                    </ng-container>
+                  </div>
+                  <div class="w-spacer"></div>
+                  <div class="h21-booking-rating" *ngIf="!tabletMode && item.hotelGeneralInfo?.providerRating">
+                    <div class="h21-booking-rating_text">{{ item.hotelGeneralInfo.providerRating.description }}</div>
+                    <div class="h21-booking-rating_counter">{{ item.hotelGeneralInfo.providerRating.rating }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </ng-container>
+  </div>
+</div>
+
+<ng-template #defaultImg>
+  <img src="./assets/img/hotel-none-photo.svg" alt=""/>
+</ng-template>

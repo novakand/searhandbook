@@ -1,0 +1,120 @@
+<div class="c-bookings-order-hotel-details">
+  <div class="row">
+    <div class="col-6">
+      <!-- Provider -->
+      <ng-container [ngTemplateOutlet]="textPropertyRow"
+                    [ngTemplateOutletContext]="{ label: 'Provider', value: order.providerName }"></ng-container>
+
+      <!-- Provider -->
+      <div class="row no-gutters __mb-2">
+        <div class="col-5 __color-gray">Hotel name</div>
+        <div class="col-7">{{ order.details.hotelName }}</div>
+      </div>
+
+      <!-- Provider -->
+      <div class="row no-gutters __mb-2 __align-items-center">
+        <div class="col-5 __color-gray">Hotel rating</div>
+        <div class="col-7">
+          <h21-rate [rate]="order.details.rating"></h21-rate>
+        </div>
+      </div>
+
+      <!-- Address -->
+      <ng-container [ngTemplateOutlet]="textPropertyRow"
+                    [ngTemplateOutletContext]="{ label: 'Address', value: order.details.address }"></ng-container>
+    </div>
+    <div class="col-6">
+      <!-- Check-in -->
+      <ng-container [ngTemplateOutlet]="datePropertyRow"
+                    [ngTemplateOutletContext]="{ label: 'Check-in', value: order.arrivalDate }"></ng-container>
+
+      <!-- Check-out -->
+      <ng-container [ngTemplateOutlet]="datePropertyRow"
+                    [ngTemplateOutletContext]="{ label: 'Check-out', value: order.departureDate }"></ng-container>
+
+      <!-- Nights  -->
+      <ng-container [ngTemplateOutlet]="textPropertyRow"
+                    [ngTemplateOutletContext]="{ label: 'Nights', value: order.details.nights }"></ng-container>
+
+      <!-- Amount of rooms -->
+      <ng-container [ngTemplateOutlet]="textPropertyRow"
+                    [ngTemplateOutletContext]="{ label: 'Amount of rooms', value: order.details.roomsAmount }"></ng-container>
+
+      <!-- Adults per room -->
+<!--      <ng-container [ngTemplateOutlet]="textPropertyRow"-->
+<!--                    [ngTemplateOutletContext]="{ label: 'Adults per room', value: order.details.adultsPerRoom }"></ng-container>-->
+        <div class="row no-gutters __mb-2">
+          <div class="col-5 __color-gray">Adults per room</div>
+          <div class="col-7">{{ order.travelerLinks.length / order.details.roomsAmount }}</div>
+        </div>
+
+      <!-- Children -->
+<!--      <ng-container [ngTemplateOutlet]="textPropertyRow"-->
+<!--                    [ngTemplateOutletContext]="{ label: 'Children', value: order.details.children }"></ng-container>-->
+    </div>
+  </div>
+
+  <mat-divider class="h21-profile-card_separator"></mat-divider>
+
+  <!-- Room description -->
+  <div class="row __mb-3">
+    <div class="col-3 __color-gray">Room type</div>
+    <div class="col-9">{{ order.details.description }}</div>
+  </div>
+
+  <!-- Rate -->
+  <div class="row __mb-3">
+    <div class="col-3 __color-gray">Rate type</div>
+    <div class="col-9" [innerHTML]="order.details.rateType | safeHtml"></div>
+  </div>
+
+  <!-- Meals -->
+  <div class="row __mb-3" *ngIf="order.details.meals?.length">
+    <div class="col-3 __color-gray">Meals</div>
+    <div class="col-9">{{ order.details.meals }}</div>
+  </div>
+
+  <!-- Cancellation policy -->
+  <div class="row __mb-3">
+    <div class="col-3 __color-gray">Cancellation policy</div>
+    <div class="col-9">{{ order.details.cancellationTerm }}</div>
+  </div>
+
+  <!-- Message -->
+  <div class="row __mb-3" *ngIf="order.details.comment">
+    <div class="col-3 __color-gray">Message</div>
+    <div class="col-9">{{ order.details.comment }}</div>
+  </div>
+
+  <!-- Extras -->
+<!--  <div class="row __mb-3">-->
+<!--    <div class="col-3 __color-gray">Extras</div>-->
+<!--    <div class="col-9">-->
+<!--      <mat-chip-list *ngIf="order.details.extras?.length > 0" [multiple]="true" [selectable]="false" class="h21-chip-list">-->
+<!--        <mat-chip *ngFor="let item of order.details.extras; trackBy: trackByFn;"-->
+<!--                  class="h21-chip"-->
+<!--                  color="primary"-->
+<!--                  [selectable]="false"-->
+<!--                  [selected]="true">-->
+<!--          {{ item }}-->
+<!--        </mat-chip>-->
+<!--      </mat-chip-list>-->
+<!--    </div>-->
+<!--  </div>-->
+</div>
+
+<!-- Text row template -->
+<ng-template #textPropertyRow let-label="label" let-value="value">
+  <div class="row no-gutters __mb-2">
+    <div class="col-5 __color-gray">{{ label }}</div>
+    <div class="col-7">{{ value }}</div>
+  </div>
+</ng-template>
+
+<!-- Date row template -->
+<ng-template #datePropertyRow let-label="label" let-value="value">
+  <div class="row no-gutters __mb-2">
+    <div class="col-5 __color-gray">{{ label }}</div>
+    <div class="col-7">{{ value | date:'dd MMM yyyy' }}</div>
+  </div>
+</ng-template>

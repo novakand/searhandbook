@@ -1,0 +1,490 @@
+<ng-container *ngIf="inProgress || noProgress">
+  <h21-table-loader [showNoResult]="noProgress"></h21-table-loader>
+</ng-container>
+
+<ng-container *ngIf="!inProgress && !noProgress">
+  <mat-table [dataSource]="dataSource" class="h21-table sb-bookings-table" [multiTemplateDataRows]="true">
+    <!-- Selected -->
+<!--    <ng-container matColumnDef="selected">-->
+<!--      <mat-header-cell *matHeaderCellDef class="sb-bookings-table_cell-30 __pa-0 __justify-content-center __overflow-visible">-->
+<!--        <mat-checkbox color="primary" [checked]="isAllSelected()" (change)="selectAll($event.checked)"></mat-checkbox>-->
+<!--      </mat-header-cell>-->
+<!--    </ng-container>-->
+
+    <!-- Cancellation policy mark -->
+    <ng-container matColumnDef="cancellationMark">
+      <mat-header-cell *matHeaderCellDef class="sb-bookings-table_cell-30">&nbsp;</mat-header-cell>
+    </ng-container>
+
+    <!-- Type -->
+    <ng-container matColumnDef="typeName">
+      <mat-header-cell *matHeaderCellDef class="sb-bookings-table_cell-50 __justify-content-center">Type</mat-header-cell>
+    </ng-container>
+
+    <!-- Order number -->
+    <ng-container matColumnDef="viewOrderNumber">
+      <mat-header-cell *matHeaderCellDef>Order number</mat-header-cell>
+    </ng-container>
+
+    <!-- Invoice number  -->
+    <ng-container matColumnDef="invoiceNumber">
+      <mat-header-cell *matHeaderCellDef>Invoice number</mat-header-cell>
+    </ng-container>
+
+    <!-- Booking code  -->
+    <ng-container matColumnDef="bookingCode">
+      <mat-header-cell *matHeaderCellDef>Booking code</mat-header-cell>
+    </ng-container>
+
+    <!-- Booking confirmation  -->
+    <ng-container matColumnDef="providerConfirmation">
+      <mat-header-cell *matHeaderCellDef>Provider confirmation</mat-header-cell>
+    </ng-container>
+
+    <!-- Customer name -->
+    <ng-container matColumnDef="customerName">
+      <mat-header-cell *matHeaderCellDef>Customer</mat-header-cell>
+    </ng-container>
+
+    <!-- Customer company -->
+    <ng-container matColumnDef="customerCompanyName">
+      <mat-header-cell *matHeaderCellDef>Customer company</mat-header-cell>
+    </ng-container>
+
+    <!-- Booker name -->
+    <ng-container matColumnDef="bookerId">
+      <mat-header-cell *matHeaderCellDef>Booker</mat-header-cell>
+    </ng-container>
+
+    <!-- Booker email -->
+    <ng-container matColumnDef="createUserName">
+      <mat-header-cell *matHeaderCellDef>Booker email</mat-header-cell>
+    </ng-container>
+
+    <!-- Company -->
+    <ng-container matColumnDef="companyName">
+      <mat-header-cell *matHeaderCellDef>Company</mat-header-cell>
+    </ng-container>
+
+    <!-- Trip name -->
+    <ng-container matColumnDef="tripName">
+      <mat-header-cell *matHeaderCellDef>Trip name</mat-header-cell>
+    </ng-container>
+
+    <!-- Receiving -->
+    <ng-container matColumnDef="orderPlacedDate">
+      <mat-header-cell *matHeaderCellDef>Receiving</mat-header-cell>
+    </ng-container>
+
+    <!-- Arrival -->
+    <ng-container matColumnDef="arrivalDate">
+      <mat-header-cell *matHeaderCellDef>Arrival</mat-header-cell>
+    </ng-container>
+
+    <!-- Departure -->
+    <ng-container matColumnDef="departureDate">
+      <mat-header-cell *matHeaderCellDef>Departure</mat-header-cell>
+    </ng-container>
+
+    <!-- Nights -->
+    <ng-container matColumnDef="nights">
+      <mat-header-cell *matHeaderCellDef>Nights</mat-header-cell>
+    </ng-container>
+
+    <!-- Order status -->
+    <ng-container matColumnDef="orderStateName">
+      <mat-header-cell *matHeaderCellDef>Order status</mat-header-cell>
+    </ng-container>
+
+    <!-- Payment status -->
+    <ng-container matColumnDef="paymentStateName">
+      <mat-header-cell *matHeaderCellDef>Payment status</mat-header-cell>
+    </ng-container>
+
+    <!-- Order total rate -->
+    <ng-container matColumnDef="finalCost">
+      <mat-header-cell *matHeaderCellDef class="sb-bookings-table_cell-160">Order total rate</mat-header-cell>
+    </ng-container>
+
+    <!-- Supplier -->
+    <ng-container matColumnDef="providerCode">
+      <mat-header-cell *matHeaderCellDef>Supplier</mat-header-cell>
+    </ng-container>
+
+    <!-- Internal tour number name -->
+    <ng-container matColumnDef="tourOperatorCode">
+      <mat-header-cell *matHeaderCellDef>Internal tour number</mat-header-cell>
+    </ng-container>
+
+    <!-- Internal tour operator name -->
+    <ng-container matColumnDef="tourOperatorName">
+      <mat-header-cell *matHeaderCellDef>Internal tour operator</mat-header-cell>
+    </ng-container>
+
+    <!-- Payment form-->
+    <ng-container matColumnDef="paymentForm">
+      <mat-header-cell *matHeaderCellDef>Payment form</mat-header-cell>
+    </ng-container>
+
+    <!-- Pay account number -->
+    <ng-container matColumnDef="payAccountNumber">
+      <mat-header-cell *matHeaderCellDef>Account number</mat-header-cell>
+    </ng-container>
+
+    <!-- Horse21pro ID -->
+    <ng-container matColumnDef="H21ProLogin">
+      <mat-header-cell *matHeaderCellDef>Horse21pro ID</mat-header-cell>
+    </ng-container>
+
+    <!-- PNR -->
+    <ng-container matColumnDef="pnr">
+      <mat-header-cell *matHeaderCellDef>PNR</mat-header-cell>
+    </ng-container>
+
+    <!-- Actions -->
+    <ng-container matColumnDef="actions">
+      <mat-header-cell *matHeaderCellDef class="sb-bookings-table_cell-100">&nbsp;</mat-header-cell>
+    </ng-container>
+
+    <!-- Summary row -->
+    <ng-container matColumnDef="summary">
+      <mat-cell *matCellDef="let el" class="sb-bookings-table_trip-summary-cell">
+        <div class="sb-bookings-table_trip-summary-cell-inner">
+          <button type="button"
+                  mat-icon-button
+                  class="sb-bookings-table_trip-expand-button"
+                  [class.__is-expanded]="isTripExpanded(el.id)"
+                  (click)="toggleTripExpanded(el.id)">
+            <mat-icon>chevron_right</mat-icon>
+          </button>
+          <div class="__mr-2">#{{ el.id }}</div>
+          <div class="sb-bookings-table_trip-name">
+            <ng-container *ngIf="el.name?.length > 50">
+              <span [matTooltip]="el.name">{{ el.name | truncate:50 }}</span>
+            </ng-container>
+            <ng-container *ngIf="el.name?.length <= 50">
+              <span>{{ el.name }}</span>
+            </ng-container>
+          </div>
+          <div class="__nowrap">{{ el.orderItems.length }} Item(s)</div>
+          <div class="w-spacer">&nbsp;</div>
+          <div class="__nowrap">
+            <button type="button" mat-icon-button (click)="openTrip(el.id)">
+              <mat-icon>visibility</mat-icon>
+            </button>
+            <button type="button" mat-icon-button (click)="openEditDialog(el)">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button type="button" mat-icon-button (click)="openShareTripDialogue(el)">
+              <mat-icon>share</mat-icon>
+            </button>
+          </div>
+        </div>
+      </mat-cell>
+    </ng-container>
+
+    <!-- Expanded trip details -->
+    <ng-container matColumnDef="tripDetails">
+      <mat-cell *matCellDef="let el" class="h21-table_expanded-row-detail">
+        <div class="h21-table_expanded-detail" [class.__is-active]="isTripExpanded(el.id)">
+          <ng-container [ngTemplateOutlet]="ordersTable" [ngTemplateOutletContext]="{ data: el.orderItems }"></ng-container>
+        </div>
+      </mat-cell>
+    </ng-container>
+
+    <!-- Rows -->
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: [ 'summary' ]"></mat-row>
+    <mat-row *matRowDef="let row; columns: ['tripDetails']"
+             class="h21-table_expanded-row-detail"
+             [class.__is-active]="isTripExpanded(row.id)">
+    </mat-row>
+  </mat-table>
+
+  <!-- Paginator -->
+  <mat-paginator
+    [pageIndex]="pageIndex"
+    [pageSizeOptions]="[10, 20, 50, 100]"
+    [pageSize]="pageSize"
+    [length]="totalCount"
+    (page)="pageChange($event)"
+    [showFirstLastButtons]="true"
+    class="h21-paginator">
+  </mat-paginator>
+</ng-container>
+
+
+
+<!-- Context menu -->
+<!--<mat-menu #orderStatesMenu="matMenu" class="c-orders-list_context-menu-panel">-->
+<!--  <ng-template matMenuContent let-order="order">-->
+<!--    <ng-container *ngFor="let item of orderStates; trackBy: trackByFn">-->
+<!--      <button mat-menu-item-->
+<!--              *ngIf="order.orderStateId !== item.id"-->
+<!--              (click)="changeOrderState(order.id, item.id)">-->
+<!--        <b>{{ item.name }}</b> ({{ item.description }})-->
+<!--      </button>-->
+<!--    </ng-container>-->
+<!--  </ng-template>-->
+<!--</mat-menu>-->
+
+<mat-menu #contextMenu="matMenu"
+          xPosition="before"
+          yPosition="below">
+  <ng-template matMenuContent let-booking="booking">
+    <button *ngIf="booking.voucherReportId" mat-menu-item (click)="onDownloadDocument(documentType.Voucher, booking)">
+      <mat-icon>insert_drive_file</mat-icon>
+      <span>Voucher</span>
+    </button>
+    <button *ngIf="booking.billDetailsReportId && booking.bookingType === bookingTypes.Transfer" mat-menu-item (click)="onDownloadDocument(documentType.BillingDetails, booking)">
+      <mat-icon>payment</mat-icon>
+      <span>Billing details</span>
+    </button>
+    <button mat-menu-item (click)="onCancel(booking)" [disabled]="!booking.canCancel">
+      <mat-icon>cancel</mat-icon>
+      <span>Cancel</span>
+    </button>
+  </ng-template>
+</mat-menu>
+
+<mat-menu #benchmarkingMenu="matMenu"
+          class="sb-bookings_benchmarking-menu-panel"
+          xPosition="before"
+          yPosition="below">
+  <ng-template matMenuContent
+               let-orderRate="orderRate"
+               let-booking="booking"
+               let-bar="bar">
+    <div (click)="$event.stopPropagation()">
+      <div class="sb-bookings_benchmarking-caption">
+        Benchmarking
+      </div>
+      <div class="sb-bookings_benchmarking-wrapper" (click)="$event.stopPropagation();">
+        <div class="sb-bookings_benchmarking-item">
+          <div class="__color-gray __fs-xxs">Order rate</div>
+          <div class="__color-accent __fs-xs __fw-medium">{{ orderRate }} EUR</div>
+        </div>
+        <div class="sb-bookings_benchmarking-item">
+          <div class="__color-gray __fs-xxs">Booking.com</div>
+          <div class="__color-accent __fs-xs __fw-medium">{{ booking }} EUR</div>
+        </div>
+        <div class="sb-bookings_benchmarking-item">
+          <div class="__color-gray __fs-xxs">BAR</div>
+          <div class="__color-accent __fs-xs __fw-medium">{{ bar }} EUR</div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</mat-menu>
+
+
+<ng-template #ordersTable let-data="data">
+  <mat-table [dataSource]="data" class="h21-table sb-bookings-table">
+    <!-- Selected -->
+<!--    <ng-container matColumnDef="selected">-->
+<!--      <mat-cell *matCellDef="let el" class="sb-bookings-table_cell-30 __pa-0 __justify-content-center __overflow-visible">-->
+<!--        <mat-checkbox color="primary" [checked]="isOrderSelected(el.id)"-->
+<!--                      (change)="selectOrder(el.id, $event.checked)">-->
+<!--        </mat-checkbox>-->
+<!--      </mat-cell>-->
+<!--    </ng-container>-->
+
+    <!-- Cancellation policy mark -->
+    <ng-container matColumnDef="cancellationMark">
+      <mat-cell *matCellDef="let el" class="sb-bookings-table_cell-30 __pa-0 __justify-content-center">
+        <ng-container [ngSwitch]="el.cancellationMarkState">
+          <mat-icon *ngSwitchCase="cancellationStateTypes.non" class="__size-s sb-cancellation-mark_non"
+                    matTooltip="Non-refundable booking">lens</mat-icon>
+          <mat-icon *ngSwitchCase="cancellationStateTypes.free" class="__size-s sb-cancellation-mark_free"
+                    matTooltip="Free cancel date is coming">lens</mat-icon>
+          <mat-icon *ngSwitchCase="cancellationStateTypes.penalty" class="__size-s sb-cancellation-mark_penalty"
+                    matTooltip="Cancellation with penalty">lens</mat-icon>
+        </ng-container>
+      </mat-cell>
+    </ng-container>
+
+    <!-- Type -->
+    <ng-container matColumnDef="typeName">
+      <mat-cell *matCellDef="let el" class="sb-bookings-table_cell-50 __justify-content-center">
+        <ng-container [ngSwitch]="el.bookingType">
+          <mat-icon *ngSwitchCase="bookingTypes.Air" matTooltip="Aero booking">local_airport</mat-icon>
+          <mat-icon *ngSwitchCase="bookingTypes.Hotel" matTooltip="Hotel booking">domain</mat-icon>
+          <mat-icon *ngSwitchCase="bookingTypes.Transfer" matTooltip="Transfer booking">directions_car</mat-icon>
+        </ng-container>
+      </mat-cell>
+    </ng-container>
+
+    <!-- Order number -->
+    <ng-container matColumnDef="viewOrderNumber">
+      <mat-cell *matCellDef="let el">{{ el.viewOrderNumber }}</mat-cell>
+    </ng-container>
+
+    <!-- Invoice number  -->
+    <ng-container matColumnDef="invoiceNumber">
+      <mat-cell *matCellDef="let el">{{ el.invoiceNumber }}</mat-cell>
+    </ng-container>
+
+    <!-- Booking code  -->
+    <ng-container matColumnDef="bookingCode">
+      <mat-cell *matCellDef="let el">{{ el.bookingCode }}</mat-cell>
+    </ng-container>
+
+    <!-- Provider confirmation  -->
+    <ng-container matColumnDef="providerConfirmation">
+      <mat-cell *matCellDef="let el">{{ el.providerConfirmation }}</mat-cell>
+    </ng-container>
+
+    <!-- Customer name -->
+    <ng-container matColumnDef="customerName">
+      <mat-cell *matCellDef="let el">{{ el.customerName }}</mat-cell>
+    </ng-container>
+
+    <!-- Customer company -->
+    <ng-container matColumnDef="customerCompanyName">
+      <mat-cell *matCellDef="let el">{{ el.customerCompanyName }}</mat-cell>
+    </ng-container>
+
+    <!-- Booker name -->
+    <ng-container matColumnDef="bookerId">
+      <mat-cell *matCellDef="let el">{{ el.bookerName }}</mat-cell>
+    </ng-container>
+
+    <!-- Booker email -->
+    <ng-container matColumnDef="createUserName">
+      <mat-cell *matCellDef="let el">{{ el.createUserName }}</mat-cell>
+    </ng-container>
+
+    <!-- Company -->
+    <ng-container matColumnDef="companyName">
+      <mat-cell *matCellDef="let el">{{ el.companyName }}</mat-cell>
+    </ng-container>
+
+    <!-- Trip name -->
+    <ng-container matColumnDef="tripName">
+      <mat-cell *matCellDef="let el">{{ el.tripName }}</mat-cell>
+    </ng-container>
+
+    <!-- Receiving -->
+    <ng-container matColumnDef="orderPlacedDate">
+      <mat-cell *matCellDef="let el">{{ el.orderPlacedDate | date:'dd MMM yyyy' }}</mat-cell>
+    </ng-container>
+
+    <!-- Arrival -->
+    <ng-container matColumnDef="arrivalDate">
+      <mat-cell *matCellDef="let el">{{ el.arrivalDate | date:el.dateFormat }}</mat-cell>
+    </ng-container>
+
+    <!-- Departure -->
+    <ng-container matColumnDef="departureDate">
+      <mat-cell *matCellDef="let el">{{ el.departureDate | date:'dd MMM yyyy' }}</mat-cell>
+    </ng-container>
+
+    <!-- Nights -->
+    <ng-container matColumnDef="nights">
+      <mat-cell *matCellDef="let el">{{ el.nights }}</mat-cell>
+    </ng-container>
+
+    <!-- Order status -->
+    <ng-container matColumnDef="orderStateName">
+      <mat-cell *matCellDef="let el">
+        <mat-chip-list class="h21-chip-list">
+          <mat-chip class="h21-chip"
+                    [h21OrderState]="el.orderStateName"
+                    [selectable]="false"
+                    [disableRipple]="true">
+            {{ el.orderStateName }}
+          </mat-chip>
+        </mat-chip-list>
+      </mat-cell>
+    </ng-container>
+
+    <!-- Payment status -->
+    <ng-container matColumnDef="paymentStateName">
+      <mat-cell *matCellDef="let el">
+        <mat-chip-list class="h21-chip-list">
+          <mat-chip class="h21-chip"
+                    [h21OrderState]="el.paymentStateName"
+                    [selectable]="false"
+                    [disableRipple]="true">
+            {{ el.paymentStateName }}
+          </mat-chip>
+        </mat-chip-list>
+      </mat-cell>
+    </ng-container>
+
+    <!-- Order total rate -->
+    <ng-container matColumnDef="finalCost">
+      <mat-cell *matCellDef="let el" class="sb-bookings-table_cell-160 __justify-content-between">
+        {{ el.finalCost | number: '1.2-2' }} EUR
+<!--        <button type="button"-->
+<!--                mat-flat-button color="primary"-->
+<!--                class="__ml-1 __ph-2 __no-min-width"-->
+<!--                (click)="onRedirectToPayVision($event, el)"-->
+<!--                *ngIf="el.orderStateId === orderState.New">-->
+<!--          Pay-->
+<!--        </button>-->
+      </mat-cell>
+    </ng-container>
+
+    <!-- Supplier -->
+    <ng-container matColumnDef="providerCode">
+      <mat-cell *matCellDef="let el">
+      <span [matTooltip]="el.providerName">
+        {{ el.providerTypeCode }}
+      </span>
+      </mat-cell>
+    </ng-container>
+
+    <!-- Internal tour number name -->
+    <ng-container matColumnDef="tourOperatorCode">
+      <mat-cell *matCellDef="let el">{{ el.tourOperatorCode }}</mat-cell>
+    </ng-container>
+
+    <!-- Internal tour operator name -->
+    <ng-container matColumnDef="tourOperatorName">
+      <mat-cell *matCellDef="let el">{{ el.tourOperatorName }}</mat-cell>
+    </ng-container>
+
+    <!-- Payment form-->
+    <ng-container matColumnDef="paymentForm">
+      <mat-cell *matCellDef="let el">{{ el.paymentForm }}</mat-cell>
+    </ng-container>
+
+    <!-- Pay account number -->
+    <ng-container matColumnDef="payAccountNumber">
+      <mat-cell *matCellDef="let el">{{ el.payAccountNumber }}</mat-cell>
+    </ng-container>
+
+    <!-- Horse21pro ID -->
+    <ng-container matColumnDef="H21ProLogin">
+      <mat-cell *matCellDef="let el">{{ el.h21ProLogin }}</mat-cell>
+    </ng-container>
+
+    <!-- PNR -->
+    <ng-container matColumnDef="pnr">
+      <mat-cell *matCellDef="let el">{{ el.pnr }}</mat-cell>
+    </ng-container>
+
+    <!-- Actions -->
+    <ng-container matColumnDef="actions">
+      <mat-cell *matCellDef="let el" class="sb-bookings-table_cell-100 __pa-0 __justify-content-end sb-bookings-table_actions" (click)="$event.stopPropagation()">
+<!--        <button type="button"-->
+<!--                mat-icon-button-->
+<!--                *ngIf="bookingDictionary[el.typeId] === bookingTypes.Hotel"-->
+<!--                [matMenuTriggerFor]="benchmarkingMenu"-->
+<!--                [matMenuTriggerData]="{ orderRate: el.orderRate, booking: el.bookingCost, bar: el.barCost }">-->
+<!--          <mat-icon>bar_chart</mat-icon>-->
+<!--        </button>-->
+        <button type="button"
+                mat-icon-button
+                [matMenuTriggerFor]="contextMenu"
+                [matMenuTriggerData]="{ booking: el }">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+      </mat-cell>
+    </ng-container>
+
+    <!-- Rows -->
+    <mat-row style="cursor: pointer;" *matRowDef="let row; columns: displayedColumns" (click)="onOpenBookingDetails(row)"></mat-row>
+  </mat-table>
+</ng-template>

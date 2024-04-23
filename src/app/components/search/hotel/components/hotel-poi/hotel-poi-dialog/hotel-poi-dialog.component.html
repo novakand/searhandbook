@@ -1,0 +1,105 @@
+<div class="c-hotel-poi-dialog h21-dialog-panel __ph-2"
+     #container
+     tabindex="0"
+     cdkTrapFocus
+     [@toggleSlide]="animationState"
+     (@toggleSlide.start)="onAnimation($event)"
+     (@toggleSlide.done)="onAnimation($event)">
+
+  <mat-progress-bar *ngIf="inProgress" mode="indeterminate" color="primary" class="h21-dialog-panel_progress"></mat-progress-bar>
+
+  <button mat-icon-button (click)="close(action.CANCEL)" class="h21-dialog-panel_close __size-l">
+    <mat-icon>close</mat-icon>
+  </button>
+
+  <div class="h21-dialog-panel_title">
+    <h2>{{ title }}</h2>
+  </div>
+
+  <div class="h21-dialog-panel_content">
+    <div class="c-hotel-poi-dialog_picture-wrapper">
+      <ng-container [ngSwitch]="mode">
+        <ng-container *ngSwitchCase="viewModeTypes.Edit">
+          <ng-container *ngIf="data.location.image?.fileHash && poiImages[data.id] | async as img; else defaultImg">
+            <img *ngIf="img" [src]="img | safeResourceUrl" alt=""/>
+          </ng-container>
+        </ng-container>
+        <ng-container *ngSwitchCase="viewModeTypes.Add">
+          <img *ngIf="data.location.image?.fileUrl; else defaultImg" [src]="data.location.image?.fileUrl" alt=""/>
+        </ng-container>
+      </ng-container>
+      <ng-template #defaultImg>
+        <img [src]="'./assets/img/hotel-none-photo.svg'" alt=""/>
+      </ng-template>
+    </div>
+    <p class="__mb-1 __color-accent __fw-medium">{{ form.get('name').value }}</p>
+    <div class="h21-hotel-card_location __mb-4">
+      <mat-icon>location_on</mat-icon>
+      <div>
+        <p class="__mb-0 __color-base">{{ data.location.address }}</p>
+        <p class="__color-gray">{{ data.location.latitude }} {{ data.location.longitude }}</p>
+      </div>
+    </div>
+    <form [formGroup]="form" (submit)="onSubmit()">
+      <mat-form-field color="primary" class="__w-100 __mb-1" [appearance]="formFieldAppearance">
+        <mat-label>Name</mat-label>
+        <input type="text" matInput autocomplete="off" formControlName="name" />
+        <span matSuffix class="__pl-1 __fs-s __fw-medium __color-accent">
+          <span [class.__color-ui-warn]="form.get('name').hasError('maxlength')">
+            {{ !!form.get('name').value ? form.get('name').value.length : '0' }}
+          </span><!--
+          -->/{{ '50' }}
+        </span>
+        <mat-error *ngIf="form.get('name').hasError('required')">
+          You must enter a value
+        </mat-error>
+        <mat-error *ngIf="form.get('name').hasError('maxlength')">
+          Limits are exceeded
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field color="primary" class="__w-100 __mb-1" [appearance]="formFieldAppearance">
+        <mat-label>Comment</mat-label>
+        <input type="text" matInput autocomplete="off" formControlName="comment" />
+        <span matSuffix class="__pl-1 __fs-s __fw-medium __color-accent">
+          <span [class.__color-ui-warn]="form.get('comment').hasError('maxlength')">
+            {{ !!form.get('comment').value ? form.get('comment').value.length : '0' }}
+          </span><!--
+          -->/{{ '100' }}
+        </span>
+        <mat-error *ngIf="form.get('comment').hasError('maxlength')">
+          Limits are exceeded
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field color="primary" class="c-hotel-poi-dialog_tags-field __w-100 __mb-1" [appearance]="formFieldAppearance">
+        <mat-label>Tags</mat-label>
+        <mat-chip-list #tags class="h21-chip-list __mb-1" [disabled]="inProgress">
+          <mat-chip *ngFor="let tag of tagList; trackBy: trackByFn; let i = index;"
+                    class="h21-chip"
+                    [selectable]="true"
+                    [removable]="true"
+                    (removed)="removeTag(i)">
+            {{ tag }}
+            <mat-icon matChipRemove>cancel</mat-icon>
+          </mat-chip>
+          <input type="text" matInput autocomplete="off" placeholder="New tag ..." maxlength="50"
+                 [matChipInputFor]="tags"
+                 [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                 [matChipInputAddOnBlur]="true"
+                 (matChipInputTokenEnd)="addTag($event)"/>
+        </mat-chip-list>
+        <mat-hint>Maximum tag length - 50 characters</mat-hint>
+      </mat-form-field>
+      <div class="__ta-r">
+        <button type="button" mat-stroked-button color="primary" [disabled]="inProgress" (click)="close(action.CANCEL)">
+          Cancel
+        </button>
+        <button type="submit" mat-flat-button color="primary" class="__ml-2" [disabled]="inProgress" [ngSwitch]="mode">
+          <ng-container *ngSwitchCase="viewModeTypes.Add">Add</ng-container>
+          <ng-container *ngSwitchCase="viewModeTypes.Edit">Save</ng-container>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,137 @@
+<div class="c-select-traveler-dialog h21-dialog-panel"
+     #container
+     tabindex="0"
+     cdkTrapFocus
+     [@toggleSlide]="animationState"
+     (@toggleSlide.start)="onAnimation($event)"
+     (@toggleSlide.done)="onAnimation($event)">
+
+  <button mat-icon-button
+          (click)="close()"
+          class="h21-dialog-panel_close __text-color-white __size-l">
+    <mat-icon>close</mat-icon>
+  </button>
+
+  <div class="h21-dialog-panel_header h21-dialog-panel_header__primary">
+    <h2 class="__fw-light __text-color-white">Select traveller</h2>
+    <mat-form-field class="h21-form-field-plain __w-100" floatLabel="never">
+      <mat-label>Enter a traveller name or a company</mat-label>
+      <input type="text" #searchText matInput autocomplete="off" [disabled]="formVisibility">
+      <button type="button" mat-icon-button matSuffix [disabled]="formVisibility" (click)="search(searchText.value)">
+        <mat-icon>search</mat-icon>
+      </button>
+      <mat-hint *ngIf="showEnterHint">Press "Enter" to search</mat-hint>
+    </mat-form-field>
+  </div>
+
+  <div class="h21-dialog-panel_content"
+       infiniteScroll
+       [scrollWindow]="false"
+       [infiniteScrollThrottle]="300"
+       (scrolled)="onScroll()">
+    <mat-progress-bar *ngIf="inProgress" mode="indeterminate" color="primary" class="h21-dialog-panel_progress"></mat-progress-bar>
+    <ng-container *ngIf="!formVisibility">
+      <div class="h21-dialog-panel_full-width" *ngIf="inProgress">
+        <h21-card-list-loader></h21-card-list-loader>
+      </div>
+      <div class="c-select-traveler-dialog_empty-list" *ngIf="!inProgress && noProgress">
+        <h21-card-list-loader [showNoResult]="true"></h21-card-list-loader>
+        <button mat-flat-button color="primary" (click)="showForm()" *ngIf="isAdmin$ | async">Add new traveller</button>
+      </div>
+
+      <mat-list class="c-select-traveler-dialog_cards-list" *ngIf="!inProgress && !noProgress">
+        <mat-list-item *ngFor="let item of travelers; trackBy: trackByFn" tabindex="-1">
+          <mat-card #card
+                    tabindex="0"
+                    class="c-select-traveler-dialog_card"
+                    [ngClass]="{ '__disableRemove': disableRemove, '__is-selected': isSelected(item) }"
+                    (keydown.enter)="selectionToggle(item, $event)"
+                    (click)="selectionToggle(item, $event)">
+            <mat-card-header>
+              <div mat-card-avatar>
+                <h21-profile-image [firstName]="item.firstName"
+                                   [lastName]="item.lastName"
+                                   [fileHash]="item.photoFileHash"
+                                   size='medium'>
+                </h21-profile-image>
+                <div class="c-select-traveler-dialog_card-selection-mark"></div>
+              </div>
+              <mat-card-title>{{ item | h21ConcatFields:['firstName', 'middleName', 'lastName'] }}</mat-card-title>
+              <mat-card-subtitle>{{ item.jobTitle }}</mat-card-subtitle>
+              <span class="c-select-traveler-dialog_card-additionally"
+                    [matTooltip]="item.company | getCompanyNameTooltipText"
+                    matTooltipClass="c-select-traveler-dialog_card-additionally"
+                    matTooltipPosition="before">
+                {{ item.company | getCompanyNameText }}
+                <div class="c-select-traveler-dialog_card-payment-systems">
+                  <ng-container *ngFor="let type of item.paymentTypes">
+                    <img *ngIf="type.paymentTypeCode === 'airPlus'" matTooltip="AirPlus" src="./assets/img/payment-system-airplus.svg" alt="" />
+                    <img *ngIf="type.paymentTypeCode === 'bta'" matTooltip="BTA" src="./assets/img/payment-system-bta.svg" alt="" />
+                    <img *ngIf="type.paymentTypeCode === 'creditCard'" matTooltip="Credit card" src="./assets/img/payment-system-credit-card.svg" alt="" />
+                    <img *ngIf="type.paymentTypeCode === 'bankTransfer'" matTooltip="Bank transfer" src="./assets/img/payment-system-bank-transfer.svg" alt="" />
+                  </ng-container>
+                </div>
+              </span>
+            </mat-card-header>
+          </mat-card>
+        </mat-list-item>
+      </mat-list>
+    </ng-container>
+
+    <ng-container *ngIf="formVisibility">
+      <form [formGroup]="form" class="__pv-2" (submit)="onSave(form.value)">
+        <div>
+          <ng-container [ngTemplateOutlet]="formControl" [ngTemplateOutletContext]="{name: 'firstName', label: 'First name'}"></ng-container>
+          <ng-container [ngTemplateOutlet]="formControl" [ngTemplateOutletContext]="{name: 'lastName', label: 'Last name'}"></ng-container>
+          <ng-container [ngTemplateOutlet]="formControl" [ngTemplateOutletContext]="{name: 'personalCode', label: 'Personal code'}"></ng-container>
+          <ng-container [ngTemplateOutlet]="formList"
+                        [ngTemplateOutletContext]="{name: 'nationalityCode', label: 'Nationality', list: nationalities$, isRequired: false, multi: false, key: 'code', field: 'name'}"></ng-container>
+          <ng-container [ngTemplateOutlet]="formList"
+                        [ngTemplateOutletContext]="{name: 'companyProfile', label: 'Company', list: companies$, isRequired: true, multi: false, key: null, field: 'shortName'}"></ng-container>
+
+          <mat-form-field color="primary" [appearance]="formFieldAppearance" class="__w-100 __mb-2">
+            <mat-label>Document type</mat-label>
+            <mat-select [formControl]="form.get('document').get('documentTypeId')">
+              <mat-option *ngFor="let item of documents$ | async; trackBy: trackByFn;" [value]="item.id">{{ item.name }}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="form.get('document').get('documentTypeId').hasError('required')">Please choose an document type</mat-error>
+          </mat-form-field>
+
+          <mat-form-field color="primary" [appearance]="formFieldAppearance" class="__w-100 __mb-2">
+            <mat-label>Document number</mat-label>
+            <input type="text" matInput autocomplete="off" [formControl]="form.get('document').get('documentNumber')" />
+            <mat-error *ngIf="form.get('document').get('documentNumber').hasError('required')">You must enter a value</mat-error>
+          </mat-form-field>
+
+          <ng-template #formControl let-name="name" let-label="label">
+            <mat-form-field color="primary" [appearance]="formFieldAppearance" class="__w-100 __mb-2">
+              <mat-label>{{ label }}</mat-label>
+              <input type="text" matInput autocomplete="off" [formControlName]="name"/>
+              <mat-error *ngIf="form.get(name).hasError('required')">You must enter a value</mat-error>
+            </mat-form-field>
+          </ng-template>
+
+          <ng-template #formList let-name="name" let-label="label" let-list="list" let-isRequired="isRequired" let-multi="multi" let-key="key" let-field="field">
+            <mat-form-field color="primary" [appearance]="formFieldAppearance" class="__w-100 __mb-2">
+              <mat-label>{{ label }}</mat-label>
+              <mat-select [multiple]="multi" [formControlName]="name">
+                <mat-option *ngFor="let item of list | async; trackBy: trackByFn;" [value]="key ? item[key] : item">{{ item[field] }}</mat-option>
+              </mat-select>
+              <mat-error *ngIf="form.get(name).hasError('required') && isRequired">Please choose an document type</mat-error>
+            </mat-form-field>
+          </ng-template>
+        </div>
+
+        <div class="h21-dialog-panel_actions" *ngIf="formVisibility">
+          <button type="button" mat-stroked-button color="primary" (click)="back()">
+            <mat-icon>chevron_left</mat-icon>
+            Back
+          </button>
+          <button type="submit" mat-flat-button color="primary">
+            Add new traveller
+          </button>
+        </div>
+      </form>
+    </ng-container>
+  </div>
+</div>

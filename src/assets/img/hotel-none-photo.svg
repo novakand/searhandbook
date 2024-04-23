@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="172px" height="118px" viewBox="0 0 172 118" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+    <g>
+      <rect fill="#EFEFEF" x="0" y="0" width="172" height="118"></rect>
+      <polygon fill="#C0C0C0"
+               points="36 39 36 40 37.0001068 40 36 118 156.000107 118 156.000107 53 154.000107 53 154.000107 26 150.999985 26 150.999985 19 148.999985 19 148.999985 8 140.000715 8 140.000107 -2.13162821e-14 138.000107 -2.13162821e-14 138.000107 8 137.000107 8 137.000107 -2.13162821e-14 136.000107 -2.13162821e-14 136.000107 8 131.000107 8 131.000107 26 128.000107 26 128.000107 88 100.000235 88 100.000235 37.9982812 101.000107 37.9982812 101.000107 37 99.9994532 37 97.0001068 37 97.0001068 32 95.0001068 32 95.0001068 29 94.0001068 29 94.0001068 27 93.0001068 27 93.01526 19 92.0001068 19 92.0001068 23 91.0001068 23 91.0001068 27 90.0038483 27 90.0038483 29 88.9961548 29 88.9961548 32 86.9958501 32 86.9958501 37 84.0001068 37 83.0001068 37 83.0001068 37.9987704 83.9999209 37.9987704 83.989871 92 63.0001068 92 63.0001068 40 64.0001068 40 64.0001068 39 62.0001068 39 62.0001068 37 49.0001068 37 49.0001068 34 44.0001068 34 44.0001068 32 41.9900106 32 42.0001068 27 40.9988085 27 40.9988085 32 39.9995422 32 39.9995422 37 38.0001068 37 38.0001068 39"></polygon>
+      <polygon fill="#A4A4A4"
+               points="-3.17655624e-13 98.0014435 8 98.0014435 8 90.0014435 13.9890823 90.0014435 13.9890823 95.0014435 21 95.0014435 21 77.0014435 26 77.0014435 26 69.0014435 23.9831825 69.0014435 23.9831825 67.0014435 27 67.0014435 27 62.9732399 39 63.0014435 39 67.0014435 42.9631229 67.0014435 42.9631229 63.0014435 45 63.0014435 45 67.0014435 46.9845776 67.0014435 46.9845776 62.9732399 49 63.0014435 49 67.0014435 55 67.0014435 55 69.0014435 52.9677359 69.0014435 52.9677359 87.0014435 68 87.0014435 68 54.0014435 69 54.0014435 69 51.0014435 71.0080156 51.0014435 71.0080156 45 72 45 72 51.0014435 74 51.0014435 74 54.0014435 76 54.0014435 76 73.0014435 108 73.0014435 108 78.0014435 112 78.0014435 112 52.0014435 109.999451 52.0014435 109.999451 51.0014435 112 51.0014435 112 50.0014435 115 50.0014435 115 48.0003618 135.995449 48.0003618 135.995449 50.0014435 138.995449 50.0014435 138.995449 51.0014435 140.995449 51.0014435 140.995449 52.0014435 138.995449 52.0014435 138.998252 92.0014435 156 92.0014435 156 118.001443 3.37507799e-13 118.001443"></polygon>
+      <polygon fill="#7B7B7B"
+               points="2.98427949e-13 99.0045698 2 99.0045698 2 112.004682 9 112.004682 9 102 20.002482 102 20.002482 85.99536 31 85.99536 31 105.035162 46 105 46 82.0202019 46 80.978974 46 79 50.000017 79 50.000017 77 55 77 55 79 58 79 58 87 70 87 70 88 68 88 68 99.9941007 72.9939514 99.9941007 72.9939514 63 80 63 80 65 90 65 90 112.004682 98 112.004682 102 98 110 98 110 85.99536 118 85.99536 118 81 120.004814 81 120.004814 73.0014343 121 73.0014343 121 81 123 81 123 85.99536 125 85.99536 125 102 136.998408 102 136.998408 83.995575 148 83.995575 148 112.004682 152 112.004682 152 58 154 58 154 59 157 59 157 58 158 58 158 55.994728 160 55.994728 160 58 160.995102 58 160.995102 57 164 57 164 55 166 55 166 55.994728 168 55.994728 168 55 169.993902 55 169.993902 47 171 47 171 34 172 34 172 118 -7.10542736e-15 118"></polygon>
+      <g transform="translate(42.000000, 43.000000)" fill="#D8D8D8">
+        <rect x="17" y="10" width="2" height="3"></rect>
+        <rect x="14" y="10" width="2" height="3"></rect>
+        <rect x="10" y="10" width="2" height="3"></rect>
+        <rect x="7" y="10" width="2" height="3"></rect>
+        <rect x="3" y="10" width="2" height="3"></rect>
+        <rect x="0" y="10" width="2" height="3"></rect>
+        <rect x="17" y="5" width="2" height="3"></rect>
+        <rect x="14" y="5" width="2" height="3"></rect>
+        <rect x="10" y="5" width="2" height="3"></rect>
+        <rect x="7" y="5" width="2" height="3"></rect>
+        <rect x="3" y="5" width="2" height="3"></rect>
+        <rect x="0" y="5" width="2" height="3"></rect>
+        <rect x="17" y="0" width="2" height="3"></rect>
+        <rect x="14" y="0" width="2" height="3"></rect>
+        <rect x="10" y="0" width="2" height="3"></rect>
+        <rect x="7" y="0" width="2" height="3"></rect>
+        <rect x="3" y="0" width="2" height="3"></rect>
+        <rect x="0" y="0" width="2" height="3"></rect>
+      </g>
+      <g transform="translate(114.000000, 53.000000)" fill="#D8D8D8">
+        <rect x="12" y="0" width="1" height="4"></rect>
+        <rect x="14" y="0" width="1" height="4"></rect>
+        <rect x="16" y="0" width="1" height="4"></rect>
+        <rect x="18" y="0" width="1" height="4"></rect>
+        <rect x="20" y="0" width="1" height="4"></rect>
+        <rect x="22" y="0" width="1" height="4"></rect>
+        <rect x="0" y="0" width="1" height="4"></rect>
+        <rect x="2" y="0" width="1" height="4"></rect>
+        <rect x="4" y="0" width="1" height="4"></rect>
+        <rect x="6" y="0" width="1" height="4"></rect>
+        <rect x="8" y="0" width="1" height="4"></rect>
+        <rect x="10" y="0" width="1" height="4"></rect>
+        <rect x="12" y="5" width="1" height="4"></rect>
+        <rect x="14" y="5" width="1" height="4"></rect>
+        <rect x="16" y="5" width="1" height="4"></rect>
+        <rect x="18" y="5" width="1" height="4"></rect>
+        <rect x="20" y="5" width="1" height="4"></rect>
+        <rect x="22" y="5" width="1" height="4"></rect>
+        <rect x="0" y="5" width="1" height="4"></rect>
+        <rect x="2" y="5" width="1" height="4"></rect>
+        <rect x="4" y="5" width="1" height="4"></rect>
+        <rect x="6" y="5" width="1" height="4"></rect>
+        <rect x="8" y="5" width="1" height="4"></rect>
+        <rect x="10" y="5" width="1" height="4"></rect>
+        <rect x="12" y="10" width="1" height="4"></rect>
+        <rect x="14" y="10" width="1" height="4"></rect>
+        <rect x="16" y="10" width="1" height="4"></rect>
+        <rect x="18" y="10" width="1" height="4"></rect>
+        <rect x="20" y="10" width="1" height="4"></rect>
+        <rect x="22" y="10" width="1" height="4"></rect>
+        <rect x="0" y="10" width="1" height="4"></rect>
+        <rect x="2" y="10" width="1" height="4"></rect>
+        <rect x="4" y="10" width="1" height="4"></rect>
+        <rect x="6" y="10" width="1" height="4"></rect>
+        <rect x="8" y="10" width="1" height="4"></rect>
+        <rect x="10" y="10" width="1" height="4"></rect>
+        <rect x="12" y="15" width="1" height="4"></rect>
+        <rect x="14" y="15" width="1" height="4"></rect>
+        <rect x="16" y="15" width="1" height="4"></rect>
+        <rect x="18" y="15" width="1" height="4"></rect>
+        <rect x="20" y="15" width="1" height="4"></rect>
+        <rect x="22" y="15" width="1" height="4"></rect>
+        <rect x="0" y="15" width="1" height="4"></rect>
+        <rect x="2" y="15" width="1" height="4"></rect>
+        <rect x="4" y="15" width="1" height="4"></rect>
+        <rect x="6" y="15" width="1" height="4"></rect>
+        <rect x="8" y="15" width="1" height="4"></rect>
+        <rect x="10" y="15" width="1" height="4"></rect>
+        <rect x="12" y="20" width="1" height="4"></rect>
+        <rect x="14" y="20" width="1" height="4"></rect>
+        <rect x="16" y="20" width="1" height="4"></rect>
+        <rect x="18" y="20" width="1" height="4"></rect>
+        <rect x="20" y="20" width="1" height="4"></rect>
+        <rect x="22" y="20" width="1" height="4"></rect>
+        <rect x="8" y="20" width="1" height="4"></rect>
+        <rect x="10" y="20" width="1" height="4"></rect>
+      </g>
+      <g transform="translate(133.000000, 10.000000)" fill="#D8D8D8">
+        <rect x="0" y="0" width="2" height="3"></rect>
+        <rect x="3" y="0" width="2" height="3"></rect>
+        <rect x="6" y="0" width="2" height="3"></rect>
+        <rect x="9" y="0" width="2" height="3"></rect>
+        <rect x="0" y="6" width="2" height="3"></rect>
+        <rect x="3" y="6" width="2" height="3"></rect>
+        <rect x="6" y="6" width="2" height="3"></rect>
+        <rect x="9" y="6" width="2" height="3"></rect>
+        <rect x="0" y="12" width="2" height="3"></rect>
+        <rect x="3" y="12" width="2" height="3"></rect>
+        <rect x="12" y="0" width="2" height="3"></rect>
+      </g>
+      <g transform="translate(47.000000, 81.000000)" fill="#D8D8D8">
+        <rect x="0" y="0" width="6" height="1"></rect>
+        <rect x="0" y="2" width="4" height="1"></rect>
+        <rect x="0" y="4" width="2" height="1"></rect>
+      </g>
+      <g transform="translate(155.000000, 62.000000)" fill="#D8D8D8">
+        <rect x="0" y="0" width="2" height="4"></rect>
+        <rect x="6" y="0" width="2" height="4"></rect>
+        <rect x="12" y="0" width="2" height="4"></rect>
+        <rect x="0" y="7" width="2" height="4"></rect>
+        <rect x="6" y="7" width="2" height="4"></rect>
+        <rect x="12" y="7" width="2" height="4"></rect>
+        <rect x="0" y="14" width="2" height="4"></rect>
+        <rect x="6" y="14" width="2" height="4"></rect>
+        <rect x="12" y="14" width="2" height="4"></rect>
+        <rect x="0" y="21" width="2" height="4"></rect>
+        <rect x="6" y="21" width="2" height="4"></rect>
+        <rect x="12" y="21" width="2" height="4"></rect>
+        <rect x="0" y="28" width="2" height="4"></rect>
+        <rect x="6" y="28" width="2" height="4"></rect>
+        <rect x="12" y="28" width="2" height="4"></rect>
+        <rect x="0" y="35" width="2" height="4"></rect>
+        <rect x="6" y="35" width="2" height="4"></rect>
+        <rect x="12" y="35" width="2" height="4"></rect>
+      </g>
+    </g>
+  </g>
+</svg>

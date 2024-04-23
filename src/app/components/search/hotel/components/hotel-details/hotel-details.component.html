@@ -1,0 +1,40 @@
+<div class="c-hotel-details">
+  <button #hideRoomsBtn type="button" mat-icon-button color="primary" matTooltip="Hide rooms"
+          class="c-hotel-details_fixed-close-btn" (click)="hide()">
+    <mat-icon>cancel</mat-icon>
+  </button>
+
+  <mat-tab-group class="h21-search-result-tabs"
+                 [selectedIndex]="selectedTab"
+                 (selectedIndexChange)="onSelectedIndexChange($event)">
+
+    <mat-tab label="Rooms">
+      <h21-hotel-rooms-list [data]="data" [batchId]="batchId" (emitData)="exitSending($event)"></h21-hotel-rooms-list>
+    </mat-tab>
+
+    <mat-tab label="Hotel info">
+      <ng-template matTabContent>
+        <h21-hotel-info [info]="data"></h21-hotel-info>
+      </ng-template>
+    </mat-tab>
+
+    <mat-tab label="Photos" *ngIf="data.hasImages">
+      <ng-template matTabContent>
+        <h21-hotel-photos [hotel]="data"></h21-hotel-photos>
+      </ng-template>
+    </mat-tab>
+
+    <mat-tab label="Location">
+      <ng-template matTabContent>
+        <h21-hotel-location [data]="data" [items]="items"></h21-hotel-location>
+      </ng-template>
+    </mat-tab>
+
+    <mat-tab label="Reviews" *ngIf="false">
+      <ng-template matTabContent>
+        <h21-in-development></h21-in-development>
+      </ng-template>
+    </mat-tab>
+
+  </mat-tab-group>
+</div>

@@ -1,0 +1,66 @@
+<div class="c-send-request-dialog h21-dialog-panel"
+     #container
+     tabindex="0"
+     cdkTrapFocus
+     [@toggleSlide]="animationState"
+     (@toggleSlide.start)="onAnimation($event)"
+     (@toggleSlide.done)="onAnimation($event)">
+
+  <mat-progress-bar *ngIf="inProgress"
+                    mode="indeterminate"
+                    color="primary"
+                    class="h21-dialog-panel_progress">
+  </mat-progress-bar>
+
+  <button mat-icon-button
+          (click)="close()"
+          class="h21-dialog-panel_close __size-l">
+    <mat-icon>close</mat-icon>
+  </button>
+
+  <div class="h21-dialog-panel_title">
+    <h2>{{ title }}</h2>
+  </div>
+
+  <div class="h21-dialog-panel_content">
+    <form [formGroup]="form" (submit)="onSubmit()">
+      <input type="text" class="c-send-request-dialog_hidden-field" [formControl]="linkControl" #linkInput />
+
+      <div class="__ta-r __mb-2">
+        <button type="button" mat-flat-button class="c-send-request-dialog_copy-link-button" (click)="copyLink()" [disabled]="inProgress">
+          <span>Copy public link</span>
+          <mat-icon class="__ml-1">link</mat-icon>
+        </button>
+      </div>
+
+      <p class="mat-body-1 __mt-0 __mb-2 __fs-xs __color-gray">
+        {{ alertMessage }}
+      </p>
+
+      <mat-form-field color="primary" class="__w-100 __mb-1" [appearance]="formFieldAppearance">
+        <mat-label>Email</mat-label>
+        <input type="text" matInput autocomplete="off" formControlName="email" />
+        <mat-error *ngIf="form.get('email').hasError('required')">
+          You must enter a value
+        </mat-error>
+        <mat-error *ngIf="form.get('email').hasError('pattern')">
+          Incorrect value
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field color="primary" class="__w-100 __mb-1" [appearance]="formFieldAppearance">
+        <mat-label>Comment</mat-label>
+        <textarea matInput rows="18" autocomplete="off" class="__no-resize" formControlName="message"></textarea>
+      </mat-form-field>
+
+      <div class="__ta-r">
+        <button type="button" mat-stroked-button color="primary" [disabled]="inProgress" (click)="close()">
+          Cancel
+        </button>
+        <button type="submit" mat-flat-button color="primary" class="__ml-2" [disabled]="inProgress">
+          Send
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

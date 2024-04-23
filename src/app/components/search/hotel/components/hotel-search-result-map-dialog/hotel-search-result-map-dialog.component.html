@@ -1,0 +1,257 @@
+<div class="c-hotel-search-result-map-dialog">
+  <mat-progress-bar *ngIf="inProgress || !isCompleted"
+                    mode="indeterminate"
+                    color="primary"
+                    class="c-hotel-search-result-map-dialog_progress">
+  </mat-progress-bar>
+
+  <button mat-fab class="c-hotel-search-result-map-dialog_close-button" (click)="close()">
+    <mat-icon>close</mat-icon>
+  </button>
+
+  <div class="c-hotel-search-result-map-dialog_wrapper">
+    <div class="c-hotel-search-result-map-dialog_sidebar">
+      <div class="c-hotel-search-result-map-dialog_sidebar-toolbar">
+        <button type="button" mat-button class="__color-accent __ph-1 __fs-xs" [class.__d-n]="selectedTabIndex === 1"
+                (click)="selectedTabIndex = 1">
+          <mat-icon class="__position-relative" [class.h21-header-toolbar_action-button__is-marked]="isUseFilter">filter_list</mat-icon>
+          <span>Filter</span>
+        </button>
+        <button type="button" mat-button class="__color-accent __ph-1 __fs-xs" [class.__d-n]="selectedTabIndex === 0"
+                (click)="selectedTabIndex = 0">
+          <mat-icon>arrow_back</mat-icon>
+          <span>Back</span>
+        </button>
+        <div class="w-spacer">&nbsp;</div>
+        <!--<button type="button" mat-stroked-button color="primary" (click)="close()">-->
+          <!--<mat-icon>language</mat-icon>-->
+          <!--Show list-->
+        <!--</button>-->
+      </div>
+      <div class="c-hotel-search-result-map-dialog_sidebar-content">
+        <mat-tab-group class="tab-group-without-header" [selectedIndex]="selectedTabIndex">
+
+          <!-- Hotels list -->
+          <mat-tab label="list">
+            <ng-template matTabContent>
+              <div class="__pa-2 __h-100">
+                <ng-container *ngIf="inProgress || noProgress">
+                  <h21-items-list-loader [showNoResult]="noProgress && isCompleted" [small]="true" [noResultText]="noResultText"></h21-items-list-loader>
+                </ng-container>
+                <ng-container *ngIf="!inProgress && !noProgress">
+                  <div *ngFor="let item of dataSource; trackBy: trackByFn; let i = index;"
+                       class="h21-hotel-card"
+                       (mouseenter)="animateMarker(item.id, false)"
+                       (mouseleave)="animateMarker(item.id, true)">
+                    <div class="c-hotel-search-result-map-dialog_photo">
+                      <img *ngIf="item.image?.fileUrl" [src]="item.image.fileUrl" alt="" (click)="redirectToCard(item)"/>
+                      <img *ngIf="!item.image?.fileUrl" src="./assets/img/hotel-none-photo.svg" alt="" (click)="redirectToCard(item)"/>
+                      <button mat-icon-button
+                              class="h21-hotel-card_favorite-mark"
+                              [class.__is-active]="item.isFavorite"
+                              (click)="updFavoriteState(item)">
+                        <mat-icon>favorite</mat-icon>
+                      </button>
+                      <div class="h21-booking-rating" *ngIf="item.providerRating?.rating">
+                        <div class="h21-booking-rating_counter">{{ item.providerRating.rating }}</div>
+                      </div>
+                    </div>
+                    <div class="__pa-2">
+                      <div class="__mb-1 __line-height-normal" *ngIf="item.hotelRating">
+                        <h21-rate class="h21-hotel-card_rating" size="s" [rate]="item.hotelRating"></h21-rate>
+                      </div>
+                      <div class="__mb-1">
+                        <h3 class="__fs-s __fw-medium __mt-0 __mb-05 cursor-pointer" (click)="redirectToCard(item)">
+                          {{ item.hotelName }}
+                        </h3>
+                        <div class="__nowrap" *ngIf="!!item.distanceByFeet || !!item.distanceByCar">
+                        <span class="__mr-3 __fs-xs" *ngIf="!!item.distanceByFeet">
+                          <mat-icon class="__size-s __color-accent __mr-05 __va-tt">directions_walk</mat-icon>
+                          {{ item.distanceByFeet }} km
+                        </span>
+                          <span class="__mr-3 __fs-xs" *ngIf="!!item.distanceByCar">
+                          <mat-icon class="__size-s __color-accent __mr-05 __va-tt">directions_car</mat-icon>
+                          {{ item.distanceByCar }} km
+                        </span>
+                        </div>
+                      </div>
+                      <div class="flex-row __align-items-center __justify-content-between">
+                        <img class="h21-hotel-card_provider-logo __flex-none"
+                             *ngIf="item.showProviderImg"
+                             [src]="item.rooms.supplier.fileUrl"
+                             (error)="item.showProviderImg = false"/>
+                        <span *ngIf="!item.showProviderImg" class="__fs-s">{{ item.rooms.supplier.fileName }}</span>
+                        <span class="__color-accent __fs-s __fw-medium" *ngIf="item.rooms.minTotalCost">
+                        {{ item.rooms.minTotalCost }} {{ item.rooms.currency }}
+                      </span>
+                      </div>
+                    </div>
+                  </div>
+
+
+
+<!--
+                  <div class="h21-hotel-card" *ngFor="let item of dataSource; trackBy: trackByFn; let i = index;"
+                       (mouseenter)="animateMarker(item.id, false)" (mouseleave)="animateMarker(item.id, true)">
+                    <div class="h21-hotel-card_wrapper" [class.selected-hotel-color]="selectedHotelId === item.id">
+                      <div class="h21-hotel-card_flex">
+                        <div class="h21-hotel-card_flex-photo h21-hotel-card_flex-photo__mh-150">
+                          <img *ngIf="item.image?.fileUrl" [src]="item.image.fileUrl" alt="" (click)="redirectToCard(item)"/>
+                          <img *ngIf="!item.image?.fileUrl" src="./assets/img/hotel-none-photo.svg" alt="" (click)="redirectToCard(item)"/>
+                          <button mat-icon-button class="h21-hotel-card_favorite-mark" [class.__is-active]="item.isFavorite"
+                                  (click)="updFavoriteState(item)">
+                            <mat-icon>favorite</mat-icon>
+                          </button>
+                        </div>
+                        <div class="h21-hotel-card_flex-content">
+                          <div class="flex-row __align-items-center __mb-1 __line-height-normal" *ngIf="item.hotelRating">
+                            <h21-rate size="s" [rate]="item.hotelRating" class="h21-hotel-card_rating"></h21-rate>
+                            <div class="w-spacer"></div>
+                          </div>
+                          <h3 class="__color-accent __fs-m __fw-medium __mt-0 __mb-2 cursor-pointer" (click)="redirectToCard(item)">{{ item.hotelName }}</h3>
+                          <div class="__mb-2 __nowrap" *ngIf="!!item.distanceByFeet || !!item.distanceByCar">
+                            <span class="__mr-3 __fs-xs" *ngIf="!!item.distanceByFeet">
+                              <mat-icon class="__size-s __color-accent __mr-05 __va-tt">directions_walk</mat-icon>
+                              {{ item.distanceByFeet }} km
+                            </span>
+                            <span class="__mr-3 __fs-xs" *ngIf="!!item.distanceByCar">
+                              <mat-icon class="__size-s __color-accent __mr-05 __va-tt">directions_car</mat-icon>
+                              {{ item.distanceByCar }} km
+                            </span>
+                          </div>
+
+                          <div class="flex-row __align-items-center __justify-content-between">
+                            <img *ngIf="item.showProviderImg" [src]="providerLogo[item.rooms.supplier.fileName]"
+                                 class="h21-hotel-card_provider-logo __flex-none" (error)="item.showProviderImg = false"/>
+                            <span *ngIf="!item.showProviderImg">{{ item.rooms.supplier.fileName }}</span>
+                            <span class="__color-accent __fw-medium" *ngIf="item.rooms.minTotalCost">{{ item.rooms.minTotalCost }} {{ item.rooms.currency }}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+-->
+
+                </ng-container>
+              </div>
+            </ng-template>
+          </mat-tab>
+
+          <!-- Filter -->
+          <mat-tab label="filter">
+            <ng-template matTabContent>
+              <h21-hotel-search-result-filter [showActions]="false" [hideControls]="true"></h21-hotel-search-result-filter>
+            </ng-template>
+          </mat-tab>
+        </mat-tab-group>
+      </div>
+    </div>
+
+    <div class="c-hotel-search-result-map-dialog_map-container">
+      <h21-map #map
+               [fitBounds]="mapOptions.fitBounds"
+               [latitude]="mapOptions.latitude"
+               [longitude]="mapOptions.longitude"
+               [provider]="mapOptions.provider"
+               [isClick]="mapOptions.isClick"
+               [zoom]="mapOptions.zoom"
+               [minZoom]="mapOptions.minZoom"
+               [maxZoom]="mapOptions.maxZoom"
+               [defaultCursor]="mapOptions.defaultCursor"
+               (centerChange)="infoBoxOptions.isShow = false"
+               (boundsChange)="infoBoxOptions.isShow = false"
+               (zoomChange)="infoBoxOptions.isShow = false"
+               (load)="onMapReady($event)">
+
+        <span h21MapMarker
+              *ngFor="let m of markers; trackBy: trackByFn;"
+              [latitude]="m.latitude"
+              [longitude]="m.longitude"
+              [isCluster]="m.isCluster"
+              [labelClass]="m.labelClass"
+              [labelContent]="m.labelContent"
+              [isLabelActive]="m.isLabelActive"
+              [iconHeight]="m.iconHeight"
+              [fitBounds]="m.fitBounds"
+              [iconUrl]="m.iconUrl"
+              [iconZIndex]="m.iconZIndex"
+              (markerClick)="redirectToCard(m.data)"
+              (markerMouseOut)="markerMouseOut(m)"
+              (markerMouseOver)="markerMouseOver($event, m)">
+        </span>
+
+        <h21-map-preloader [isShowPreloader]="mapOptions.preloaderIsOpen"></h21-map-preloader>
+
+        <span h21MapCluster
+              [gridSize]="clusterOptions.gridSize"
+              [maxZoom]="clusterOptions.maxZoom"
+              [minimumClusterSize]="clusterOptions.minimumClusterSize">
+        </span>
+
+        <div class="c-h21-map-toolbar-horizontal">
+          <div class="flex-fill"></div>
+          <div class="flex-fill"></div>
+          <div class="flex-fill"></div>
+        </div>
+
+        <div class="c-h21-map-toolbar-vertical">
+          <div class="flex-fill"></div>
+          <h21-map-zoom-control></h21-map-zoom-control>
+          <div class="flex-fill"></div>
+          <h21-map-fullscreen-control [isShowFullscreen]="false"></h21-map-fullscreen-control>
+        </div>
+
+        <h21-map-info-box [clientX]="infoBoxOptions.clientX"
+                          [clientY]="infoBoxOptions.clientY"
+                          [isShow]="infoBoxOptions.isShow">
+          <div class="h21-hotel-card h21-hotel-card__on-map" *ngIf="!!infoBoxOptions.hotel">
+            <div class="h21-hotel-card_photo-wrapper">
+              <ng-container *ngIf="infoBoxOptions.hotel.image.fileHash && infoBoxImages[infoBoxOptions.hotel.id] | async as img;">
+                <img *ngIf="img" [src]="img | safeResourceUrl" alt=""/>
+              </ng-container>
+              <img *ngIf="infoBoxOptions.hotel.image.fileUrl" [src]="infoBoxOptions.hotel.image?.fileUrl" alt=""/>
+              <img *ngIf="!infoBoxOptions.hotel.image.fileHash && !infoBoxOptions.hotel.image.fileUrl" src="./assets/img/hotel-none-photo.svg" alt=""/>
+              <ng-container *ngIf="infoBoxOptions.hotel.isFavorite">
+                <mat-icon class="h21-hotel-card_favorite-mark" [class.__is-active]="infoBoxOptions.hotel.isFavorite">
+                  favorite
+                </mat-icon>
+              </ng-container>
+              <div class="h21-booking-rating" *ngIf="infoBoxOptions.hotel.providerRating?.rating">
+                <div class="h21-booking-rating_counter">{{ infoBoxOptions.hotel.providerRating.rating }}</div>
+              </div>
+            </div>
+            <div class="h21-hotel-card_wrapper">
+              <div class="__mb-1">
+                <h21-rate *ngIf="infoBoxOptions.hotel.hotelRating && infoBoxOptions.isShow"
+                          class="h21-hotel-card_rating"
+                          size="s"
+                          [rate]="infoBoxOptions.hotel.hotelRating">
+                </h21-rate>
+              </div>
+              <h3 class="__color-accent __fs-m __fw-medium __mt-0 __mb-1">{{ infoBoxOptions.hotel.hotelName }}</h3>
+              <div class="h21-hotel-card_location __mb-1">
+                <mat-icon class="__color-gray">location_on</mat-icon>
+                <p class="__ma-0">
+                  {{ infoBoxOptions.hotel.hotelAddress }}
+                </p>
+              </div>
+              <div class="flex-row __align-items-center __justify-content-between">
+                <img *ngIf="showInfoBoxProviderImg"
+                     class="h21-hotel-card_provider-logo __flex-none"
+                     alt=""
+                     [src]="infoBoxOptions.hotel.rooms.supplier.fileUrl"
+                     (error)="showInfoBoxProviderImg = false"/>
+                <span *ngIf="!showInfoBoxProviderImg">
+                  {{ infoBoxOptions.hotel.rooms.supplier.fileName }}
+                </span>
+                <span class="__color-accent __fs-s __fw-medium __d-ib" *ngIf="infoBoxOptions.hotel.rooms.minTotalCost">
+                  {{ infoBoxOptions.hotel.rooms.minTotalCost }} {{ infoBoxOptions.hotel.rooms.currency }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </h21-map-info-box>
+      </h21-map>
+    </div>
+  </div>
+</div>

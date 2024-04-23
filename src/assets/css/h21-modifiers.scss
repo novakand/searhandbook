@@ -1,0 +1,754 @@
+//----------------------------------------------------------------------------------------------------------------------
+// Modifiers
+
+
+// Material icons size modifiers
+.mat-icon {
+  &.__size-s {  // small
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
+    line-height: 16px;
+
+    svg {
+      width: 16px;
+      height: 16px;
+
+      path {
+        transform: scale(0.6666);
+      }
+    }
+  }
+  &.__size-m {  // medium
+    width: 24px;
+    height: 24px;
+    font-size: 24px;
+    line-height: 24px;
+
+    svg {
+      width: 24px;
+      height: 24px;
+
+      path {
+        transform: scale(1);
+      }
+    }
+  }
+  &.__size-l {  // large
+    width: 32px;
+    height: 32px;
+    font-size: 32px;
+    line-height: 32px;
+
+    svg {
+      width: 32px;
+      height: 32px;
+
+      path {
+        transform: scale(1.3333);
+      }
+    }
+  }
+  &.__size-xl { // x large
+    width: 48px;
+    height: 48px;
+    font-size: 48px;
+    line-height: 48px;
+
+    svg {
+      width: 48px;
+      height: 48px;
+
+      path {
+        transform: scale(2);
+      }
+    }
+  }
+}
+
+// Material icon buttons size modifiers
+.mat-icon-button {
+  &.__size-s {  // small
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
+    .mat-icon {
+      width: 16px;
+      height: 16px;
+      line-height: 16px;
+      font-size: 16px;
+    }
+  }
+  &.__size-m {  // medium
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    .mat-icon {
+      width: 24px;
+      height: 24px;
+      line-height: 24px;
+      font-size: 24px;
+    }
+  }
+  &.__size-l {  // large
+    width: 48px;
+    height: 48px;
+    line-height: 48px;
+    .mat-icon {
+      width: 32px;
+      height: 32px;
+      line-height: 32px;
+      font-size: 32px;
+    }
+  }
+  &.__size-xl { // x large
+    width: 64px;
+    height: 64px;
+    line-height: 64px;
+    .mat-icon {
+      width: 48px;
+      height: 48px;
+      line-height: 48px;
+      font-size: 48px;
+    }
+  }
+}
+
+// Material buttons size modifiers
+.mat-button,
+.mat-raised-button,
+.mat-flat-button,
+.mat-stroked-button {
+  font-weight: 400;
+  // Buttons size modifiers
+  // small
+  &.__size-s {
+    font-size: 13px;
+    padding: 0 8px;
+    line-height: 28px;
+  }
+  // medium
+  &.__size-m {
+    padding: 0 16px;
+  }
+  // large
+  &.__size-l {
+    font-size: 18px;
+    padding: 0 32px;
+    line-height: 56px;
+    border-radius: 4px;
+  }
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+// Margin modifiers
+
+@for $i from 0 through 5 { // top
+  .__mt-#{$i} {
+    margin-top: 8px * $i !important;
+  }
+}
+
+@for $i from 0 through 5 { // bottom
+  .__mb-#{$i} {
+    margin-bottom: 8px * $i !important;
+  }
+}
+
+@for $i from 0 through 5 { // left
+  .__ml-#{$i} {
+    margin-left: 8px * $i !important;
+  }
+}
+
+@for $i from 0 through 5 { // right
+  .__mr-#{$i} {
+    margin-right: 8px * $i !important;
+  }
+}
+
+@for $i from 0 through 5 { // vertical
+  .__mv-#{$i} {
+    margin-top: 8px * $i !important;
+    margin-bottom: 8px * $i !important;
+  }
+}
+
+@for $i from 0 through 5 { // horizontal
+  .__mh-#{$i} {
+    margin-left: 8px * $i !important;
+    margin-right: 8px * $i !important;
+  }
+}
+
+@for $i from 0 through 5 { // all
+  .__ma-#{$i} {
+    margin: 8px * $i !important;
+  }
+}
+
+.__mt-05 {
+  margin-top: 4px !important;
+}
+
+.__mb-05 {
+  margin-bottom: 4px !important;
+}
+
+.__ml-05 {
+  margin-left: 4px !important;
+}
+
+.__mr-05 {
+  margin-right: 4px !important;
+}
+
+// Padding modifiers
+
+@for $i from 0 through 5 { // top
+  .__pt-#{$i} {
+    padding-top: 8px * $i !important;
+  }
+}
+
+@for $i from 0 through 5 { // bottom
+  .__pb-#{$i} {
+    padding-bottom: 8px * $i !important;
+  }
+}
+
+@for $i from 0 through 5 { // left
+  .__pl-#{$i} {
+    padding-left: 8px * $i !important;
+  }
+}
+
+@for $i from 0 through 5 { // right
+  .__pr-#{$i} {
+    padding-right: 8px * $i !important;
+  }
+}
+
+@for $i from 0 through 5 { // vertical
+  .__pv-#{$i} {
+    padding-top: 8px * $i !important;
+    padding-bottom: 8px * $i !important;
+  }
+}
+
+@for $i from 0 through 5 { // horizontal
+  .__ph-#{$i} {
+    padding-left: 8px * $i !important;
+    padding-right: 8px * $i !important;
+  }
+}
+
+@for $i from 0 through 5 { // all
+  .__pa-#{$i} {
+    padding: 8px * $i !important;
+  }
+}
+
+.__pt-05 {
+  padding-top: 4px !important;
+}
+
+.__pb-05 {
+  padding-bottom: 4px !important;
+}
+
+.__pl-05 {
+  padding-left: 4px !important;
+}
+
+.__pr-05 {
+  padding-right: 4px !important;
+}
+
+// Text alignment
+.__ta-c {
+  text-align: center !important;
+}
+
+.__ta-l {
+  text-align: left !important;
+}
+
+.__ta-r {
+  text-align: right !important;
+}
+
+// Text vertical alignment
+.__va-t {
+  vertical-align: top !important;
+}
+
+.__va-tt {
+  vertical-align: text-top !important;
+}
+
+.__va-b {
+  vertical-align: bottom !important;
+}
+
+.__va-tb {
+  vertical-align: text-bottom !important;
+}
+
+.__va-baseline {
+  vertical-align: baseline !important;
+}
+
+.__va-m {
+  vertical-align: middle !important;
+}
+
+// Text decoration modifiers
+
+.__td-strike {
+  text-decoration: line-through !important;
+}
+
+.__td-underline {
+  text-decoration: underline !important;
+}
+
+.__td-none {
+  text-decoration: none !important;
+}
+
+// Display modifiers
+
+.__d-n {
+  display: none !important;
+}
+
+.__d-i {
+  display: inline !important;
+}
+
+.__d-ib {
+  display: inline-block !important;
+}
+
+.__d-b {
+  display: block !important;
+}
+
+.__d-f {
+  display: flex !important;
+}
+
+// Text color modifiers
+
+.__color-base {
+  color: var(--text-hex) !important;
+}
+
+.__color-accent {
+  color: var(--textAccent-hex) !important;
+}
+
+.__color-ui-primary {
+  color: var(--primary-hex) !important;
+}
+
+.__color-ui-on-primary {
+  color: var(--on-primary-hex) !important;
+}
+
+.__color-ui-accent {
+  color: var(--accent-hex) !important;
+}
+
+.__color-ui-on-accent {
+  color: var(--on-accent-hex) !important;
+}
+
+.__color-ui-warn {
+  color: var(--warn-hex) !important;
+}
+
+.__color-ui-on-warn {
+  color: var(--on-warn-hex) !important;
+}
+
+.__color-foreground {
+  color: var(--foregraund-hex) !important;
+}
+
+.__color-background {
+  color: var(--background-hex) !important;
+}
+
+.__color-gray {
+  color: rgba(var(--foregraund-rgb), 0.46) !important;
+}
+
+.__color-green {
+  color: #1e9a50 !important;
+}
+
+.__color-red {
+  color: #ff5757 !important;
+}
+
+// Font size modifiers
+
+.__fs-xxxs {
+  font-size: 11px !important;
+}
+
+.__fs-xxs {
+  font-size: 12px !important;
+}
+
+.__fs-xs {
+  font-size: 13px !important;
+}
+
+.__fs-s {
+  font-size: 14px !important;
+}
+
+.__fs-m {
+  font-size: 16px !important;
+}
+
+.__fs-l {
+  font-size: 18px !important;
+}
+
+.__fs-xl {
+  font-size: 20px !important;
+}
+
+.__fs-xxl {
+  font-size: 24px !important;
+}
+
+// Font weight modifiers
+
+.__fw-light {
+  font-weight: 300 !important;
+}
+
+.__fw-normal {
+  font-weight: 400 !important;
+}
+
+.__fw-medium {
+  font-weight: 500 !important;
+}
+
+.__fw-bold {
+  font-weight: 700 !important;
+}
+
+// Position modifiers
+
+.__position-absolute {
+  position: absolute !important;
+}
+
+.__position-relative {
+  position: relative !important;
+}
+
+.__position-static {
+  position: static !important;
+}
+
+.__position-fixed {
+  position: fixed !important;
+}
+
+// Overflow modifiers
+
+.__overflow-visible {
+  overflow: visible !important;
+}
+
+.__overflow-hidden {
+  overflow: hidden !important;
+}
+
+// Flex boxes modifiers
+
+.__flex-none {
+  flex: none !important;
+}
+
+.__flex-row {
+  display: flex !important;
+  flex-direction: row !important;
+}
+
+.__flex-column {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.__flex-fill {
+  flex: 1 1 auto !important;
+}
+
+.__flex-wrap-wrap {
+  flex-wrap: wrap !important;
+}
+
+.__flex-wrap-no-wrap {
+  flex-wrap: nowrap !important;
+}
+
+.__justify-content-center {
+  justify-content: center !important;
+}
+
+.__justify-content-between {
+  justify-content: space-between !important;
+}
+
+.__justify-content-around {
+  justify-content: space-around !important;
+}
+
+.__justify-content-start {
+  justify-content: flex-start !important;
+}
+
+.__justify-content-end {
+  justify-content: flex-end !important;
+}
+
+.__align-items-center {
+  align-items: center !important;
+}
+
+.__align-items-flex-start {
+  align-items: flex-start !important;
+}
+
+.__align-items-flex-end {
+  align-items: flex-end !important;
+}
+
+.__align-self-flex-start {
+  align-self: flex-start !important;
+}
+
+.__align-self-flex-end {
+  align-self: flex-end !important;
+}
+
+.__align-self-center {
+  align-self: center !important;
+}
+
+.__align-self-stretch {
+  align-self: stretch !important;
+}
+
+// Other
+
+.__float-left {
+  float: left !important;
+}
+
+.__float-right {
+  float: right !important;
+}
+
+.__opacity-05 {
+  opacity: 0.5 !important;
+}
+
+.__no-before::before {
+  display: none !important;
+}
+
+.__no-after::after {
+  display: none !important;
+}
+
+.__no-resize {
+  resize: none !important;
+}
+
+.__nowrap {
+  white-space: nowrap !important;
+}
+
+.__pre {
+  white-space: pre !important;
+}
+
+.__visibility-hidden {
+  visibility: hidden !important;
+}
+
+.__word-break-all {
+  word-break: break-all !important;
+}
+
+.__cursor-pointer {
+  cursor: pointer !important;
+}
+
+.__cursor-default {
+  cursor: default !important;
+}
+
+.__line-height-normal {
+  line-height: normal !important;
+}
+
+.__lh-1 {
+  line-height: 1px !important;
+}
+
+.__lh-40 {
+  line-height: 40px !important;
+}
+
+.__no-min-width {
+  min-width: auto !important;
+}
+
+.__w-100 {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+.__w-50 {
+  box-sizing: border-box !important;
+  width: 50% !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+.__h-100 {
+  box-sizing: border-box !important;
+  height: 100% !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+.__buttons-to-right {
+  text-align: right !important;
+  button {
+    margin-left: 16px !important;
+  }
+}
+
+@media print {
+  .__hide-on-print {
+    display: none !important;
+  }
+}
+
+[hidden] {
+  display: none !important;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+// Old style
+
+.__text-weight-400 {
+  font-weight: 400;
+}
+
+.__text-weight-light {
+  font-weight: 300 !important;
+}
+.__text-weight-normal {
+  font-weight: 400 !important;
+}
+.__text-weight-medium {
+  font-weight: 500 !important;
+}
+.__text-weight-bold {
+  font-weight: 700 !important;
+}
+
+.__text-size-xs {
+  font-size: 12px !important;
+}
+.__text-size-s {
+  font-size: 14px !important;
+}
+.__text-size-m {
+  font-size: 16px !important;
+}
+.__text-size-l {
+  font-size: 18px !important;
+}
+.__text-size-xl {
+  font-size: 20px !important;
+}
+.__text-size-xxl {
+  font-size: 24px !important;
+}
+
+.__text-color-primary {
+  color: var(--text-hex) !important;
+}
+.__text-color-secondary {
+  color: var(--textAccent-hex) !important;
+}
+.__text-color-tetriary {
+  color: var(--textAccent-hex)-light !important;
+}
+.__text-color-gray {
+  color: rgba(var(--foregraund-rgb), .54) !important;
+}
+.__text-color-ui-primary {
+  color: var(--primary-hex) !important;
+}
+.__text-color-ui-accent {
+  color: var(--accent-hex) !important;
+}
+.__text-color-ui-warn {
+  color: var(--warn-hex) !important;
+}
+.__text-color-white {
+  color: white !important;
+}
+
+.__text-center {
+  text-align: center !important;
+}
+.__text-left {
+  text-align: left !important;
+}
+.__text-right {
+  text-align: right !important;
+}
+
+// margin top
+@for $i from 0 through 5 {
+  .h21-mt-#{$i} {
+    margin-top: 8px * $i !important;
+  }
+}
+// margin bottom
+@for $i from 0 through 5 {
+  .h21-mb-#{$i} {
+    margin-bottom: 8px * $i !important;
+  }
+}
+// margin left
+@for $i from 0 through 5 {
+  .h21-ml-#{$i} {
+    margin-left: 8px * $i !important;
+  }
+}
+// margin right
+@for $i from 0 through 5 {
+  .h21-mr-#{$i} {
+    margin-right: 8px * $i !important;
+  }
+}

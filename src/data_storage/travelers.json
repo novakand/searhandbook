@@ -1,0 +1,72 @@
+{
+  "filter": {},
+  "count": 6,
+  "items": [
+    {
+      "id": 1,
+      "city": "Hague",
+      "company": "Sofidel",
+      "country": "Netherlands",
+      "email": "john@smith.com",
+      "jobTitle": "Analyst",
+      "travelerName": "John Smith",
+      "stateName": "Active",
+      "phone": "+21 (0)206711913"
+    },
+    {
+      "id": 2,
+      "city": "Hague",
+      "company": "Sofidel",
+      "country": "Netherlands",
+      "email": "john@smith.com",
+      "jobTitle": "Analyst",
+      "travelerName": "John Smith",
+      "stateName": "Active",
+      "phone": "+21 (0)206711913"
+    },
+    {
+      "id": 3,
+      "city": "Hague",
+      "company": "Sofidel",
+      "country": "Netherlands",
+      "email": "john@smith.com",
+      "jobTitle": "Analyst",
+      "travelerName": "John Smith",
+      "stateName": "Active",
+      "phone": "+21 (0)206711913"
+    },
+    {
+      "id": 4,
+      "city": "Hague",
+      "company": "Sofidel",
+      "country": "Netherlands",
+      "email": "john@smith.com",
+      "jobTitle": "Analyst",
+      "travelerName": "John Smith",
+      "stateName": "Active",
+      "phone": "+21 (0)206711913"
+    },
+    {
+      "id": 5,
+      "city": "Hague",
+      "company": "Sofidel",
+      "country": "Netherlands",
+      "email": "john@smith.com",
+      "jobTitle": "Analyst",
+      "travelerName": "John Smith",
+      "stateName": "Active",
+      "phone": "+21 (0)206711913"
+    },
+    {
+      "id": 6,
+      "city": "Hague",
+      "company": "Sofidel",
+      "country": "Netherlands",
+      "email": "john@smith.com",
+      "jobTitle": "Analyst",
+      "travelerName": "John Smith",
+      "stateName": "Active",
+      "phone": "+21 (0)206711913"
+    }
+  ]
+}

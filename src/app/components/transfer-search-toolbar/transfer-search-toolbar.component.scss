@@ -1,0 +1,201 @@
+//----------------------------------------------------------------------------------------------------------------------
+// Transfer search toolbar style
+
+.c-transfer-search-toolbar {
+  height: 100%;
+
+  .mat-divider {
+    border-right-color: rgba(var(--leftPanel-rgb), 0.39);
+    margin: 0 8px;
+  }
+}
+
+::ng-deep .c-transfer-search-toolbar_item {
+  flex: none;
+
+  &:not(.mat-button) {
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 400;
+    margin: 0 8px;
+    line-height: 36px;
+  }
+
+  &.mat-button {
+    font-size: 13px;
+    padding: 0 8px;
+  }
+
+  .mat-icon {
+    vertical-align: middle;
+    margin-right: 4px;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    font-size: 20px;
+
+    svg {
+      width: 20px;
+      height: 20px;
+
+      path {
+        transform: scale(0.833333);
+      }
+    }
+  }
+}
+
+::ng-deep .c-transfer-search-toolbar_item.c-transfer-search-toolbar_flex-fill-button.mat-button {
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 130px;
+  text-align: left;
+
+  .mat-button-wrapper > span {
+    display: inline-block;
+    width: calc(100% - 40px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+::ng-deep .c-transfer-search-toolbar_menu.mat-menu-panel {
+  min-width: 280px;
+  padding: 16px;
+}
+
+::ng-deep .c-transfer-search-toolbar_destination-menu.mat-menu-panel {
+  min-width: 450px;
+  max-width: 600px;
+  padding: 0;
+}
+
+::ng-deep .c-transfer-search-toolbar_menu-item.mat-menu-item {
+  color: var(--textAccent-hex);
+  line-height: 62px;
+  height: 62px;
+
+  &:hover {
+    background-color: rgba(var(--foregraund-rgb), 0.03);
+  }
+
+  .c-transfer-search-toolbar_menu-item-wrapper {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .c-transfer-search-toolbar_menu-item-icon {
+    flex: none;
+    opacity: 0.5;
+  }
+
+  .c-transfer-search-toolbar_menu-item-text {
+    flex: 1 1 auto;
+    line-height: normal;
+    overflow: hidden;
+  }
+
+  .c-transfer-search-toolbar_menu-item-text-name,
+  .c-transfer-search-toolbar_menu-item-text-destination {
+    display: block;
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .c-transfer-search-toolbar_menu-item-text-name {
+    color: rgba(var(--textAccent-rgb), 0.9);
+    font-size: 14px;
+    font-weight: bold;
+  }
+
+  .c-transfer-search-toolbar_menu-item-text-destination {
+    color: rgba(var(--foregraund-rgb), 0.46);
+    font-size: 13px;
+  }
+}
+
+::ng-deep .c-transfer-search-toolbar_time-menu.mat-menu-panel {
+  min-width: 200px;
+  max-height: 300px;
+  padding: 0;
+  overflow-y: hidden;
+
+  .mat-menu-content {
+    height: 100%;
+    overflow-y: hidden;
+
+    > div {
+      height: 100%;
+      overflow-y: hidden;
+    }
+  }
+}
+
+.c-transfer-search-toolbar_time-menu-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: hidden;
+}
+
+.c-transfer-search-toolbar_time-menu-input {
+  flex: none;
+  padding: 16px;
+}
+
+.c-transfer-search-toolbar_time-menu-buttons {
+  flex-grow: 1;
+  overflow-y: auto;
+  border-top: 1px solid rgba(var(--foregraund-rgb), 0.16);
+}
+
+::ng-deep .c-transfer-search-toolbar_menu-form-field.mat-form-field-appearance-outline {
+  width: 100%;
+
+  .mat-form-field-infix {
+    padding: 0.714286em 0;
+  }
+
+  .mat-form-field-suffix .mat-icon {
+    opacity: 1;
+    color: var(--textAccent-hex);
+  }
+
+  .mat-form-field-outline {
+    opacity: 1 !important;
+  }
+
+  .mat-form-field-outline.mat-form-field-outline-thick {
+    opacity: 0 !important;
+  }
+
+  .mat-form-field-outline-start,
+  .mat-form-field-outline-gap,
+  .mat-form-field-outline-end {
+    background-color: rgba(var(--textAccent-rgb), 0.08);
+    border-color: transparent !important;
+  }
+}
+
+.c-transfer-search-toolbar_menu-empty-label {
+  color: rgba(0, 0, 0, 0.24);
+  font-size: 24px;
+  padding: 56px 0;
+  text-align: center;
+  margin: auto;
+
+  .mat-icon {
+    width: 64px;
+    height: 64px;
+    font-size: 64px;
+    line-height: 64px;
+    margin: 0 0 8px 0;
+  }
+
+  p {
+    margin: 0;
+  }
+}

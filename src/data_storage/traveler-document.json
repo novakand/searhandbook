@@ -1,0 +1,17 @@
+{
+  "documentTypeId": 1,
+  "documentNumber": "55555",
+  "issuingCountryId": 1,
+  "expireDate": {
+    "date": "2015-02-11",
+    "time": "15:53:00",
+    "year": 2015,
+    "month": 2,
+    "day": 11,
+    "hour": 15,
+    "minute": 53,
+    "second": 0
+  },
+  "stateId": 1,
+  "travelerId": 1
+}

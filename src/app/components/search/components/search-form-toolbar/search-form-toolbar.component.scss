@@ -1,0 +1,111 @@
+//----------------------------------------------------------------------------------------------------------------------
+// Search form toolbar component style
+
+.c-search-form-toolbar.mat-toolbar {
+  width: 100%;
+  border-bottom: 1px solid rgba(var(--textAccent-rgb), 0.3);
+  color: var(--text-hex);
+  font-size: 14px;
+  line-height: normal;
+  font-weight: 400;
+
+  &.mat-toolbar-single-row {
+    height: 61px;
+    padding: 0 24px;
+  }
+
+  &.mat-toolbar-multiple-rows {
+    min-height: 61px;
+  }
+
+  .mat-toolbar-row {
+    height: 60px;
+    padding: 0 24px;
+  }
+
+  .c-search-form-toolbar_half-space {
+    width: 49.9999%;
+    display: flex;
+    align-items: center;
+  }
+
+  .c-search-form-toolbar_middle-spacer {
+    flex: none;
+    width: 24px;
+  }
+
+  .c-search-form-toolbar_travelers-btn {
+    margin-left: -16px;
+
+    .mat-icon {
+      margin-left: 4px;
+      color: var(--textAccent-hex);
+    }
+  }
+
+  .c-search-form-toolbar_counter {
+    min-width: 100px;
+  }
+
+  .c-search-form-toolbar_hint {
+    color: rgba(var(--foregraund-rgb), 0.39);
+    transition: color 120ms;
+
+    &.c-search-form-toolbar_hint__error {
+      color: var(--warn-hex);
+    }
+  }
+
+  .c-search-form-toolbar_booker {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+
+    .c-search-form-toolbar_booker-button.mat-button {
+      color: var(--textAccent-hex);
+      max-width: 200px;
+      margin-right: -16px;
+
+      .mat-button-wrapper {
+        .c-search-form-toolbar_booker-button-content {
+          margin: 0.555555em 0;
+          display: flex;
+          flex-direction: row;
+          justify-content: flex-start;
+          align-items: center;
+          line-height: normal;
+          border-bottom: 1px dashed var(--textAccent-hex);
+          transition: border-color 120ms;
+
+          > span {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: inline-block;
+          }
+        }
+      }
+
+      &:hover .mat-button-wrapper .c-search-form-toolbar_booker-button-content {
+        border-bottom-color: transparent;
+      }
+
+      .mat-icon {
+        margin-left: 8px;
+      }
+    }
+  }
+}
+
+.c-search-form-toolbar_label {
+  color: var(--textAccent-hex);
+  font-weight: 400;
+  margin-right: 24px;
+}
+
+.c-search-form-toolbar_value {
+  color: var(--text-hex);
+  font-weight: 500;
+}

@@ -1,0 +1,46 @@
+{
+  "filter": {},
+  "count": 5,
+  "items": [
+    {
+      "id": 1,
+      "addressType": "Legal",
+      "postalCode": "55555",
+      "country": "Russia",
+      "city": "Moskow",
+      "address": "str. Lenina 1"
+    },
+    {
+      "id": 2,
+      "addressType": "Postal",
+      "postalCode": "55555",
+      "country": "Russia",
+      "city": "Moskow",
+      "address": "str. Lenina 1"
+    },
+    {
+      "id": 3,
+      "addressType": "Current",
+      "postalCode": "55555",
+      "country": "Russia",
+      "city": "Moskow",
+      "address": "str. Lenina 1"
+    },
+    {
+      "id": 4,
+      "addressType": "Postal",
+      "postalCode": "55555",
+      "country": "Russia",
+      "city": "Moskow",
+      "address": "str. Lenina 1"
+    },
+    {
+      "id": 5,
+      "addressType": "Postal",
+      "postalCode": "55555",
+      "country": "Russia",
+      "city": "Moskow",
+      "address": "str. Lenina 1"
+    }
+  ]
+}

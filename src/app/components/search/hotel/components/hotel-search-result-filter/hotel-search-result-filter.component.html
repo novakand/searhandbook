@@ -1,0 +1,281 @@
+<div class="c-hotel-search-result-filter h21-search-filter" *ngIf="query.filter && history$ | async as history">
+  <div class="h21-search-filter_content">
+
+    <mat-form-field class="c-hotel-search-result-filter_hotel-name-field" color="primary" [appearance]="formFieldAppearance">
+      <mat-label>Filter by hotel name</mat-label>
+      <input type="text" matInput autocomplete="off" [formControl]="hotelNameCtrl" (input)="onSearchByHotelNameChange(hotelNameCtrl.value)" />
+      <mat-icon matSuffix [hidden]="hotelNameCtrl.value">search</mat-icon>
+      <button type="button" mat-icon-button matSuffix [hidden]="!hotelNameCtrl.value" (click)="hotelNameCtrl.reset()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-form-field>
+
+    <div class="row __mb-2" *ngIf="!hideControls">
+      <div class="col-6">
+        <mat-slide-toggle color="accent" class="__color-accent __fs-xs"
+                          [checked]="query.filter.isRefundable"
+                          (change)="onRefundableChange($event.checked)">
+          Refundable only
+        </mat-slide-toggle>
+      </div>
+      <div class="col-6">
+        <mat-slide-toggle color="accent" class="__color-accent __fs-xs"
+                          [checked]="query.filter.isBreakfastIncluded"
+                          (change)="onBreakfastIncludedChange($event.checked)">
+          Breakfast included
+        </mat-slide-toggle>
+      </div>
+    </div>
+
+    <mat-accordion class="h21-search-filter_accordion" [multi]="true">
+
+      <!-- Price -->
+      <ng-container>
+        <mat-expansion-panel class="first-child" [expanded]="true">
+          <mat-expansion-panel-header [collapsedHeight]="height" [expandedHeight]="height">
+            <mat-panel-title>Price</mat-panel-title>
+          </mat-expansion-panel-header>
+          <ng-template matExpansionPanelContent>
+            <div class="h21-search-filter_slider">
+              <mat-radio-group [value]="query.filter.priceCalculation" (change)="filterHotels()">
+                <div class="row no-gutters __mb-3">
+                  <div class="col-6">
+                    <mat-radio-button color="primary"
+                                      class="__fs-xs"
+                                      [checked]="query.filter.priceCalculation === priceTypes.perNight"
+                                      [value]="priceTypes.perNight"
+                                      (change)="onPriceCalcChange($event.value)">
+                      Per room per night
+                    </mat-radio-button>
+                  </div>
+                  <div class="col-6">
+                    <mat-radio-button color="primary"
+                                      class="__fs-xs"
+                                      [checked]="query.filter.priceCalculation === priceTypes.total"
+                                      [value]="priceTypes.total"
+                                      (change)="onPriceCalcChange($event.value, history)">
+                      Total price
+                    </mat-radio-button>
+                  </div>
+                </div>
+              </mat-radio-group>
+              <div class="h21-search-filter_slider-fields-wrapper">
+                <mat-form-field color="primary" appearance="outline" floatLabel="always">
+                  <mat-label>From</mat-label>
+                  <input matInput
+                         type="number"
+                         autocomplete="off"
+                         placeholder="0"
+                         (input)='minChanged$.next()'
+                         [(ngModel)]="fakeFilter$.filter.priceGreaterEqual"/>
+                </mat-form-field>
+                <mat-form-field color="primary" appearance="outline" floatLabel="always">
+                  <mat-label>To</mat-label>
+                  <input matInput
+                         type="number"
+                         autocomplete="off"
+                         [placeholder]="maxPlaceholder"
+                         (input)='maxChanged$.next()'
+                         [(ngModel)]="fakeFilter$.filter.priceLessEqual"/>
+                </mat-form-field>
+              </div>
+              <div class="h21-search-filter_slider-wrapper">
+                <ng5-slider class="h21-range-slider __mt-0 __d-b"
+                            [(value)]="query.filter.priceGreaterEqual"
+                            [(highValue)]="query.filter.priceLessEqual"
+                            [options]="sliderOptions"
+                            (userChange)="onUserChange()"
+                            (userChangeEnd)="onUserChangeEnd()">
+                </ng5-slider>
+              </div>
+            </div>
+          </ng-template>
+        </mat-expansion-panel>
+      </ng-container>
+
+      <!-- Distance to POI -->
+      <ng-container *ngIf="history.point?.provider === 'horse'">
+        <mat-expansion-panel [expanded]="false">
+          <mat-expansion-panel-header [collapsedHeight]="height" [expandedHeight]="height">
+            <mat-panel-title>
+              <ng-container *ngIf="history.point?.subtype === 'poi'">Distance to POI</ng-container>
+              <ng-container *ngIf="history.point?.subtype === 'hotel'">Distance to Hotel</ng-container>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <ng-template matExpansionPanelContent>
+            <p class="__mb-2 __fs-xs"
+               *ngIf="history.point?.subtype === 'hotel' || history.point?.subtype === 'poi'">
+              {{ history.point?.address?.description }}
+            </p>
+            <div class="h21-search-filter_slider">
+              <!--<mat-radio-group [value]="query.filter.distanceToPoiCalculation" (change)="filterHotels()">-->
+                <!--<div class="row no-gutters __mb-3">-->
+                  <!--<div class="col-6">-->
+                    <!--<mat-radio-button color="primary" class="__fs-xs" [checked]="query.filter.distanceToPoiCalculation === poiDistanceTypes.foot"-->
+                                      <!--[value]="poiDistanceTypes.foot" (change)="query.filter.distanceToPoiCalculation = $event.value">-->
+                      <!--By foot-->
+                    <!--</mat-radio-button>-->
+                  <!--</div>-->
+                  <!--<div class="col-6">-->
+                    <!--<mat-radio-button color="primary" class="__fs-xs" [checked]="query.filter.distanceToPoiCalculation === poiDistanceTypes.car"-->
+                                      <!--[value]="poiDistanceTypes.car" (change)="query.filter.distanceToPoiCalculation = $event.value">-->
+                      <!--By car-->
+                    <!--</mat-radio-button>-->
+                  <!--</div>-->
+                <!--</div>-->
+              <!--</mat-radio-group>-->
+              <div class="h21-search-filter_slider-field-wrapper">
+                <mat-form-field color="primary" class="__w-100" appearance="outline" floatLabel="always">
+                  <mat-label>Km</mat-label>
+                  <input mask="0*.00" [dropSpecialCharacters]="false" matInput autocomplete="off" [formControl]="distanceLessControl" placeholder=""/>
+                </mat-form-field>
+              </div>
+              <div class="h21-search-filter_slider-wrapper">
+                <ng5-slider class="h21-range-slider __mt-0 __d-b" [(value)]="query.filter.distanceLessEqual"
+                            [options]="sliderDistance" (userChangeEnd)="filterHotels(false)">
+                </ng5-slider>
+              </div>
+            </div>
+          </ng-template>
+        </mat-expansion-panel>
+      </ng-container>
+
+
+      <!-- Hotel rating -->
+      <mat-expansion-panel [expanded]="false">
+        <mat-expansion-panel-header [collapsedHeight]="height" [expandedHeight]="height">
+          <mat-panel-title>Hotel rating</mat-panel-title>
+        </mat-expansion-panel-header>
+        <ng-template matExpansionPanelContent>
+          <div class="h21-rating-checkboxes-container">
+            <ng-container [ngTemplateOutlet]="rating" [ngTemplateOutletContext]="{ rating: 1 }"></ng-container>
+            <ng-container [ngTemplateOutlet]="rating" [ngTemplateOutletContext]="{ rating: 2 }"></ng-container>
+            <ng-container [ngTemplateOutlet]="rating" [ngTemplateOutletContext]="{ rating: 3 }"></ng-container>
+            <ng-container [ngTemplateOutlet]="rating" [ngTemplateOutletContext]="{ rating: 4 }"></ng-container>
+            <ng-container [ngTemplateOutlet]="rating" [ngTemplateOutletContext]="{ rating: 5 }"></ng-container>
+            <ng-container [ngTemplateOutlet]="rating" [ngTemplateOutletContext]="{ rating: 0 }"></ng-container>
+          </div>
+        </ng-template>
+        <ng-template #rating let-rating="rating">
+          <mat-checkbox class="h21-rating-checkbox"
+                        [checked]="isChecked(query.filter.hotelPossibleRatings, rating)"
+                        (change)="onChange('hotelPossibleRatings', query.filter.hotelPossibleRatings, $event.checked, rating)">
+            <span [class.__fs-xs]="rating === 0">{{ rating > 0 ? rating : 'Other' }}</span>
+            <mat-icon *ngIf="rating > 0">star</mat-icon>
+          </mat-checkbox>
+        </ng-template>
+      </mat-expansion-panel>
+
+      <!-- Booking rating -->
+      <mat-expansion-panel [expanded]="false">
+        <mat-expansion-panel-header [collapsedHeight]="height" [expandedHeight]="height">
+          <mat-panel-title>Booking rating</mat-panel-title>
+        </mat-expansion-panel-header>
+        <ng-template matExpansionPanelContent>
+          <div class="h21-rating-checkboxes-container">
+            <mat-checkbox *ngFor="let br of bookingRatings; trackBy: trackByFn;"
+                          class="h21-rating-checkbox"
+                          [checked]="br !== null && query.filter.minBookingRating !== null && br >= query.filter.minBookingRating"
+                          (change)="changeBookingRating(br, $event.checked)">
+              <span [class.__fs-xs]="br === 0">{{ br > 0 ? br + ' +' : 'All' }}</span>
+            </mat-checkbox>
+          </div>
+        </ng-template>
+      </mat-expansion-panel>
+
+      <!-- Facilities -->
+      <mat-expansion-panel [expanded]="false" *ngIf="facilities$ | async as facilities">
+        <mat-expansion-panel-header [collapsedHeight]="height" [expandedHeight]="height">
+          <mat-panel-title>Facilities</mat-panel-title>
+        </mat-expansion-panel-header>
+        <ng-template matExpansionPanelContent>
+          <div class="h21-search-filter_checkbox-group">
+            <button mat-button class="c-hotel-search-result-filter_select-all-button" (click)="selectAllFacilities(facilities)"
+                    *ngIf="!isAllFacilitiesSelected(facilities)">
+              Select all
+            </button>
+            <button mat-button class="c-hotel-search-result-filter_select-all-button" (click)="resetAllFacilities()"
+                    *ngIf="isAllFacilitiesSelected(facilities)">
+              Reset all
+            </button>
+            <mat-checkbox *ngFor="let item of facilities; trackBy: trackByFn;"
+                          color="primary"
+                          [checked]="isChecked(query.filter.facilities, item.name)"
+                          (change)="onChange('facilities', query.filter.facilities, $event.checked, item.name)">
+              {{ item.name }}
+            </mat-checkbox>
+          </div>
+        </ng-template>
+      </mat-expansion-panel>
+
+      <!-- Carbon footprint -->
+      <mat-expansion-panel [expanded]="false" *ngIf="isFootprintVisible$ | async">
+        <mat-expansion-panel-header [collapsedHeight]="height" [expandedHeight]="height">
+          <mat-panel-title>Carbon footprint</mat-panel-title>
+        </mat-expansion-panel-header>
+        <ng-template matExpansionPanelContent>
+          <div class="row no-gutters">
+            <div class="col-4">
+              <ng-container [ngTemplateOutlet]="carbon"
+                            [ngTemplateOutletContext]="{ type: carbonTypes.green }"></ng-container>
+            </div>
+            <div class="col-4">
+              <ng-container [ngTemplateOutlet]="carbon"
+                            [ngTemplateOutletContext]="{ type: carbonTypes.white }"></ng-container>
+            </div>
+            <div class="col-4">
+              <mat-checkbox color="primary" [checked]="isChecked(query.filter.carbonFootprintCodes, carbonTypes.other)"
+                            (change)="onChange('carbonFootprintCodes', query.filter.carbonFootprintCodes, $event.checked, carbonTypes.other)">Other</mat-checkbox>
+            </div>
+          </div>
+        </ng-template>
+
+        <ng-template #carbon let-type="type" let-carbonClass="carbonClass">
+          <mat-checkbox color="primary" [checked]="isChecked(query.filter.carbonFootprintCodes, type)"
+                        (change)="onChange('carbonFootprintCodes', query.filter.carbonFootprintCodes, $event.checked, type)"
+                        class="carbon-footprint-checkbox"
+                        [ngClass]="carbonClass">
+            <ng-container [ngSwitch]="type">
+              <mat-icon *ngSwitchCase="carbonTypes.green" class="ecology-green" svgIcon="footprint"></mat-icon>
+              <mat-icon *ngSwitchCase="carbonTypes.white" class="ecology-white" svgIcon="footprint_outline"></mat-icon>
+            </ng-container>
+          </mat-checkbox>
+        </ng-template>
+      </mat-expansion-panel>
+
+      <!-- Suppliers -->
+      <ng-container *ngIf="!hideControls">
+        <mat-expansion-panel [expanded]="false" *ngIf="suppliers$ | async as suppliers">
+          <mat-expansion-panel-header [collapsedHeight]="height" [expandedHeight]="height">
+            <mat-panel-title>Suppliers</mat-panel-title>
+          </mat-expansion-panel-header>
+          <ng-template matExpansionPanelContent>
+            <button mat-button class="c-hotel-search-result-filter_select-all-button" (click)="selectAllSuppliers(suppliers)"
+                    *ngIf="!isAllSuppliersSelected(suppliers)">
+              Select all
+            </button>
+            <button mat-button class="c-hotel-search-result-filter_select-all-button" (click)="resetAllSuppliers()"
+                    *ngIf="isAllSuppliersSelected(suppliers)">
+              Reset all
+            </button>
+            <div class="h21-search-filter_checkbox-group">
+              <ng-container *ngFor="let item of suppliers$ | async; trackBy: trackByFn;"
+                            [ngTemplateOutlet]="supplier"
+                            [ngTemplateOutletContext]="{ data: item.name }">
+              </ng-container>
+            </div>
+          </ng-template>
+
+          <ng-template #supplier let-data="data">
+            <mat-checkbox color="primary"
+                          [value]="data"
+                          [checked]="isChecked(query.filter.suppliers, data)"
+                          (change)="onChange('suppliers', query.filter.suppliers, $event.checked, data)">
+              {{ data }}
+            </mat-checkbox>
+          </ng-template>
+        </mat-expansion-panel>
+      </ng-container>
+    </mat-accordion>
+  </div>
+</div>

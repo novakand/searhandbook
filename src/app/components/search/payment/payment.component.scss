@@ -1,0 +1,197 @@
+//----------------------------------------------------------------------------------------------------------------------
+// Payment page style
+
+.c-payment {
+  padding: 24px;
+  position: relative;
+
+  .c-payment_tabs {
+    margin: 0 -24px;
+
+    .mat-tab-body-content {
+      padding: 0 24px;
+    }
+  }
+}
+
+.c-payment_wrapper {
+  max-width: 500px;
+  margin: auto;
+}
+
+.c-payment_payment-types {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  .c-payment_payment-type {
+    width: 140px;
+    height: 80px;
+    box-sizing: border-box;
+    border: 1px solid rgba(var(--textAccent-rgb), 0.39);
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    transition: all 120ms ease;
+
+    &:not(:last-of-type) {
+      margin-right: 40px;
+    }
+
+    &.c-payment_payment-type:hover,
+    &.c-payment_payment-type:focus {
+      border-color: var(--primary-hex);
+    }
+
+    &.__is-active {
+      border-color: var(--primary-hex);
+      background-color: rgba(var(--primary-rgb), 0.04);
+    }
+
+    img {
+      margin: auto;
+
+      &.c-payment_payment-type-thumb {
+        width: 38px;
+        height: 27px;
+      }
+    }
+
+    span {
+      margin: auto;
+      font-size: 36px;
+      font-weight: bold;
+      color: var(--textAccent-hex);
+    }
+  }
+}
+
+.c-payment_content {
+  position: relative;
+}
+
+.c-payment_widget-container {
+  position: relative;
+  border-radius: 4px;
+  min-height: 266px;
+}
+
+.c-payment_countdown {
+  display: inline-block;
+  font-size: 13px;
+  color: rgba(var(--foregraund-rgb), 0.46);
+  background-color: rgba(var(--foregraund-rgb), 0.13);
+  line-height: 28px;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 14px;
+
+  &.c-payment_countdown__warning {
+    color: rgba(var(--warn-rgb), 0.46);
+    background-color: rgba(var(--warn-rgb), 0.13);
+  }
+}
+
+.c-payment_reference-field-label {
+  padding-top: 14px;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.c-payment_card-option.mat-option {
+  line-height: 4em;
+  height: 4em;
+
+  .c-payment_card-option-content {
+    display: block;
+
+    .c-payment_card-option-name {
+      display: block;
+      font-weight: 500;
+      color: var(--textAccent-hex);
+      line-height: 1.5em;
+    }
+
+    .c-payment_card-option-number {
+      display: block;
+      line-height: 1.5em;
+    }
+  }
+
+  &.mat-selected .c-payment_card-option-content .c-payment_card-option-name {
+    color: var(--on-primary-hex);
+  }
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+// Pay vision widget custom style
+
+::ng-deep .c-payment_widget-container {
+  .wpwl-form {
+    margin: 0 0 48px 0;
+    max-width: none;
+    position: relative;
+  }
+
+  .wpwl-custom-checkbox {
+    height: 24px;
+    margin-bottom: -48px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+
+    input {
+      display: none;
+    }
+
+    label {
+      line-height: 24px;
+      color: var(--text-hex);
+      font-size: 13px;
+      vertical-align: middle;
+      position: relative;
+      display: inline-block;
+      cursor: pointer;
+
+      span {
+        vertical-align: middle;
+      }
+    }
+
+    label::before {
+      display: inline-block;
+      content: '';
+      vertical-align: middle;
+      width: 16px;
+      height: 16px;
+      border-radius: 2px;
+      border: 2px solid rgba(var(--foregraund-rgb), 0.49);
+      margin: 4px 8px 4px 0;
+      transition: all 90ms ease-in-out;
+    }
+
+    input:checked ~ label::before {
+      border-color: var(--primary-hex);
+      background-color: var(--primary-hex);
+    }
+
+    label::after {
+      display: block;
+      width: 10px;
+      height: 4px;
+      content: '';
+      position: absolute;
+      top: 11px;
+      left: 3px;
+      opacity: 0;
+      border-left: 1.3px solid var(--on-primary-hex);
+      border-bottom: 1.3px solid var(--on-primary-hex);
+      transform: rotate(-45deg);
+      transition: opacity 125ms ease-in-out;
+    }
+
+    input:checked ~ label::after {
+      opacity: 1;
+    }
+  }
+}

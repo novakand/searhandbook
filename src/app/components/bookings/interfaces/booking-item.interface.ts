@@ -1,0 +1,41 @@
+import { ITravelerListItem } from '@components/bookings/interfaces/traveler-list-item.interface';
+import { IBookingOrderItemDetailsApi } from '@components/bookings/interfaces/booking-order-item-details.api.interface';
+import { ICompanyProfile } from './company-profile.interface';
+
+export interface IBookingItem {
+  arrivalDate: string;
+  bookingCode: string;
+  cancelPenaltyDeadTime: string;
+  bookerId: number;
+  corporateId: number;
+  corporateName: number;
+  createDate: string;
+  createUserName: string;
+  customer: ICompanyProfile;
+  departureDate: string;
+  h21ProLogin: number;
+  id: number;
+  invoiceNumber: string;
+  orderId: number;
+  paymentStateDescription: string;
+  paymentStateName: string;
+  pnr: any;
+  providerCode: string;
+  orderStateDescription: string;
+  orderStateName: string;
+  tourOperatorCode: string;
+  tourOperatorName: string;
+  tripId: number;
+  typeId: number;
+  typeName: string;
+  updateDate: string;
+  updateUserName: string;
+  viewOrderNumber: string;
+  travelers: ITravelerListItem[];
+  orderItemDetails: IBookingOrderItemDetailsApi[];
+  baseCost: number;
+  horseCost: number;
+  invoiceCost: number;
+  finalCost: number;
+  orderCancellationState: string;
+}

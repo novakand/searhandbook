@@ -1,0 +1,178 @@
+//----------------------------------------------------------------------------------------------------------------------
+// Hotel card style
+
+$genius-rate-color: #f9d100;
+$negotiated-rate-color: #00b1aa;
+
+.c-hotel-card {
+  padding: 24px;
+  position: relative;
+}
+
+.c-hotel-card_wrapper {
+  width: 100%;
+  margin: 0 auto;
+}
+
+@media (min-width: 1400px) {
+  .c-hotel-card_wrapper {
+    width: 90%;
+  }
+}
+
+@media (min-width: 1600px) {
+  .c-hotel-card_wrapper {
+    width: 80%;
+  }
+}
+
+@media (min-width: 1800px) {
+  .c-hotel-card_wrapper {
+    width: 70%;
+  }
+}
+
+@media (min-width: 2000px) {
+  .c-hotel-card_wrapper {
+    width: 65%;
+  }
+}
+
+.c-hotel-card_additional-info {
+  flex: none;
+  width: 380px;
+  overflow: hidden;
+  border-radius: 4px;
+  background-color: rgba(var(--foregraund-rgb), 0.03);
+  margin-left: 24px;
+  padding: 16px;
+}
+
+.c-hotel-card_favorite-mark {
+  color: rgba(var(--foregraund-rgb), 0.54);
+
+  &.c-hotel-card_favorite-mark__active {
+    color: var(--warn-hex);
+  }
+}
+
+.c-hotel-card_map-picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 6px;
+  border: 1px solid rgba(var(--foregraund-rgb), 0.14);
+}
+
+.c-hotel-card_mark {
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  height: 20px;
+  line-height: 20px;
+  display: inline-block;
+  border-radius: 4px;
+  padding: 0 8px;
+
+  &.c-hotel-card_mark__genius {
+    background-color: $genius-rate-color;
+  }
+
+  &.c-hotel-card_mark__negotiated {
+    background-color: $negotiated-rate-color;
+  }
+}
+
+.c-hotel-card_picture {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  transition: border-color 120ms;
+  background-color: rgba(var(--textAccent-rgb), 0.11);
+  position: relative;
+  border-radius: 4px;
+  overflow: hidden;
+
+  &.c-hotel-card_picture__thumb {
+    height: auto;
+    padding-top: 75%;
+  }
+
+  &:hover {
+    box-shadow: 0 0 0 2px var(--primary-hex);
+  }
+
+  > img {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+  }
+}
+
+.c-hotel-card_picture-more {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 700;
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  left: 0;
+
+  span {
+    flex: none;
+    margin: auto;
+  }
+}
+
+.c-hotel-card_rooms-filter-toolbar {
+  padding: 8px 12px;
+  background-color: rgba(var(--textAccent-rgb), 0.1);
+  display: flex;
+  align-items: center;
+}
+
+::ng-deep .c-hotel-card .c-hotel-location {
+  height: 600px;
+  padding: 24px 0 0 0;
+}
+
+::ng-deep .c-hotel-card .c-h21-two-month-calendar_field {
+  width: 350px;
+
+  .mat-form-field-wrapper {
+    padding-bottom: 0;
+  }
+
+  .mat-form-field-subscript-wrapper {
+    display: none;
+  }
+
+  .mat-form-field-should-float .mat-form-field-label {
+    display: none;
+  }
+
+  .mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-outline-gap {
+    border-top-color: currentColor;
+  }
+}
+
+::ng-deep .c-hotel-card .c-h21-counter {
+  background-color: var(--background-hex);
+}
+
+::ng-deep .c-hotel-card .c-hotel-info {
+  padding: 24px 0 0 0;
+}

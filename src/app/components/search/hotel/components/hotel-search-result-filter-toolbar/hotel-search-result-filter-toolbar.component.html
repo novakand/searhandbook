@@ -1,0 +1,74 @@
+<div class="c-hotel-search-result-filter-toolbar" *ngIf="showFilter">
+  <div class="__flex-row __align-items-flex-start">
+    <div class="__flex-none __mr-2 __fs-xs c-hotel-search-result-filter-toolbar_label">
+      Selected filters:
+    </div>
+
+    <div class="__flex-fill">
+      <mat-chip-list [multiple]="false" [selectable]="false">
+
+        <ng-container *ngIf="filter.priceGreaterEqual > 0 || filter.priceLessEqual !== defMaxPrice">
+          <mat-chip [removable]="true" (removed)="clearPrice()">
+            <span class="__mr-1">
+              <ng-container *ngIf="filter.priceCalculation === priceTypes.perNight">Per room per night:</ng-container>
+              <ng-container *ngIf="filter.priceCalculation === priceTypes.total">Total price:</ng-container>
+            </span>
+            <b>{{ filter.priceGreaterEqual }} – {{ filter.priceLessEqual }} EUR</b>
+            <mat-icon matChipRemove>close</mat-icon>
+          </mat-chip>
+        </ng-container>
+
+        <ng-container *ngIf="filter.distanceLessEqual !== defMaxDistance">
+          <mat-chip [removable]="true" (removed)="clearMaxDistance()">
+            <mat-icon class="__size-s __mr-05">directions_car</mat-icon>
+            <span>{{ filter.distanceLessEqual }} km</span>
+            <mat-icon matChipRemove>close</mat-icon>
+          </mat-chip>
+        </ng-container>
+
+        <ng-container *ngIf="filter.hotelPossibleRatings">
+          <mat-chip *ngFor="let item of filter.hotelPossibleRatings; trackBy: trackByFn; let i = index;"
+                    [removable]="true"
+                    (removed)="clearRating(i)">
+            <span>
+              <ng-container *ngIf="item > 0">{{ item }}</ng-container>
+              <ng-container *ngIf="item === 0">Other</ng-container>
+            </span>
+            <mat-icon class="__size-s __ml-05">star</mat-icon>
+            <mat-icon matChipRemove>close</mat-icon>
+          </mat-chip>
+        </ng-container>
+
+        <ng-container *ngIf="filter.carbonFootprintCodes">
+          <mat-chip *ngFor="let item of filter.carbonFootprintCodes; trackBy: trackByFn; let i = index;"
+                    [removable]="true"
+                    (removed)="clearFootprint(i)">
+            <ng-container [ngSwitch]="item">
+              <ng-container *ngSwitchCase="carbonTypes.white">Colorless foot</ng-container>
+              <ng-container *ngSwitchCase="carbonTypes.green">Green foot</ng-container>
+              <ng-container *ngSwitchCase="carbonTypes.other">Other foot</ng-container>
+            </ng-container>
+            <mat-icon matChipRemove>close</mat-icon>
+          </mat-chip>
+        </ng-container>
+
+        <ng-container *ngIf="filter.minBookingRating">
+          <mat-chip [removable]="true" (removed)="clearBookingRating()">
+            Booking rating : <b>{{ filter.minBookingRating }}</b>
+            <mat-icon matChipRemove>close</mat-icon>
+          </mat-chip>
+        </ng-container>
+
+        <ng-container *ngIf="filter.facilities">
+          <mat-chip *ngFor="let item of filter.facilities; trackBy: trackByFn; let i = index;"
+                    [removable]="true"
+                    (removed)="clearFacilities(i)">
+            {{ item }}
+            <mat-icon matChipRemove>close</mat-icon>
+          </mat-chip>
+        </ng-container>
+
+      </mat-chip-list>
+    </div>
+  </div>
+</div>

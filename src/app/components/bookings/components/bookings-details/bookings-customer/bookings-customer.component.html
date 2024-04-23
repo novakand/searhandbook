@@ -1,0 +1,43 @@
+<ng-container *ngIf="country$ | async as country">
+  <div class="c-bookings-customer">
+    <div class="row large-gutters">
+      <div class="col-6">
+        <ng-container [ngTemplateOutlet]="optionRow" [ngTemplateOutletContext]="{ name: 'Legal name', value: data.name }"></ng-container>
+        <ng-container [ngTemplateOutlet]="optionRow" [ngTemplateOutletContext]="{ name: 'Company name', value: data.shortName }"></ng-container>
+        <ng-container [ngTemplateOutlet]="optionRow" [ngTemplateOutletContext]="{ name: 'Country', value: country.name }"></ng-container>
+        <ng-container [ngSwitch]="countryType">
+
+          <ng-container *ngSwitchCase="countryTypes.Ru">
+            <ng-container [ngTemplateOutlet]="optionRow" [ngTemplateOutletContext]="{ name: 'Inn (RU)', value: data.inn }"></ng-container>
+            <ng-container [ngTemplateOutlet]="optionRow" [ngTemplateOutletContext]="{ name: 'Kpp (RU)', value: data.kpp }"></ng-container>
+            <ng-container [ngTemplateOutlet]="optionRow" [ngTemplateOutletContext]="{ name: 'Ogrn (RU)', value: data.ogrn }"></ng-container>
+          </ng-container>
+
+          <ng-container *ngSwitchCase="countryTypes.Cn">
+            <ng-container [ngTemplateOutlet]="optionRow" [ngTemplateOutletContext]="{ name: 'License number', value: data.licenseNumber }"></ng-container>
+          </ng-container>
+
+          <ng-container *ngSwitchDefault>
+            <ng-container [ngTemplateOutlet]="optionRow" [ngTemplateOutletContext]="{ name: 'VAT', value: data.vatNumber }"></ng-container>
+            <ng-container [ngTemplateOutlet]="optionRow" [ngTemplateOutletContext]="{ name: 'Registration number', value: data.registerNumber }"></ng-container>
+          </ng-container>
+
+        </ng-container>
+      </div>
+      <div class="col-6">
+        <ng-container [ngTemplateOutlet]="optionRow" [ngTemplateOutletContext]="{ name: 'Description', value: data.description }"></ng-container>
+        <ng-container [ngTemplateOutlet]="optionRow" [ngTemplateOutletContext]="{ name: 'Email', value: data.email }"></ng-container>
+        <ng-container [ngTemplateOutlet]="optionRow" [ngTemplateOutletContext]="{ name: 'Phone', value: data.phone }"></ng-container>
+        <ng-container [ngTemplateOutlet]="optionRow" [ngTemplateOutletContext]="{ name: 'Fax', value: data.fax }"></ng-container>
+        <ng-container [ngTemplateOutlet]="optionRow" [ngTemplateOutletContext]="{ name: 'Website', value: data.homePage }"></ng-container>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<ng-template #optionRow let-name="name" let-value="value">
+  <div class="row no-gutters h21-mb-2">
+    <div class="col-4 h21-profile-card_option-name">{{ name }}</div>
+    <div class="col-8 h21-profile-card_option-value">{{ value }}</div>
+  </div>
+</ng-template>

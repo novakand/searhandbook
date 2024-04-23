@@ -1,0 +1,55 @@
+<div class="c-bookings-list page_content-wrapper">
+
+  <!-- Export menu -->
+  <div class="flex-row __align-items-center __mb-3">
+    <h2 class="__mb-0">My bookings</h2>
+    <div class="w-spacer">&nbsp;</div>
+    <button type="button" mat-flat-button color="accent" [matMenuTriggerFor]="exportMenu">
+      <mat-icon class="__mr-1">publish</mat-icon>
+      <span>Export</span>
+    </button>
+    <mat-menu #exportMenu="matMenu">
+      <button mat-menu-item (click)="onExport(mimeType.JSON)">JSON</button>
+      <button mat-menu-item (click)="onExport(mimeType.CSV)">CSV</button>
+      <button mat-menu-item (click)="onExport(mimeType.XML)">XML</button>
+    </mat-menu>
+  </div>
+
+  <div class="flex-row __align-items-center __mb-3">
+    <!-- State filter tags -->
+    <mat-chip-list *ngIf="paymentStates.length; else fakeChips" [selectable]="true" [multiple]="true" class="h21-chip-list c-bookings-list_state-filter">
+      <mat-chip class="h21-chip __mr-2 __fw-normal" [selectable]="true" [selected]="isAllStatesSelected()"
+                (click)="toggleAllStatesSelected()" (keydown.enter)="toggleAllStatesSelected()">
+        All
+      </mat-chip>
+      <mat-chip *ngFor="let state of paymentStates; trackBy: trackByFn" class="h21-chip"
+                [selectable]="true" [selected]="isSelectedState(state.id)" (click)="toggleSelectedState(state.id)"
+                (keydown.enter)="toggleSelectedState(state.id)">
+        {{ state.name }}
+      </mat-chip>
+    </mat-chip-list>
+    <ng-template #fakeChips>
+      <div class="c-bookings-list_fake-chip-list">
+        <div *ngFor="let i of [1, 2, 3]" class="c-bookings-list_fake-chip"></div>
+      </div>
+    </ng-template>
+
+    <div class="w-spacer">&nbsp;</div>
+
+    <!-- Show trip mode toggle -->
+    <mat-slide-toggle color="accent" labelPosition="before" class="__fs-xs __fw-medium"
+                      [checked]="showTripsMode" [disabled]="!paymentStates.length" (change)="onShowTrips($event)">
+      Show trips
+    </mat-slide-toggle>
+  </div>
+
+  <h21-table-loader *ngIf="!paymentStates.length"></h21-table-loader>
+
+  <!-- Orders list -->
+  <h21-bookings-list-orders *ngIf="!showTripsMode && paymentStates.length" [displayedColumns]="displayedColumns">
+  </h21-bookings-list-orders>
+
+  <!-- Trips list -->
+  <h21-bookings-list-trips *ngIf="showTripsMode" [displayedColumns]="displayedColumns">
+  </h21-bookings-list-trips>
+</div>

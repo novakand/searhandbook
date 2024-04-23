@@ -1,0 +1,88 @@
+import { IColumn } from 'h21-be-ui-kit';
+
+export const columnsConst: IColumn[] = [
+  {
+    caption: 'Name',
+    name: 'name',
+    required: false,
+    default: true,
+    displayed: true,
+  },
+  {
+    caption: 'Departure - Arrival',
+    name: 'departureArrival',
+    required: false,
+    default: true,
+    displayed: true,
+  },
+  {
+    caption: 'City',
+    name: 'city',
+    required: false,
+    default: true,
+    displayed: true,
+  },
+  {
+    caption: 'Pick up',
+    name: 'pickUp',
+    required: false,
+    default: true,
+    displayed: true,
+  },
+  {
+    caption: 'Drop off',
+    name: 'dropDown',
+    required: false,
+    default: true,
+    displayed: true,
+  },
+  {
+    caption: 'From',
+    name: 'from',
+    required: false,
+    default: false,
+    displayed: false,
+  },
+  {
+    caption: 'To',
+    name: 'to',
+    required: false,
+    default: false,
+    displayed: false,
+  },
+  {
+    caption: 'Date of creation',
+    name: 'dateOfCreation',
+    required: false,
+    default: false,
+    displayed: false,
+  },
+  {
+    caption: 'Shared',
+    name: 'shared',
+    required: false,
+    default: true,
+    displayed: true,
+  },
+  {
+    caption: 'Travellers',
+    name: 'travellers',
+    required: false,
+    default: true,
+    displayed: true,
+  },
+  {
+    caption: 'Booking subject',
+    name: 'bookingSubject',
+    required: false,
+    default: true,
+    displayed: true,
+  },
+  {
+    caption: 'Actions',
+    name: 'actions',
+    required: false,
+    default: true,
+    displayed: true,
+  },
+];

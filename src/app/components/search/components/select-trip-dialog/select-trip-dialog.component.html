@@ -1,0 +1,67 @@
+<div class="c-select-trip-dialog h21-dialog-panel __pb-0"
+     #container
+     tabindex="0"
+     cdkTrapFocus
+     [@toggleSlide]="animationState"
+     (@toggleSlide.start)="onAnimation($event)"
+     (@toggleSlide.done)="onAnimation($event)">
+
+  <button mat-icon-button
+          (click)="close()"
+          class="h21-dialog-panel_close __text-color-white __size-l">
+    <mat-icon>close</mat-icon>
+  </button>
+
+  <div class="h21-dialog-panel_header h21-dialog-panel_header__primary">
+    <h2 class="__fw-light __color-ui-on-primary">Select trip</h2>
+    <mat-form-field class="h21-form-field-plain __w-100" floatLabel="never">
+      <input type="text" #searchText matInput autocomplete="off" placeholder="Enter a name or trip number">
+      <button type="button" mat-icon-button matSuffix (click)="search(searchText.value)">
+        <mat-icon>search</mat-icon>
+      </button>
+      <mat-hint *ngIf="showEnterHint">Press "Enter" to search</mat-hint>
+    </mat-form-field>
+  </div>
+
+  <div class="h21-dialog-panel_content" >
+    <mat-progress-bar *ngIf="inProgress" mode="indeterminate" color="primary" class="h21-dialog-panel_progress"></mat-progress-bar>
+
+    <div class="h21-dialog-panel_full-width" *ngIf="inProgress">
+      <h21-card-list-loader></h21-card-list-loader>
+    </div>
+
+    <div class="c-select-traveler-dialog_empty-list" *ngIf="!inProgress && noProgress">
+      <h21-card-list-loader [showNoResult]="true"></h21-card-list-loader>
+    </div>
+
+    <mat-list class="h21-card-list" *ngIf="!inProgress && !noProgress">
+      <mat-list-item *ngFor="let item of trips$ | async; trackBy: trackByFn" tabindex="-1">
+        <mat-card class="h21-card-list_card"
+                  [class.__is-focused]="inFocus(item)"
+                  (mouseover)="clearFocus()"
+                  tabindex="-1">
+
+          <mat-card-header class="__align-items-center">
+            <mat-card-title class="__ma-0">{{ item.name }}</mat-card-title>
+            <div class="__align-self-center __nowrap">
+              <mat-icon *ngFor="let icon of item.orderItemsTypeCode" class="c-select-trip-dialog_fab-icon __ml-1">
+                <ng-container [ngSwitch]="icon">
+                  <ng-container *ngSwitchCase="orderType.air">local_airport</ng-container>
+                  <ng-container *ngSwitchCase="orderType.hotel">domain</ng-container>
+                  <ng-container *ngSwitchCase="orderType.transfer">directions_car</ng-container>
+                  <ng-container *ngSwitchCase="orderType.train">train</ng-container>
+                </ng-container>
+              </mat-icon>
+            </div>
+          </mat-card-header>
+
+          <mat-card-actions class="h21-card-list_card-float-buttons">
+            <button mat-flat-button class="h21-card-list_card-button-select" color="primary" (click)="select(item)" (focus)="focus(item)">
+              <mat-icon>add</mat-icon>
+            </button>
+          </mat-card-actions>
+        </mat-card>
+      </mat-list-item>
+    </mat-list>
+  </div>
+</div>

@@ -1,0 +1,79 @@
+<h3 class="__mb-2 __fw-medium">Payment info</h3>
+<div class="row">
+  <div class="col-6" *ngIf="order.finalCost">
+    <ng-container [ngTemplateOutlet]="pricePropertyRow"
+                  [ngTemplateOutletContext]="{ label: 'Order total rate', value: order.finalCost, currency: order.currency }"></ng-container>
+  </div>
+  <div class="col-6" *ngIf="order.bookingType === bookingTypes.Hotel">
+    <div class="row no-gutters __mb-2">
+      <div class="col-6 __color-gray">Bookings.com</div>
+      <div class="col-6" *ngIf="order.bookingCost"><b>{{ order.bookingCost | number: '1.2-2' }} {{ order.currency }}</b></div>
+    </div>
+  </div>
+  <div class="col-6" *ngIf="order.bookingType === bookingTypes.Hotel">
+    <div class="row no-gutters __mb-2">
+      <div class="col-6 __color-gray">BAR</div>
+      <div class="col-6" *ngIf="order.barCost"><b>{{ order.barCost | number: '1.2-2' }} {{ order.currency }}</b></div>
+    </div>
+  </div>
+  <div class="col-6"  *ngIf="order.refundSumDate">
+    <ng-container [ngTemplateOutlet]="pricePropertyRow"
+                  [ngTemplateOutletContext]="{ label: 'Refund amount', value: order.refundSum, currency: order.currency }"></ng-container>
+  </div>
+  <!--          <div class="col-6">-->
+  <!--            <ng-container [ngTemplateOutlet]="datePropertyRow"-->
+  <!--                          [ngTemplateOutletContext]="{ label: 'Date of payment', value: '' }"></ng-container>-->
+  <!--          </div>-->
+  <div class="col-6" *ngIf="order.refundSumDate">
+    <ng-container [ngTemplateOutlet]="datePropertyRow"
+                  [ngTemplateOutletContext]="{ label: 'Date of refund', value: order.refundSumDate }"></ng-container>
+  </div>
+  <div class="col-6" *ngIf="order.payTypeName">
+    <ng-container [ngTemplateOutlet]="textPropertyRow"
+                  [ngTemplateOutletContext]="{ label: 'Payment form', value: order.payTypeName }"></ng-container>
+  </div>
+  <!--          <div class="col-6">-->
+  <!--            <div class="row no-gutters __mb-2">-->
+  <!--              <div class="col-6 __color-gray">Penalty amount</div>-->
+  <!--              <div class="col-6"><b class="__color-ui-warn">{{ 598.3 | number: '1.2-2' }} EUR</b></div>-->
+  <!--            </div>-->
+  <!--          </div>-->
+  <div class="col-6" *ngIf="order.accountNumber">
+    <ng-container [ngTemplateOutlet]="textPropertyRow"
+                  [ngTemplateOutletContext]="{ label: 'Account number', value: order.accountNumber }"></ng-container>
+  </div>
+  <ng-container *ngIf="order.paymentMethodReferences">
+    <ng-container *ngFor="let item of order.paymentMethodReferences; trackBy: trackByFn;">
+      <div class="col-6">
+        <ng-container [ngTemplateOutlet]="textPropertyRow"
+                      [ngTemplateOutletContext]="{ label: item.name, value: item.value }"></ng-container>
+      </div>
+      <div class="col-6 offset-6"></div>
+    </ng-container>
+  </ng-container>
+  <!--          <div class="col-6">-->
+  <!--            <ng-container [ngTemplateOutlet]="datePropertyRow"-->
+  <!--                          [ngTemplateOutletContext]="{ label: 'Date of payment (penalty)', value: testDate }"></ng-container>-->
+  <!--          </div>-->
+</div>
+
+<ng-template #textPropertyRow let-label="label" let-value="value">
+  <div class="row no-gutters __mb-2" *ngIf="value">
+    <div class="col-6 __color-gray">{{ label }}</div>
+    <div class="col-6">{{ value }}</div>
+  </div>
+</ng-template>
+
+<ng-template #pricePropertyRow let-label="label" let-value="value" let-currency="currency">
+  <div class="row no-gutters __mb-2">
+    <div class="col-6 __color-gray">{{ label }}</div>
+    <div class="col-6"><b>{{ value | number: '1.2-2' }} {{ currency }}</b></div>
+  </div>
+</ng-template>
+
+<ng-template #datePropertyRow let-label="label" let-value="value">
+  <div class="row no-gutters __mb-2">
+    <div class="col-6 __color-gray">{{ label }}</div>
+    <div class="col-6">{{ value | h21Date }} {{ value | h21Time }}</div>
+  </div>
+</ng-template>

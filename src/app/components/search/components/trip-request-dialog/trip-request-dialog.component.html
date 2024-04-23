@@ -1,0 +1,204 @@
+<div class="c-trip-request-dialog h21-dialog-panel"
+     #container
+     tabindex="0"
+     cdkTrapFocus
+     [@toggleSlide]="animationState"
+     (@toggleSlide.start)="onAnimation($event)"
+     (@toggleSlide.done)="onAnimation($event)">
+
+  <mat-progress-bar *ngIf="loadInProgress || actionInProgress"
+                    mode="indeterminate"
+                    color="primary"
+                    class="h21-dialog-panel_progress"
+  ></mat-progress-bar>
+
+  <button mat-icon-button
+          (click)="close()"
+          class="h21-dialog-panel_close __size-l">
+    <mat-icon>close</mat-icon>
+  </button>
+
+  <div class="h21-dialog-panel_title">
+    <h2>Trip request</h2>
+  </div>
+
+  <div class="h21-dialog-panel_content">
+    <form [formGroup]="form">
+      <mat-form-field [appearance]="formFieldAppearance" color="primary" class="__w-100 h21-mb-2">
+        <mat-label>Name</mat-label>
+        <input type="text"
+               matInput
+               autocomplete="off"
+               formControlName="requestName" />
+        <mat-error *ngIf="form.get('requestName').hasError('required')">
+          You must enter a value
+        </mat-error>
+      </mat-form-field>
+    </form>
+
+    <ng-container *ngIf="loadInProgress" [ngTemplateOutlet]="loader"></ng-container>
+    <ng-container *ngIf="noProgress" [ngTemplateOutlet]="noResultLabel"></ng-container>
+
+    <ng-container *ngIf="!loadInProgress && !noProgress">
+      <ng-container *ngFor="let item of data; trackBy: trackByFn;" [ngSwitch]="item.type">
+        <div *ngSwitchCase="queryTypeType.air"
+             [ngTemplateOutlet]="airQuery"
+             [ngTemplateOutletContext]="{ data: item.trip }"></div>
+        <div *ngSwitchCase="queryTypeType.hotel"
+             [ngTemplateOutlet]="hotelQuery"
+             [ngTemplateOutletContext]="{ data: item.trip }"></div>
+        <div *ngSwitchCase="queryTypeType.transfer"
+             [ngTemplateOutlet]="transferQuery"
+             [ngTemplateOutletContext]="{ data: item.trip }"></div>
+        <div *ngSwitchCase="queryTypeType.train"
+             [ngTemplateOutlet]="trainQuery"
+             [ngTemplateOutletContext]="{ data: item.trip }"></div>
+      </ng-container>
+    </ng-container>
+  </div>
+
+  <div class="h21-dialog-panel_actions">
+    <button type="button" mat-flat-button color="primary" (click)="save()" [disabled]="form.invalid">
+      Save
+    </button>
+  </div>
+
+</div>
+
+<ng-template #loader>
+  <div class="trip-request-fake-view">
+    <div class="trip-request-fake-view_item" *ngFor="let i of [ 1, 2, 3 ]; trackBy: trackByFn;">
+      <div class="trip-request-fake-view_icon">&nbsp;</div>
+      <div class="trip-request-fake-view_card">&nbsp;</div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #noResultLabel>
+  <div class="trip-request-fake-view">
+    <div class="trip-request-fake-view__empty-label">
+      <mat-icon>not_interested</mat-icon>
+      <p>{{ noResultText }}</p>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #airQuery let-data="data">
+  <div class="c-trip-request-dialog_query">
+    <div class="c-trip-request-dialog_query-icon">
+      <mat-icon>local_airport</mat-icon>
+    </div>
+    <div class="c-trip-request-dialog_query-card">
+      <button mat-icon-button
+              class="c-trip-request-dialog_query-card-close-btn __size-s"
+              (click)="remove(queryTypeType.air)">
+        <mat-icon>close</mat-icon>
+      </button>
+      <div class="h21-mb-1" *ngIf="data.from != null">
+        <span class="c-trip-request-dialog_lighter-text">From</span>
+        <span class="c-trip-request-dialog_bold-text">{{ data.from }}</span>
+      </div>
+      <div class="h21-mb-1" *ngIf="data.to != null">
+        <span class="c-trip-request-dialog_lighter-text">To</span>
+        <span class="c-trip-request-dialog_bold-text">{{ data.to }}</span>
+      </div>
+      <div class="h21-mb-1" *ngIf="data.arrivalDate != null && data.departureDate != null">
+        <span class="c-trip-request-dialog_lighter-text">Dates</span>
+        <span class="c-trip-request-dialog_bold-text">{{ data.arrivalDate }} - {{ data.departureDate }}</span>
+      </div>
+      <div class="row">
+        <div class="col-6 c-trip-request-dialog_lighter-text">{{ data.classId }}</div>
+        <div class="col-6 c-trip-request-dialog_lighter-text" *ngIf="data.nonStopOnly">Non-stop only</div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #hotelQuery let-data="data">
+  <div class="c-trip-request-dialog_query">
+    <div class="c-trip-request-dialog_query-icon">
+      <mat-icon>domain</mat-icon>
+    </div>
+    <div class="c-trip-request-dialog_query-card">
+      <button mat-icon-button
+              class="c-trip-request-dialog_query-card-close-btn __size-s"
+              (click)="remove(queryTypeType.hotel)">
+        <mat-icon>close</mat-icon>
+      </button>
+      <div class="h21-mb-1" *ngIf="data.location">
+        <span class="c-trip-request-dialog_lighter-text">Destination</span>
+        <span class="c-trip-request-dialog_bold-text">{{ data.location.address }}</span>
+      </div>
+      <div class="h21-mb-1" *ngIf="data.arrivalDate && data.departureDate">
+        <span class="c-trip-request-dialog_lighter-text">Dates</span>
+        <span class="c-trip-request-dialog_bold-text">
+          {{ data.arrivalDate | h21DateTransform | h21Date }} - {{ data.departureDate | h21DateTransform | h21Date }}
+        </span>
+      </div>
+      <div class="h21-mb-1" *ngIf="data.extras != null">
+        <span class="c-trip-request-dialog_lighter-text">Extras</span>
+        <span class="c-trip-request-dialog_bold-text">{{ data.extras }}</span>
+      </div>
+      <mat-chip-list class="h21-chip-list" *ngIf="data.options != null && data.options.length > 0">
+        <mat-chip class="h21-chip"
+                  color="primary"
+                  *ngFor="let option of data.options; trackBy: trackByFn;"
+                  [selected]="true">
+          {{ option }}
+        </mat-chip>
+      </mat-chip-list>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #transferQuery let-data="data">
+  <div class="c-trip-request-dialog_query">
+    <div class="c-trip-request-dialog_query-icon">
+      <mat-icon>directions_car</mat-icon>
+    </div>
+    <div class="c-trip-request-dialog_query-card">
+      <button mat-icon-button
+              class="c-trip-request-dialog_query-card-close-btn __size-s"
+              (click)="remove(queryTypeType.transfer)">
+        <mat-icon>close</mat-icon>
+      </button>
+      <div class="h21-mb-1" *ngIf="data.pickUp">
+        <span class="c-trip-request-dialog_lighter-text">Pick up</span>
+        <span class="c-trip-request-dialog_bold-text">{{ data.pickUp.address }}</span>
+      </div>
+      <div class="h21-mb-1" *ngIf="data.dropDown">
+        <span class="c-trip-request-dialog_lighter-text">Drop off</span>
+        <span class="c-trip-request-dialog_bold-text">{{ data.dropDown.address }}</span>
+      </div>
+      <div class="h21-mb-1" *ngIf="data.actionDateTime | h21DateTransform as actionDateTime">
+        <span class="c-trip-request-dialog_lighter-text">Date and time</span>
+        <span class="c-trip-request-dialog_bold-text">
+            <p>{{ actionDateTime | h21Date }} - {{ actionDateTime | h21Time }}</p>
+          </span>
+      </div>
+      <div class="row no-gutters h21-mb-1" *ngIf="(data.luggageAmount + data.petsAmount)">
+        <div class="col-3" *ngIf="data.luggageAmount">
+          <span class="c-trip-request-dialog_lighter-text">Luggage</span>
+          <span class="c-trip-request-dialog_bold-text">{{ data.luggageAmount }}</span>
+        </div>
+        <div class="col-4" *ngIf="data.petsAmount">
+          <span class="c-trip-request-dialog_lighter-text">Pets</span>
+          <span class="c-trip-request-dialog_bold-text">{{ data.petsAmount }}</span>
+        </div>
+      </div>
+      <div class="c-trip-request-dialog_lighter-text" *ngIf="data.includesWheelChair">Wheel chair</div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #trainQuery let-data="data">
+  <div class="c-trip-request-dialog_query">
+    <div class="c-trip-request-dialog_query-icon">
+      <mat-icon>train</mat-icon>
+    </div>
+    <div class="c-trip-request-dialog_query-card">
+
+    </div>
+  </div>
+</ng-template>
+

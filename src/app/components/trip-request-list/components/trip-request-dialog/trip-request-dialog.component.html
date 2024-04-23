@@ -1,0 +1,25 @@
+<div class="c-trip-request-dialog h21-message-dialog">
+
+  <h2 mat-dialog-title>Rename trip request</h2>
+
+  <mat-dialog-content>
+    <form [formGroup]="form" class="__w-100">
+      <mat-form-field [appearance]="formFieldAppearance" color="primary" class="__w-100">
+        <mat-label>Trip request name</mat-label>
+        <input type="text"
+               matInput
+               autocomplete="off"
+               formControlName="name" />
+        <mat-error *ngIf="form.get('name').hasError('required')">
+          You must enter a value
+        </mat-error>
+      </mat-form-field>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions>
+    <button mat-stroked-button color="primary" (click)="close()">Cancel</button>
+    <button mat-flat-button color="primary" (click)="save()">Save</button>
+  </mat-dialog-actions>
+
+</div>

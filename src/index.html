@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Search & Book</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="icon" type="image/png" sizes="194x194" href="./assets/favicons/favicon-194x194.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="./assets/favicons/favicon-96x96.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="./assets/favicons/favicon-16x16.png">
+  <link rel="apple-touch-icon" type="image/png" sizes="144x144" href="./assets/favicons/favicon-144x144.png">
+  <link rel="apple-touch-icon-precomposed" type="image/png" sizes="144x144" href="./assets/favicons/favicon-144x144.png">
+
+  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
+  <link href="./assets/fonts/material-icons/material-icons.css" rel="stylesheet">
+
+  <!-- inline styles to be able to display preloader right away -->
+  <style type="text/css">
+    .preloader {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 80px;
+      height: 60px;
+      margin: -30px 0 0 -40px;
+    }
+
+    .preloader .lines {
+      width: 80px;
+      height: 40px;
+      position: absolute;
+    }
+
+    .preloader .lines .line {
+      width: 80px;
+      height: 10px;
+      background-color: rgb(58, 58, 58);
+      position: absolute;
+      clip: rect(0, 0, 20px, 0);
+    }
+
+    .preloader .lines .line.line-1 {
+      top: 0;
+      -webkit-animation: slide 2s ease 0s infinite;
+      animation: slide 2s ease 0s infinite;
+    }
+
+    .preloader .lines .line.line-2 {
+      top: 15px;
+      -webkit-animation: slide 2s ease 0.25s infinite;
+      animation: slide 2s ease 0.25s infinite;
+    }
+
+    .preloader .lines .line.line-3 {
+      top: 30px;
+      -webkit-animation: slide 2s ease 0.5s infinite;
+      animation: slide 2s ease 0.5s infinite;
+    }
+
+    .preloader .loading-text {
+      position: absolute;
+      top: 50px;
+      text-align: center;
+      width: 100%;
+      color: rgb(58, 58, 58);
+      font-size: 13px;
+      font-family: sans-serif;
+      letter-spacing: 3px;
+      line-height: 10px;
+      height: 10px;
+      -webkit-animation: fade 2s ease 0s infinite;
+      animation: fade 2s ease 0s infinite;
+    }
+
+    @-webkit-keyframes slide {
+      0% {
+        clip: rect(0, 0, 20px, 0);
+      }
+      30% {
+        clip: rect(0, 80px, 20px, 0);
+      }
+      50% {
+        clip: rect(0, 80px, 20px, 0);
+      }
+      80% {
+        clip: rect(0, 80px, 20px, 80px);
+      }
+      100% {
+        clip: rect(0, 80px, 20px, 80px);
+      }
+    }
+
+    @keyframes slide {
+      0% {
+        clip: rect(0, 0, 20px, 0);
+      }
+      30% {
+        clip: rect(0, 80px, 20px, 0);
+      }
+      50% {
+        clip: rect(0, 80px, 20px, 0);
+      }
+      80% {
+        clip: rect(0, 80px, 20px, 80px);
+      }
+      100% {
+        clip: rect(0, 80px, 20px, 80px);
+      }
+    }
+
+    @-webkit-keyframes fade {
+      0% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+
+    @keyframes fade {
+      0% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+  </style>
+
+  <!-- Payment widget view customization -->
+  <script src="./assets/js/payment-widget-customization.js"></script>
+</head>
+<body class="h21-theme" oncontextmenu="return false;">
+<div class="preloader">
+  <div class="lines">
+    <div class="line line-1"></div>
+    <div class="line line-2"></div>
+    <div class="line line-3"></div>
+  </div>
+  <div class="loading-text">LOADING</div>
+</div>
+<h21-app-root></h21-app-root>
+</body>
+</html>

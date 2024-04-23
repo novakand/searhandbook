@@ -1,0 +1,83 @@
+<div class="c-select-booker-dialog h21-dialog-panel"
+     #container
+     tabindex="0"
+     cdkTrapFocus
+     [@toggleSlide]="animationState"
+     (@toggleSlide.start)="onAnimation($event)"
+     (@toggleSlide.done)="onAnimation($event)">
+
+  <mat-progress-bar *ngIf="loadInProgress || actionInProgress"
+                    mode="indeterminate"
+                    color="primary"
+                    class="h21-dialog-panel_progress"
+  ></mat-progress-bar>
+
+  <button mat-icon-button
+          (click)="close()"
+          class="h21-dialog-panel_close __size-l">
+    <mat-icon>close</mat-icon>
+  </button>
+
+  <div class="h21-dialog-panel_title">
+    <h2>Select booker</h2>
+  </div>
+
+  <div class="h21-dialog-panel_content">
+
+    <ng-container *ngIf="loadInProgress || noProgress">
+      <h21-table-loader [showNoResult]="noProgress"></h21-table-loader>
+    </ng-container>
+
+    <ng-container *ngIf="!loadInProgress && !noProgress">
+      <table mat-table [dataSource]="dataSource" class="h21-table">
+        <!-- Travellers -->
+        <ng-container matColumnDef="travelerName">
+          <th mat-header-cell *matHeaderCellDef width="35%">Travellers</th>
+          <td mat-cell *matCellDef="let el">
+            <span>{{ el.firstName }} {{ el.lastName }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Booker -->
+        <ng-container matColumnDef="isBooker">
+          <th mat-header-cell *matHeaderCellDef width="10%" class="__text-center">Booker</th>
+          <td mat-cell *matCellDef="let el" class="__text-center">
+            <mat-radio-button color="primary" class="hide-radio-label" [checked]="el.id === booker.id" [value]="el.id" (click)="onBookerChange(el)"></mat-radio-button>
+          </td>
+        </ng-container>
+
+        <!-- Payment -->
+        <ng-container matColumnDef="payment">
+          <th mat-header-cell *matHeaderCellDef width="20%">Payment</th>
+          <td mat-cell *matCellDef="let el" class="__text-center">
+            <span>{{ el.payMethod?.paymentTypeName }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Card -->
+        <ng-container matColumnDef="card">
+          <th mat-header-cell *matHeaderCellDef width="35%">Card</th>
+          <td mat-cell *matCellDef="let el">
+            <mat-form-field class="c-select-booker-dialog_cmbbx">
+              <mat-select panelClass="h21-select-panel" [compareWith]="compareObjects"
+                          (selectionChange)="onCardChange(el, $event.value)" [(ngModel)]="el.payMethod">
+                <mat-option *ngFor="let item of cardMap.get(el.id); trackBy: trackByFn;" [value]="item">{{ item?.cardNumber | h21HideCardNumber:item?.isHideCardDetail }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </ng-container>
+
+  </div>
+
+  <div class="h21-dialog-panel_actions">
+    <button type="button" mat-flat-button color="primary" (click)="save()">
+      Save
+    </button>
+  </div>
+</div>
+

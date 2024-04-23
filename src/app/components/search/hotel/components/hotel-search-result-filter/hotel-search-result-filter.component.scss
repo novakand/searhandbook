@@ -1,0 +1,33 @@
+//----------------------------------------------------------------------------------------------------------------------
+// Hotel search result filter component style
+
+::ng-deep .c-hotel-search-result-filter_select-all-button.mat-button {
+  position: absolute;
+  z-index: 2;
+  top: 8px;
+  right: 8px;
+  color: var(--textAccent-hex);
+  font-size: 12px;
+  line-height: 24px;
+  padding: 0 4px;
+  min-width: 70px;
+
+  .mat-button-wrapper {
+    border-bottom: 1px dashed var(--textAccent-hex);
+  }
+}
+
+::ng-deep .c-hotel-search-result-filter_hotel-name-field.mat-form-field {
+  display: block;
+  width: 100%;
+  margin-bottom: 16px;
+
+  .mat-form-field-wrapper {
+    padding: 0;
+    margin-bottom: 0;
+  }
+
+  .mat-form-field-subscript-wrapper {
+    display: none;
+  }
+}

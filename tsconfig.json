@@ -1,0 +1,77 @@
+{
+  "compileOnSave": true,
+  "compilerOptions": {
+    "outDir": "./dist/out-tsc",
+    "sourceMap": true,
+    "declaration": false,
+    "module": "es6",
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "target": "es5",
+    "allowJs": true,
+    "typeRoots": [
+      "node_modules/@types",
+      "node_modules/@h21-map-types"
+    ],
+    "lib": [
+      "es2017",
+      "dom"
+    ],
+    "types": [
+      "node",
+      "leaflet-map",
+      "google-map",
+      "baidu-map",
+      "yandex-map",
+      "leaflet-markercluster"
+    ],
+    "paths": {
+      "@angular/*": [
+        "../node_modules/@angular/*"
+      ],
+      "rxjs/*": [
+        "../node_modules/rxjs/*"
+      ],
+      "jszip": [
+        "../node_modules/jszip/dist/jszip.min.js"
+      ],
+      "@app/*": [
+        "src/app/*"
+      ],
+      "@animation/*": [
+        "src/app/animations/*"
+      ],
+      "@components/*": [
+        "src/app/components/*"
+      ],
+      "@search/*": [
+        "src/app/components/search/*"
+      ],
+      "@hotel/*": [
+        "src/app/components/search/hotel/*"
+      ],
+      "@transfer/*": [
+        "src/app/components/search/transfer/*"
+      ],
+      "@services/*": [
+        "src/app/core/services/*"
+      ],
+      "@models/*": [
+        "src/app/core/models/*"
+      ],
+      "@environments/*": [
+        "src/environments/*"
+      ],
+      "@core/*": [
+        "src/app/core/*"
+      ],
+      "@shared/*": [
+        "src/app/shared/*"
+      ]
+    }
+  },
+  "exclude": [
+    "**/node_modules"
+  ]
+}

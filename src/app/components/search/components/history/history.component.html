@@ -1,0 +1,146 @@
+<div class="c-search-history">
+  <mat-progress-bar *ngIf="inProgress"
+                    mode="indeterminate"
+                    color="primary"
+                    class="c-search-history_progress">
+  </mat-progress-bar>
+
+  <div class="c-search-history_wrapper">
+    <ng-container *ngIf="inProgress || noProgress">
+      <h21-items-list-loader [showNoResult]="noProgress" [small]="true" [noResultText]="noResultText"></h21-items-list-loader>
+    </ng-container>
+
+    <ng-container *ngIf="!inProgress && !noProgress">
+      <ng-container *ngFor="let item of data; let i = index" [ngSwitch]="item.searchKind">
+        <div *ngSwitchCase="searchKind.air"
+             [ngTemplateOutlet]="airQuery"
+             [ngTemplateOutletContext]="{ data: item, idx: i, id: item.id }"></div>
+        <div *ngSwitchCase="searchKind.hotel"
+             [ngTemplateOutlet]="hotelQuery"
+             [ngTemplateOutletContext]="{ data: item.hotel, idx: i, id: item.id }"></div>
+        <div *ngSwitchCase="searchKind.transfer"
+             [ngTemplateOutlet]="transferQuery"
+             [ngTemplateOutletContext]="{ data: item.transfer, idx: i, id: item.id }"></div>
+      </ng-container>
+    </ng-container>
+  </div>
+</div>
+
+<ng-template #airQuery let-data="data" let-id="id" let-idx="idx">
+  <div class="c-search-history_item"
+       tabindex="0"
+       (click)="showQuery(queryType.air, id)"
+       (keydown.enter)="showQuery(queryType.air, id)">
+    <div class="c-search-history_type-icon c-search-history_type-icon__air" *ngIf="tabletMode">
+      <mat-icon>local_airport</mat-icon>
+    </div>
+    <div class="c-search-history_item-flex">
+      <div class="c-search-history_item-flex-content">
+        <p><b>From</b>: {{ data.from }}</p>
+        <p><b>To</b>: {{ data.to }}</p>
+        <p class="h21-mb-0"><b>Dates:</b>{{ data.arrivalDate }} - {{ data.departureDate }}</p>
+      </div>
+      <div class="c-search-history_item-flex-aside">
+        <div class="c-search-history_type-icon c-search-history_type-icon__air" *ngIf="!tabletMode">
+          <mat-icon>local_airport</mat-icon>
+        </div>
+        <div class="c-search-history_option">
+          <mat-icon>person</mat-icon>
+          <span>2 passenger</span>
+        </div>
+        <div class="mat-chip-list_align-right">
+          <mat-chip-list [selectable]="false" class="h21-chip-list">
+            <mat-chip *ngIf="data.nonStopOnly" class="h21-chip" color="primary" [selectable]="false" [selected]="true">
+              Non-stop only
+            </mat-chip>
+            <mat-chip color="primary" [selectable]="false" [selected]="true">
+              {{ data.classId }}
+            </mat-chip>
+          </mat-chip-list>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #hotelQuery let-data="data" let-id="id" let-idx="idx">
+  <div class="c-search-history_item"
+       tabindex="0"
+       (click)="showQuery(queryType.hotel, id)"
+       (keydown.enter)="showQuery(queryType.hotel, id)">
+    <div class="c-search-history_type-icon c-search-history_type-icon__hotel" *ngIf="tabletMode">
+      <mat-icon>domain</mat-icon>
+    </div>
+    <div class="row no-gutters __fs-xs">
+      <div [ngClass]="{ 'col-9': !tabletMode, 'col-12 __mb-1': tabletMode }">
+        <p class="__line-height-normal __mb-1"
+           [ngClass]="{ '__flex-row': !tabletMode, '__pr-4': tabletMode }">
+          <b class="__mr-1 __nowrap __flex-none">Destination:</b>
+          <span class="__word-break-all">{{ data.destination }}</span>
+        </p>
+        <p *ngIf="data.poi?.name" class="__line-height-normal __mb-1"><b class="__mr-1">POI:</b>{{ data.poi?.name }}</p>
+        <p class="__line-height-normal __mb-0">
+          <b class="__mr-1">Dates:</b>
+          {{ data.arrival | date:'dd MMM yyyy' }} - {{ data.departure | date:'dd MMM yyyy' }}
+        </p>
+      </div>
+      <div [ngClass]="{ 'col-3 __ta-r': !tabletMode, 'col-12': tabletMode }">
+        <div class="c-search-history_type-icon c-search-history_type-icon__hotel __mb-1" *ngIf="!tabletMode">
+          <mat-icon>domain</mat-icon>
+        </div>
+        <p class="__line-height-normal __mb-1"><b class="__mr-1">Adults per room:</b>{{ data.adultsPerRoom }}</p>
+        <p class="__line-height-normal __mb-1"><b class="__mr-1">Amount of rooms:</b>{{ data.amountOfRooms }}</p>
+        <p *ngIf="data.children?.length > 0" class="__line-height-normal __mb-1"><b class="__mr-1">Children:</b>{{ data.children.length }}</p>
+      </div>
+    </div>
+    <p *ngIf="data.children?.length > 0" class="__line-height-normal __ta-r __mb-0 __nowrap">
+      <b class="__mr-1">Ages of children:</b>
+      <span class="__ml-1" *ngFor="let age of data.children; trackBy: trackByFn;">
+        <mat-icon class="__color-accent __va-tt __size-s">person</mat-icon>
+        {{ age }}
+      </span>
+    </p>
+  </div>
+</ng-template>
+
+<ng-template #transferQuery let-data="data" let-id="id" let-idx="idx">
+  <div class="c-search-history_item"
+       tabindex="0"
+       (click)="showQuery(queryType.transfer, id)"
+       (keydown.enter)="showQuery(queryType.transfer, id)">
+    <div class="c-search-history_type-icon c-search-history_type-icon__transfer" *ngIf="tabletMode">
+      <mat-icon>directions_car</mat-icon>
+    </div>
+    <div class="row no-gutters __fs-xs">
+      <div [ngClass]="{ 'col-9': !tabletMode, 'col-12 __mb-1': tabletMode }">
+        <p class="__line-height-normal __mb-1"
+           [ngClass]="{ '__flex-row': !tabletMode, '__pr-4': tabletMode }">
+          <b class="__mr-1 __nowrap __flex-none">Pick up:</b>
+          <span class="__word-break-all">{{ data.routes[0].fromLocation.address }}</span>
+        </p>
+        <p class="__line-height-normal __mb-1"
+           [ngClass]="{ '__flex-row': !tabletMode, '__pr-4': tabletMode }">
+          <b class="__mr-1 __nowrap __flex-none">Drop off:</b>
+          <span class="__word-break-all">{{ data.routes[0].toLocation.address }}</span>
+        </p>
+        <div class="row small-gutters">
+          <div class="col-6"><b class="__mr-1 __nowrap">Date:</b>{{ data.routes[0].fromDate | h21Date }}</div>
+          <div class="col-6"><b class="__mr-1 __nowrap">Local time:</b>{{ data.routes[0].fromDate | h21Time }}</div>
+        </div>
+      </div>
+      <div [ngClass]="{ 'col-3 __ta-r': !tabletMode, 'col-12': tabletMode }">
+        <div class="c-search-history_type-icon c-search-history_type-icon__transfer __mb-1" *ngIf="!tabletMode">
+          <mat-icon>directions_car</mat-icon>
+        </div>
+        <p class="__mb-1">
+          <mat-icon class="__color-accent __va-tt __size-s">person</mat-icon>
+          {{ data.travelersQuantity }} passenger
+        </p>
+        <p *ngIf="data.luggageQuantity" class="__mb-0">
+          <mat-icon class="__color-accent __va-tt __size-s">business_center</mat-icon>
+          {{ data.luggageQuantity }} standard bags
+        </p>
+      </div>
+    </div>
+  </div>
+</ng-template>

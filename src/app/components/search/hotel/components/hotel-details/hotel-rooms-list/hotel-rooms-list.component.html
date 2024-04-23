@@ -1,0 +1,106 @@
+<ng-container *ngIf="rooms$ | async as rooms; else noRooms">
+  <div class="c-hotel-rooms-list">
+    <!-- Filter -->
+    <div class="__d-f flex-row __justify-content-start __align-items-center"
+         [ngClass]="{ '__pt-4': hotelCardMode, '__pb-2': hotelCardMode, '__pa-2': !hotelCardMode }">
+      <mat-chip-list [selectable]="true" [multiple]="true" class="h21-chip-list c-hotel-rooms-list_filter">
+        <mat-chip class="h21-chip __fw-normal"
+                  [selectable]="true"
+                  [selected]="roomFilter$.value.filter.isRefundable"
+                  (click)="updateFilter(roomFilter$.value, 'isRefundable')">
+          Refundable only
+        </mat-chip>
+        <mat-chip class="h21-chip __fw-normal"
+                  [selectable]="true"
+                  [selected]="roomFilter$.value.filter.isBreakfastIncluded"
+                  (click)="updateFilter(roomFilter$.value, 'isBreakfastIncluded')">
+          Breakfast included
+        </mat-chip>
+      </mat-chip-list>
+    </div>
+
+    <!-- List -->
+    <ng-container *ngIf="!failed">
+      <ng-container *ngIf="!rooms.length">
+        <div class="sb-hotel-details-info-message"
+             [class.__mv-2]="hotelCardMode"
+             [class.__ma-2]="!hotelCardMode">
+          <mat-icon color="primary">info</mat-icon>
+          <div>
+            <p class="__ma-0 __color-accent __fs-l">{{ data.hotelName }}</p>
+            <p class="__ma-0 __color-gray __fs-xxs">No available rooms for your requested period. Please check other options below</p>
+          </div>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="rooms.length">
+        <h21-hotel-rooms-list-item *ngFor="let room of rooms; trackBy: trackByFn;" [item]="room"></h21-hotel-rooms-list-item>
+      </ng-container>
+    </ng-container>
+    <ng-container *ngIf="failed">
+      <div class="sb-hotel-details-info-message __ma-2">
+        <mat-icon color="primary">info</mat-icon>
+        <p class="__ma-0 __color-accent">{{ failed }}</p>
+      </div>
+    </ng-container>
+  </div>
+</ng-container>
+
+<ng-template #noRooms>
+  <ng-container *ngIf="hotelCardMode && !filter.arrival; else loader">
+    <div class="sb-hotel-details-info-message __mv-2">
+      <mat-icon color="primary">info</mat-icon>
+      <div>
+        <p class="__ma-0 __color-accent __fs-l">{{ data.hotelName }}</p>
+        <p class="__ma-0 __color-gray __fs-xxs">No available rooms for your requested period. Please check other options below</p>
+      </div>
+    </div>
+  </ng-container>
+</ng-template>
+
+<!-- Loader template -->
+<ng-template #loader>
+  <mat-progress-bar mode="indeterminate" color="primary"></mat-progress-bar>
+  <div class="hotels-room-loader" *ngFor="let i of loaderCount$ | async; trackBy: trackByFn;">
+    <div class="hotels-room-loader_flex">
+      <div class="hotels-room-loader_flex-provider">
+        <div class="hotels-loader_text __mb-2" style="width: 50%;"></div>
+        <div class="__mb-1 flex-row">
+          <div class="hotels-loader_icon __d-ib hotels-loader_icon__size-s __mr-1"></div>
+          <div class="hotels-loader_text __d-ib" style="width: 60%;"></div>
+        </div>
+        <div class="flex-row">
+          <div class="hotels-loader_icon __d-ib hotels-loader_icon__size-s __mr-1"></div>
+          <div class="hotels-loader_text __d-ib" style="width: 60%;"></div>
+        </div>
+      </div>
+      <div class="hotels-room-loader_flex-description">
+        <div class="hotels-loader_text __mb-2" style="width: 55%;"></div>
+        <div class="hotels-loader_text __mb-1" style="width: 95%;"></div>
+        <div class="hotels-loader_text" style="width: 80%;"></div>
+      </div>
+      <div class="hotels-room-loader_flex-price">
+        <div class="row small-gutters __mb-2">
+          <div class="col-1"></div>
+          <div class="col-5">
+            <div class="hotels-loader_text"></div>
+          </div>
+          <div class="col-6">
+            <div class="hotels-loader_text"></div>
+          </div>
+        </div>
+        <div class="row small-gutters __mb-2">
+          <div class="col-1"></div>
+          <div class="col-5">
+            <div class="hotels-loader_text"></div>
+          </div>
+          <div class="col-6">
+            <div class="hotels-loader_text"></div>
+          </div>
+        </div>
+        <div class="flex-row __justify-content-end">
+          <div class="hotels-loader_btn __d-b" style="width: 100px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

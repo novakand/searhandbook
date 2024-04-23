@@ -1,0 +1,186 @@
+<div class="с-hotel-search-form h21-search-form">
+  <div class="h21-search-form_content">
+    <form [formGroup]="form">
+
+      <!-- Primary traveler -->
+      <mat-form-field color="primary" class="__w-100" floatLabel="always"
+                      [appearance]="formFieldAppearance"
+                      [class.с-hotel-search-form_readonly-field]="form.controls['primaryTraveler'].disabled">
+        <mat-label>Primary traveller</mat-label>
+        <input type="text"
+               matInput
+               placeholder="Anonymous traveller"
+               #searchText
+               (blur)="onBlurPrimaryTravelerInput(travelers.isOpen)"
+               formControlName="primaryTraveler"
+               [matAutocomplete]="travelers" />
+        <mat-icon matSuffix *ngIf="!primaryTraveler">person_add</mat-icon>
+        <button matSuffix mat-icon-button type="button" *ngIf="primaryTraveler" (click)="resetPrimaryTraveler()">
+          <mat-icon>close</mat-icon>
+        </button>
+        <mat-autocomplete #travelers="matAutocomplete"
+                          class="с-hotel-search-form_traveler-ac-panel"
+                          [displayWith]="travelersDisplayFn"
+                          (closed)="onTravelersAutocompleteClose()"
+                          (optionSelected)="onSetPrimaryTraveler($event.option.value)">
+          <mat-option *ngFor="let item of travelers$ | async; trackBy: trackByFn;" [value]="item">
+            <span class="с-hotel-search-form_traveler-option" [class.__is-selected]="primaryTraveler?.id === item.id">
+              <span class="с-hotel-search-form_traveler-option-avatar">
+                <h21-profile-image [firstName]="item.firstName"
+                                   [lastName]="item.lastName"
+                                   [fileHash]="item.photoFileHash"
+                                   size='medium'>
+                </h21-profile-image>
+                <span class="с-hotel-search-form_traveler-option-selection-mark"></span>
+              </span>
+              <span class="__d-b __color-accent">
+                <span class="__d-b __fs-l __fw-light">{{ item | h21ConcatFields:['firstName', 'lastName'] }}</span>
+                <span class="__d-b __fs-s __fw-bold">{{ item.jobTitle }}</span>
+              </span>
+              <span class="__flex-fill"></span>
+              <span class="__d-b __text-right __align-self-stretch __flex-column">
+                <span class="__d-b __fs-s __fw-bold __color-accent" [matTooltip]="item.company" matTooltipPosition="before">
+                  {{ item.company | getCompanyNameText }}
+                </span>
+                <span class="__flex-fill"></span>
+                <span class="с-hotel-search-form_traveler-option-payment-systems">
+                  <ng-container *ngFor="let type of item.paymentTypes">
+                    <img *ngIf="type.paymentTypeCode === 'airPlus'" matTooltip="AirPlus" src="./assets/img/payment-system-airplus.svg" alt="" />
+                    <img *ngIf="type.paymentTypeCode === 'bta'" matTooltip="BTA" src="./assets/img/payment-system-bta.svg" alt="" />
+                    <img *ngIf="type.paymentTypeCode === 'creditCard'" matTooltip="Credit card" src="./assets/img/payment-system-credit-card.svg" alt="" />
+                    <img *ngIf="type.paymentTypeCode === 'bankTransfer'" matTooltip="Bank transfer" src="./assets/img/payment-system-bank-transfer.svg" alt="" />
+                  </ng-container>
+                </span>
+              </span>
+            </span>
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+
+      <!-- Destination, Hotel Name, POI -->
+      <mat-form-field [appearance]="formFieldAppearance" color="primary" class="__w-100">
+        <mat-label>Destination, Hotel Name, POI</mat-label>
+        <input type="text" matInput [matAutocomplete]="destinations" formControlName="destination" (keydown)="onArrowEvent($event, destinations)" />
+        <mat-autocomplete #destinations="matAutocomplete"
+                          class="h21-search-form_autocomplete-panel"
+                          [displayWith]="destinationsDisplayFn"
+                          (optionSelected)="onSelect($event.option.value)">
+          <mat-option *ngFor="let item of destinations$ | async; trackBy: trackByFn;" [value]="item">
+            <mat-icon class="h21-search-form_autocomplete-panel-icon"
+                      [class.h21-search-form_autocomplete-panel-icon__poi]="item.subtype === 'poi'">
+              {{ iconType[item.subtype] }}
+            </mat-icon>
+            <span class="h21-search-form_autocomplete-panel-text">
+              <span class="h21-search-form_autocomplete-panel-text-name">
+                {{ item.name }}
+                <ng-container *ngIf="item.tags && item.tags.length">
+                  (
+                  <ng-container *ngFor="let v of item.tags; let last = last">
+                    #{{ v }}<ng-container *ngIf="!last">,</ng-container>
+                  </ng-container>
+                  )
+                </ng-container>
+              </span>
+              <span *ngIf="item.address?.description" class="h21-search-form_autocomplete-panel-text-description">
+                {{ item.address?.description }}
+              </span>
+            </span>
+          </mat-option>
+        </mat-autocomplete>
+        <mat-icon *ngIf="!form.get('destination').value" matSuffix>location_on</mat-icon>
+        <button matSuffix mat-icon-button type="button" *ngIf="!!form.get('destination').value" (click)="resetLocation()">
+          <mat-icon>close</mat-icon>
+        </button>
+        <mat-error *ngIf="form.get('destination').hasError('required')">
+          You must enter a value
+        </mat-error>
+        <mat-error *ngIf="!form.get('destination').hasError('required') && form.get('destination').hasError('invalid')">
+          Invalid value
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Check-in - Check-out dates -->
+      <h21-two-month-calendar #calendar
+                              [formFieldAppearance]="formFieldAppearance"
+                              fromLabel="Check-in"
+                              toLabel="Check-out"
+                              [required]="true"
+                              [maxRangeInDays]="30"
+                              [isSB]="true"
+                              [datePattern]="'dd MMM yyyy'"
+                              (selectedFromDateChange)="onSetFormDate('arrival', $event)"
+                              (selectedToDateChange)="onSetFormDate('departure', $event)">
+      </h21-two-month-calendar>
+
+      <!-- Rooms -->
+      <div class="row __mb-2">
+        <div class="__fs-xs __align-self-center" [ngClass]="{ 'col-3': !tabletMode, 'col-6 __mb-2': tabletMode }">
+          Adults per room
+        </div>
+        <div [ngClass]="{ 'col-3': !tabletMode, 'col-6 __mb-2': tabletMode }">
+          <h21-counter [min]="1"
+                       [max]="9"
+                       [value]="filter.adultsPerRoom"
+                       (changed)="filter.adultsPerRoom = $event">
+          </h21-counter>
+        </div>
+        <div class="__fs-xs __align-self-center" [ngClass]="{ 'col-3': !tabletMode, 'col-6': tabletMode }">
+          Amount of rooms
+        </div>
+        <div [ngClass]="{ 'col-3': !tabletMode, 'col-6': tabletMode }">
+          <h21-counter [min]="1"
+                       [max]="6"
+                       [value]="filter.amountOfRooms"
+                       (changed)="filter.amountOfRooms = $event">
+          </h21-counter>
+        </div>
+      </div>
+
+      <!-- Children -->
+<!--
+      <div class="row __mb-2">
+        <div class="__fs-xs __align-self-center" [ngClass]="{ 'col-3': !tabletMode, 'col-6': tabletMode }">
+          Children
+        </div>
+        <div [ngClass]="{ 'col-3': !tabletMode, 'col-6': tabletMode }">
+          <h21-counter #counter min="0" max="4" [value]="filter.children.length"></h21-counter>
+        </div>
+      </div>
+-->
+      <ng-container *ngIf="form.get('children')['controls'].length > 0">
+        <div class="row" formArrayName="children">
+          <div *ngFor="let age of form.get('children')['controls']; trackBy: trackByFn; let i = index;"
+               [ngClass]="{ 'col-3': !tabletMode, 'col-6': tabletMode }">
+            <div [formGroupName]="i">
+              <mat-form-field class="__w-100" color="primary" [appearance]="formFieldAppearance" floatLabel="always">
+                <mat-label>Child {{ i + 1 }}</mat-label>
+                <mat-select panelClass="h21-select-panel" placeholder="Age" formControlName="age">
+                  <mat-option *ngFor="let item of ages$ | async; trackBy: trackByFn;" [value]="item">
+                    {{ item }}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="age.get('age').hasError('required')">
+                  Enter a value
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </form>
+  </div>
+
+  <!-- Action buttons -->
+  <div class="h21-search-form_actions">
+    <button type="button" mat-stroked-button color="primary" (click)="openSendRequestDialog()">
+      Send request
+    </button>
+    <div class="w-spacer">&nbsp;</div>
+    <button type="button" mat-button color="primary" (click)="clear()">
+      Clear
+    </button>
+    <button type="button" mat-flat-button color="primary" (click)="submit()" [disabled]="(pending$ | async) || !(countOfHotel$ | async)">
+      Search
+    </button>
+  </div>
+</div>

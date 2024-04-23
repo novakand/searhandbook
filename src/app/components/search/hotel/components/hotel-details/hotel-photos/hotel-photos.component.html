@@ -1,0 +1,18 @@
+<div class="c-hotel-photos" *ngIf="imagesLoaded; else loader">
+  <div class="c-hotel-photos_list">
+    <ng-container *ngFor="let item of galleryItems; trackBy: trackByFn; let i = index; let last = last">
+      <div class="c-hotel-photos_list-item" *ngIf="i < maxPhotoCount">
+        <div class="c-hotel-photos_picture" [lightbox]="i" [gallery]="galleryId">
+          <img [src]="item.data.src | safeResourceUrl" alt="" />
+          <div class="c-hotel-photos_more" *ngIf="!last && i === (maxPhotoCount - 1)">
+            <span>View<br/>{{ galleryItems.length - maxPhotoCount }} +</span>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>
+
+<ng-template #loader>
+  <mat-progress-bar mode="indeterminate" color="primary"></mat-progress-bar>
+</ng-template>

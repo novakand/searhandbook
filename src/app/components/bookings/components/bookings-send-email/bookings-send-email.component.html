@@ -1,0 +1,50 @@
+<div class="c-send-email-dialog h21-dialog-panel"
+     tabindex="0"
+     cdkTrapFocus
+     [@toggleSlide]="animationState"
+     (@toggleSlide.start)="onAnimation($event)"
+     (@toggleSlide.done)="onAnimation($event)">
+
+  <button mat-icon-button
+          (click)="close()"
+          class="h21-dialog-panel_close __size-l">
+    <mat-icon>close</mat-icon>
+  </button>
+
+  <div class="h21-dialog-panel_title mb-3">
+    <h2>Specify your requirements to the amendment</h2>
+
+    <small>
+      Please be aware that modification is offline process and we do not guarantee your amendments would be completed
+    </small>
+  </div>
+
+  <div class="h21-dialog-panel_content">
+    <form [formGroup]="form">
+      <mat-form-field [appearance]="formFieldAppearance" color="primary" class="__w-100">
+        <mat-label>Requirements</mat-label>
+        <textarea matInput
+                  rows="20"
+                  autocomplete="off"
+                  formControlName="message"></textarea>
+      </mat-form-field>
+    </form>
+  </div>
+
+  <div class="h21-dialog-panel_actions">
+    <button type="button"
+            mat-button
+            color="primary"
+            (click)="close()">
+      Cancel
+    </button>
+    <button type="button"
+            mat-flat-button
+            color="primary"
+            [disabled]="pending"
+            (click)="send()">
+      Send
+    </button>
+  </div>
+
+</div>

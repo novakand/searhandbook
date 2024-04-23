@@ -1,0 +1,11 @@
+<div class="c-search-navigation-toolbar">
+  <button mat-icon-button *ngFor="let tab of tabs; trackBy: trackByFn;"
+     class="c-search-navigation-toolbar_item"
+     [routerLink]="tab.url"
+     routerLinkActive="__is-active"
+     [disabled]="tab.disabled"
+     [matTooltip]="tab.tooltipText"
+     matTooltipPosition="below">
+    <mat-icon>{{ tab.icon }}</mat-icon>
+  </button>
+</div>

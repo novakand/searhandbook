@@ -1,0 +1,295 @@
+<div class="c-bookings-filter h21-dialog-panel"
+     #container
+     tabindex="0"
+     cdkTrapFocus
+     [@toggleSlide]="animationState"
+     (@toggleSlide.start)="onAnimation($event)"
+     (@toggleSlide.done)="onAnimation($event)">
+
+  <button mat-icon-button (click)="close()" class="h21-dialog-panel_close __size-l">
+    <mat-icon>close</mat-icon>
+  </button>
+
+  <div class="h21-dialog-panel_title">
+    <h2>Filter</h2>
+  </div>
+
+  <div class="h21-dialog-panel_content">
+    <form [formGroup]="form" (submit)="submit()">
+      <!-- Type -->
+      <mat-form-field color="primary" class="__w-100" [appearance]="formFieldAppearance">
+        <mat-label>Type</mat-label>
+        <mat-select panelClass="h21-select-panel" multiple formControlName="typeIdIn">
+          <mat-option *ngFor="let type of orderItemTypes$ | async; trackBy: trackByFn"
+                      [value]="type.id">
+            {{ type.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- View order number -->
+      <mat-form-field color="primary" class="__w-100" [appearance]="formFieldAppearance">
+        <mat-label>Order number</mat-label>
+        <input type="text" matInput autocomplete="off" formControlName="viewOrderNumberContains"/>
+      </mat-form-field>
+
+      <!-- Invoice -->
+      <mat-form-field color="primary" class="__w-100" [appearance]="formFieldAppearance">
+        <mat-label>Invoice number</mat-label>
+        <input type="text" matInput autocomplete="off" formControlName="invoiceNumberContains" />
+      </mat-form-field>
+
+      <!-- Number (Booking code) -->
+      <mat-form-field color="primary" class="__w-100" [appearance]="formFieldAppearance">
+        <mat-label>Booking code</mat-label>
+        <input type="text" matInput autocomplete="off" formControlName="bookingCode"/>
+      </mat-form-field>
+
+      <!-- Provider confirmation -->
+      <mat-form-field color="primary" class="__w-100" [appearance]="formFieldAppearance">
+        <mat-label>Provider confirmation</mat-label>
+        <input type="text" matInput autocomplete="off" formControlName="providerConfirmation"/>
+      </mat-form-field>
+
+      <!-- Customer Name -->
+      <mat-form-field color="primary" class="__w-100" [appearance]="formFieldAppearance">
+        <mat-label>Customer</mat-label>
+        <input type="text" matInput autocomplete="off" formControlName="customerNameStart" />
+      </mat-form-field>
+
+      <!-- Customer Company -->
+      <mat-form-field color="primary" class="__w-100" [appearance]="formFieldAppearance">
+        <mat-label>Customer company</mat-label>
+        <input type="text" matInput autocomplete="off" formControlName="customerCompanyNameContains"/>
+      </mat-form-field>
+
+      <!-- Booker -->
+      <mat-form-field color="primary" class="__w-100" [appearance]="formFieldAppearance">
+        <mat-label>Booker</mat-label>
+        <input type="text" #bookerData matInput [matAutocomplete]="booker" formControlName="bookerId" />
+        <mat-autocomplete #booker="matAutocomplete" class="h21-autocomplete-panel" [displayWith]="displayFn">
+          <mat-option *ngFor="let booker of bookerList$ | async; trackBy: trackByFn" [value]="booker">
+            <span [title]="booker.name">{{ booker.name }}</span>
+          </mat-option>
+        </mat-autocomplete>
+        <mat-hint *ngIf="showEnterHint">Press "Enter" to search</mat-hint>
+      </mat-form-field>
+
+      <!-- Booker email -->
+      <mat-form-field color="primary" class="__w-100" [appearance]="formFieldAppearance">
+        <mat-label>Booker email</mat-label>
+        <input type="text" matInput autocomplete="off" formControlName="createUserName" />
+      </mat-form-field>
+
+      <!-- Company -->
+      <mat-form-field color="primary" class="__w-100" [appearance]="formFieldAppearance">
+        <mat-label>Company</mat-label>
+        <input type="text" matInput autocomplete="off" formControlName="companyNameContains"/>
+      </mat-form-field>
+
+      <!-- Trip -->
+      <mat-form-field color="primary" class="__w-100" [appearance]="formFieldAppearance">
+        <mat-label>Trip name</mat-label>
+        <input type="text" matInput autocomplete="off" formControlName="tripNameContains" />
+      </mat-form-field>
+
+      <!-- Booked period -->
+      <ng-container>
+        <h4 class="__fs-s __color-accent __fw-medium __mt-0 __mb-05">Receiving</h4>
+        <div class="row __mb-1">
+          <div class="col-6">
+            <mat-form-field color="primary" class="__w-100" [appearance]="formFieldAppearance">
+              <mat-label>From</mat-label>
+              <input matInput
+                     [matDatepicker]="bookedPeriodPickerFrom"
+                     formControlName="createDateGreaterEqual"
+                     (dateChange)="setCorrectDate('createDateGreaterEqual', $event.value)">
+              <mat-datepicker #bookedPeriodPickerFrom></mat-datepicker>
+              <button type="button" mat-icon-button matSuffix [disabled]="form.get('createDateGreaterEqual').disabled" (click)="bookedPeriodPickerFrom.open()">
+                <mat-icon>date_range</mat-icon>
+              </button>
+            </mat-form-field>
+          </div>
+          <div class="col-6">
+            <mat-form-field color="primary" class="__w-100" [appearance]="formFieldAppearance">
+              <mat-label>To</mat-label>
+              <input matInput
+                     [matDatepicker]="bookedPeriodPickerTo"
+                     [min]="form.get('createDateGreaterEqual').value"
+                     formControlName="createDateLessEqual"
+                     (dateChange)="setCorrectDate('createDateLessEqual', $event.value)">
+              <mat-datepicker #bookedPeriodPickerTo></mat-datepicker>
+              <button type="button" mat-icon-button matSuffix  [disabled]="form.get('createDateLessEqual').disabled" (click)="bookedPeriodPickerTo.open()">
+                <mat-icon>date_range</mat-icon>
+              </button>
+            </mat-form-field>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- Arrival period -->
+      <ng-container>
+        <h4 class="__fs-s __color-accent __fw-medium __mt-0 __mb-05">Arrival</h4>
+        <div class="row __mb-1">
+          <div class="col-6">
+            <mat-form-field color="primary" class="__w-100" [appearance]="formFieldAppearance">
+              <mat-label>From</mat-label>
+              <input matInput
+                     [matDatepicker]="arrivalPeriodPickerFrom"
+                     formControlName="arrivalDateGreaterEqual"
+                     (dateChange)="setCorrectDate('arrivalDateGreaterEqual', $event.value)">
+              <mat-datepicker #arrivalPeriodPickerFrom></mat-datepicker>
+              <button type="button" mat-icon-button matSuffix [disabled]="form.get('arrivalDateGreaterEqual').disabled" (click)="arrivalPeriodPickerFrom.open()">
+                <mat-icon>date_range</mat-icon>
+              </button>
+            </mat-form-field>
+          </div>
+          <div class="col-6">
+            <mat-form-field color="primary" class="__w-100" [appearance]="formFieldAppearance">
+              <mat-label>To</mat-label>
+              <input matInput
+                     [min]="form.get('arrivalDateGreaterEqual').value"
+                     [matDatepicker]="arrivalPeriodPickerTo"
+                     formControlName="arrivalDateLessEqual"
+                     (dateChange)="setCorrectDate('arrivalDateLessEqual', $event.value)">
+              <mat-datepicker #arrivalPeriodPickerTo></mat-datepicker>
+              <button type="button" mat-icon-button matSuffix [disabled]="form.get('arrivalDateLessEqual').disabled" (click)="arrivalPeriodPickerTo.open()">
+                <mat-icon>date_range</mat-icon>
+              </button>
+            </mat-form-field>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- Departure period -->
+      <ng-container>
+        <h4 class="__fs-s __color-accent __fw-medium __mt-0 __mb-05">Departure</h4>
+        <div class="row __mb-1">
+          <div class="col-6">
+            <mat-form-field color="primary" class="__w-100" [appearance]="formFieldAppearance">
+              <mat-label>From</mat-label>
+              <input matInput
+                     [matDatepicker]="departurePeriodPickerFrom"
+                     formControlName="departureDateGreaterEqual"
+                     (dateChange)="setCorrectDate('departureDateGreaterEqual', $event.value)">
+              <mat-datepicker #departurePeriodPickerFrom></mat-datepicker>
+              <button type="button" mat-icon-button matSuffix [disabled]="form.get('departureDateGreaterEqual').disabled" (click)="departurePeriodPickerFrom.open()">
+                <mat-icon>date_range</mat-icon>
+              </button>
+            </mat-form-field>
+          </div>
+          <div class="col-6">
+            <mat-form-field color="primary" class="__w-100" [appearance]="formFieldAppearance">
+              <mat-label>To</mat-label>
+              <input matInput
+                     [min]="form.get('departureDateGreaterEqual').value"
+                     [matDatepicker]="departurePeriodPickerTo"
+                     formControlName="departureDateLessEqual"
+                     (dateChange)="setCorrectDate('departureDateLessEqual', $event.value)">
+              <mat-datepicker #departurePeriodPickerTo></mat-datepicker>
+              <button type="button" mat-icon-button matSuffix [disabled]="form.get('departureDateLessEqual').disabled" (click)="departurePeriodPickerTo.open()">
+                <mat-icon>date_range</mat-icon>
+              </button>
+            </mat-form-field>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- Order status -->
+      <mat-form-field color="primary" class="__w-100" [appearance]="formFieldAppearance">
+        <mat-label>Order status</mat-label>
+        <mat-select multiple formControlName="orderStateCodeIn">
+          <mat-option *ngFor="let type of orderStates$ | async; trackBy: trackByFn"
+                      [value]="type.code">
+            {{ type.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Payment status -->
+      <mat-form-field color="primary" class="__w-100" [appearance]="formFieldAppearance">
+        <mat-label>Payment status</mat-label>
+        <mat-select multiple formControlName="paymentStateIdIn">
+          <mat-option *ngFor="let type of paymentStates$ | async; trackBy: trackByFn"
+                      [value]="type.id">
+            {{ type.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Order total rate -->
+      <ng-container>
+        <h4 class="__fs-s __color-accent __fw-medium __mt-0 __mb-05">Order total rate</h4>
+        <div class="row __mb-1">
+          <div class="col-6">
+            <mat-form-field color="primary" class="__w-100" [appearance]="formFieldAppearance">
+              <mat-label>From</mat-label>
+              <input matInput
+                     type="number"
+                     autocomplete="off"
+                     formControlName="finalCostGreaterEqual" />
+            </mat-form-field>
+          </div>
+          <div class="col-6">
+            <mat-form-field color="primary" class="__w-100" [appearance]="formFieldAppearance">
+              <mat-label>To</mat-label>
+              <input matInput
+                     type="number"
+                     autocomplete="off"
+                     formControlName="finalCostLessEqual" />
+            </mat-form-field>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- Provider code / Supplier -->
+      <mat-form-field color="primary" class="__w-100" [appearance]="formFieldAppearance">
+        <mat-label>Supplier</mat-label>
+        <mat-select panelClass="h21-select-panel" multiple formControlName="providerTypeCodeIn">
+          <mat-option *ngFor="let supplier of suppliers$ | async; trackBy: trackByFn" [value]="supplier.code">
+            {{ supplier.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Tour operator code -->
+      <mat-form-field color="primary" class="__w-100" [appearance]="formFieldAppearance">
+        <mat-label>Internal tour number</mat-label>
+        <input type="text" matInput autocomplete="off" formControlName="tourOperatorCode"/>
+      </mat-form-field>
+
+      <!-- Tour operator name -->
+      <mat-form-field color="primary" class="__w-100" [appearance]="formFieldAppearance">
+        <mat-label>Internal tour operator</mat-label>
+        <input type="text" matInput autocomplete="off" formControlName="tourOperatorNameStart"/>
+      </mat-form-field>
+
+      <!-- Payment form -->
+      <mat-form-field color="primary" class="__w-100" [appearance]="formFieldAppearance">
+        <mat-label>Payment form</mat-label>
+        <mat-select panelClass="h21-select-panel" multiple formControlName="paymentFormIdIn">
+          <mat-option *ngFor="let pay of payTypes$ | async; trackBy: trackByFn" [value]="pay.id">
+            {{ pay.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Pay account number -->
+      <mat-form-field color="primary" class="__w-100" [appearance]="formFieldAppearance">
+        <mat-label>Account number</mat-label>
+        <input type="text" matInput autocomplete="off" formControlName="payAccountNumber"/>
+      </mat-form-field>
+
+      <!-- H21Pro login -->
+      <mat-form-field color="primary" class="__w-100" [appearance]="formFieldAppearance">
+        <mat-label>Horse21pro ID</mat-label>
+        <input type="number" matInput autocomplete="off" formControlName="h21ProLogin"/>
+      </mat-form-field>
+    </form>
+  </div>
+
+  <div class="h21-dialog-panel_actions">
+    <button type="button" mat-button color="primary" (click)="clear()">Clear</button>
+    <button type="submit" mat-flat-button color="primary" (click)="submit()">Filter</button>
+  </div>
+</div>

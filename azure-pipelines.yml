@@ -1,0 +1,44 @@
+variables:
+  containerRegistry: DevDocker
+  repository: h21-searching-book-ui
+  tag: $(profile)-$(Build.BuildId)
+trigger:
+  batch: true
+  branches:
+    include:
+      - qa
+      - develop
+
+pool:
+  name: Frontend Pool
+
+steps:
+- task: Docker@2
+  displayName: 'Build image $(repository) with tag: $(profile)-$(Build.BuildId) and tag: $(profile)-latest'
+  continueOnError: false
+  inputs:
+    containerRegistry: $(containerRegistry)
+    repository: $(repository)
+    command: 'build'
+    Dockerfile: 'container_scripts/Dockerfile'
+    buildContext: '.'
+    tags: |
+      $(tag)
+      $(profile)-latest
+    arguments: '--build-arg profile=$(profile)'
+    addPipelineData: false
+  env:
+    profile: qa
+- task: Docker@2
+  displayName: 'Push image $(repository) with tag: $(profile)-$(Build.BuildId) and tag: $(profile)-latest'
+  continueOnError: false
+  inputs:
+    containerRegistry: $(containerRegistry)
+    repository: $(repository)
+    command: 'push'
+    tags: |
+      $(tag)
+      $(profile)-latest
+    addPipelineData: false
+  env:
+    profile: qa

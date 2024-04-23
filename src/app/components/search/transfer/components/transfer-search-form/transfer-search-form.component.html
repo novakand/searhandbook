@@ -1,0 +1,256 @@
+<div class="с-transfer-search-form h21-search-form">
+  <div class="h21-search-form_content">
+    <form [formGroup]="form">
+
+      <!-- Primary traveler -->
+      <mat-form-field color="primary" class="__w-100" floatLabel="always"
+                      [appearance]="formFieldAppearance"
+                      [class.с-transfer-search-form_readonly-field]="form.controls['primaryTraveler'].disabled">
+        <mat-label>Primary traveller</mat-label>
+        <input type="text"
+               matInput
+               placeholder="Anonymous traveller"
+               #searchText
+               (keydown.enter)="stopSwitchFocusByEnterPressed($event)"
+               (blur)="onBlurPrimaryTravelerInput(travelers.isOpen)"
+               formControlName="primaryTraveler"
+               [matAutocomplete]="travelers" />
+        <mat-icon matSuffix *ngIf="!primaryTraveler">person_add</mat-icon>
+        <button matSuffix mat-icon-button type="button" *ngIf="primaryTraveler" (click)="resetPrimaryTraveler()">
+          <mat-icon>close</mat-icon>
+        </button>
+        <mat-autocomplete #travelers="matAutocomplete"
+                          class="с-transfer-search-form_traveler-ac-panel"
+                          [displayWith]="travelersDisplayFn"
+                          (closed)="onTravelersAutocompleteClose()"
+                          (optionSelected)="onSetPrimaryTraveler($event.option.value)">
+          <mat-option *ngFor="let item of travelers$ | async; trackBy: trackByFn;" [value]="item">
+            <span class="с-transfer-search-form_traveler-option" [class.__is-selected]="primaryTraveler?.id === item.id">
+              <span class="с-transfer-search-form_traveler-option-avatar">
+                <h21-profile-image [firstName]="item.firstName"
+                                   [lastName]="item.lastName"
+                                   [fileHash]="item.photoFileHash"
+                                   size='medium'>
+                </h21-profile-image>
+                <span class="с-transfer-search-form_traveler-option-selection-mark"></span>
+              </span>
+              <span class="__d-b __color-accent">
+                <span class="__d-b __fs-l __fw-light">{{ item | h21ConcatFields:['firstName', 'lastName'] }}</span>
+                <span class="__d-b __fs-s __fw-bold">{{ item.jobTitle }}</span>
+              </span>
+              <span class="__flex-fill"></span>
+              <span class="__d-b __text-right __align-self-stretch __flex-column">
+                <span class="__d-b __fs-s __fw-bold __color-accent" [matTooltip]="item.company" matTooltipPosition="before">
+                  {{ item.company | getCompanyNameText }}
+                </span>
+                <span class="__flex-fill"></span>
+                <span class="с-transfer-search-form_traveler-option-payment-systems">
+                  <ng-container *ngFor="let type of item.paymentTypes">
+                    <img *ngIf="type.paymentTypeCode === 'airPlus'" matTooltip="AirPlus" src="./assets/img/payment-system-airplus.svg" alt="" />
+                    <img *ngIf="type.paymentTypeCode === 'bta'" matTooltip="BTA" src="./assets/img/payment-system-bta.svg" alt="" />
+                    <img *ngIf="type.paymentTypeCode === 'creditCard'" matTooltip="Credit card" src="./assets/img/payment-system-credit-card.svg" alt="" />
+                    <img *ngIf="type.paymentTypeCode === 'bankTransfer'" matTooltip="Bank transfer" src="./assets/img/payment-system-bank-transfer.svg" alt="" />
+                  </ng-container>
+                </span>
+              </span>
+            </span>
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+
+      <div class="row">
+        <div [ngClass]="{ 'col-6': !tabletMode, 'col-12': tabletMode }">
+          <div [class.__pr-5]="tabletMode">
+
+            <!-- Pick up -->
+            <mat-form-field [appearance]="formFieldAppearance" color="primary" class="__w-100">
+              <mat-label>Pick up</mat-label>
+              <input type="text"
+                     matInput
+                     [matAutocomplete]="pickUps"
+                     formControlName="pickUp"
+                     (keydown)="onArrowEvent($event, point.pickUp, pickUps)"
+                     [title]="form.get('pickUp').value?.name | tooltip">
+              <mat-autocomplete #pickUps="matAutocomplete"
+                                class="h21-search-form_autocomplete-panel"
+                                [displayWith]="displayFn"
+                                (optionSelected)="onSelect($event.option.value, point.pickUp)">
+                <mat-option *ngFor="let pickUp of pickUps$ | async; trackBy: trackByFn" [value]="pickUp">
+                  <mat-icon class="h21-search-form_autocomplete-panel-icon">{{ iconType[pickUp.subtype] }}</mat-icon>
+                  <span class="h21-search-form_autocomplete-panel-text">
+                  <span class="h21-search-form_autocomplete-panel-text-name" [title]="pickUp.name | tooltip">{{ pickUp.name }}</span>
+                  <span *ngIf="pickUp.address?.description" class="h21-search-form_autocomplete-panel-text-description">
+                    {{ pickUp.address?.description }}
+                  </span>
+                </span>
+                </mat-option>
+              </mat-autocomplete>
+              <button matSuffix
+                      type="button"
+                      *ngIf="!form.get('pickUp').value"
+                      (click)="onLocationClick(point.pickUp)"
+                      mat-icon-button>
+                <mat-icon matSuffix>location_on</mat-icon>
+              </button>
+              <button matSuffix mat-icon-button type="button" *ngIf="!!form.get('pickUp').value" (click)="resetTripPoint(point.pickUp)">
+                <mat-icon>close</mat-icon>
+              </button>
+              <mat-error *ngIf="form.get('pickUp').hasError('required')">
+                You must enter a value
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+        <div [ngClass]="{ 'col-6': !tabletMode, 'col-12': tabletMode }" class="h21-search-form_swap-button-wrapper">
+          <button type="button"
+                  mat-icon-button
+                  class="h21-search-form_swap-button"
+                  [disabled]="swapDisabled || !form.get('pickUp').value || !form.get('dropDown').value"
+                  (click)="swapTripPoints()">
+            <mat-icon *ngIf="!swapDisabled">swap_horiz</mat-icon>
+            <mat-icon class="progress-indicator-icon" *ngIf="swapDisabled">sync</mat-icon>
+          </button>
+          <div [class.__pr-5]="tabletMode">
+
+            <!-- Drop off -->
+            <mat-form-field [appearance]="formFieldAppearance" color="primary" class="__w-100">
+              <mat-label>Drop off</mat-label>
+              <input type="text"
+                     matInput
+                     [matAutocomplete]="dropDowns"
+                     formControlName="dropDown"
+                     (keydown)="onArrowEvent($event, point.dropDown, dropDowns)"
+                     [title]="form.get('dropDown').value?.name | tooltip">
+              <mat-autocomplete #dropDowns="matAutocomplete"
+                                class="h21-search-form_autocomplete-panel"
+                                [displayWith]="displayFn"
+                                (optionSelected)="onSelect($event.option.value, point.dropDown)">
+                <mat-option *ngFor="let dropDown of dropDowns$ | async; trackBy: trackByFn" [value]="dropDown">
+                  <mat-icon class="h21-search-form_autocomplete-panel-icon">{{ iconType[dropDown.subtype] }}</mat-icon>
+                  <span class="h21-search-form_autocomplete-panel-text">
+                  <span class="h21-search-form_autocomplete-panel-text-name" [title]="dropDown.name | tooltip">{{ dropDown.name }}</span>
+                  <span *ngIf="dropDown.address?.description" class="h21-search-form_autocomplete-panel-text-description">
+                    {{ dropDown.address?.description }}
+                  </span>
+                </span>
+                </mat-option>
+              </mat-autocomplete>
+              <button matSuffix
+                      type="button"
+                      *ngIf="!form.get('dropDown').value"
+                      (click)="onLocationClick(point.dropDown)"
+                      mat-icon-button>
+                <mat-icon matSuffix>location_on</mat-icon>
+              </button>
+              <button matSuffix mat-icon-button type="button" *ngIf="!!form.get('dropDown').value" (click)="resetTripPoint(point.dropDown)">
+                <mat-icon>close</mat-icon>
+              </button>
+              <mat-error *ngIf="form.get('dropDown').hasError('required')">
+                You must enter a value
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+      <div class="row __mb-2">
+        <div [ngClass]="{ 'col-6': !tabletMode, 'col-12': tabletMode }">
+
+          <!-- Date -->
+          <mat-form-field [appearance]="formFieldAppearance" color="primary" class="__w-100">
+            <div style="position: absolute; left: -12px; right: -44px; top: -10px; bottom: 0; cursor: text;"
+                 (click)="onOpenDatepicker($event)">
+            </div>
+
+            <mat-label>Date</mat-label>
+            <input type="text"
+                   matInput
+                   formControlName="date"
+                   [min]="minDate"
+                   (dateChange)="onDateChange()"
+                   [matDatepicker]="date" />
+            <mat-error *ngIf="form.get('date').hasError('required')">
+              You must enter a value
+            </mat-error>
+            <mat-datepicker #date></mat-datepicker>
+            <button mat-icon-button matSuffix (click)="onOpenDatepicker($event)">
+              <mat-icon>date_range</mat-icon>
+            </button>
+          </mat-form-field>
+        </div>
+        <div [ngClass]="{ 'col-6': !tabletMode, 'col-12': tabletMode }">
+
+          <!-- Local time -->
+          <mat-form-field [appearance]="formFieldAppearance" color="primary" class="__w-100">
+            <mat-label>Local time</mat-label>
+            <input type="text"
+                   #timeAutoComplete
+                   matInput
+                   autocomplete="off"
+                   [matAutocomplete]="time"
+                   formControlName="time" />
+            <mat-autocomplete #time="matAutocomplete" class="h21-autocomplete-panel">
+              <mat-option *ngFor="let time of filteredTimeDictionary$ | async; trackBy: trackByFn" [value]="time">
+                <span>{{ time }}</span>
+              </mat-option>
+            </mat-autocomplete>
+            <mat-icon matSuffix *ngIf="!form.get('time').value">access_time</mat-icon>
+            <button matSuffix mat-icon-button type="button" *ngIf="form.get('time').value" (click)="resetTime()">
+              <mat-icon>close</mat-icon>
+            </button>
+            <mat-error *ngIf="form.get('time').hasError('required')">
+              You must enter a value
+            </mat-error>
+            <mat-error *ngIf="!form.get('time').hasError('required') && form.get('time').hasError('pattern')">
+              Incorrect format
+            </mat-error>
+            <mat-error *ngIf="form.get('time').hasError('invalidTime')">
+              Should be more than 24 hours before the pick up time
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Travellers -->
+      <div class="row h21-mb-2 align-items-center">
+        <div class="col-3">Travellers</div>
+        <div class="col-3">
+          <h21-counter [min]="1" [max]="8" formControlName="travelersQuantity"></h21-counter>
+        </div>
+      </div>
+
+      <!-- Luggage -->
+      <div class="row h21-mb-2 align-items-center">
+        <div class="col-3">Luggage</div>
+        <div class="col-3">
+          <h21-counter [min]="0" formControlName="luggageQuantity"></h21-counter>
+        </div>
+      </div>
+
+      <!-- Pets -->
+      <div class="row h21-mb-2 align-items-center">
+        <div class="col-3">Pets</div>
+        <div class="col-3">
+          <h21-counter [min]="0" formControlName="petQuantity"></h21-counter>
+        </div>
+      </div>
+
+      <!-- Wheel chair -->
+      <mat-checkbox color="primary" formControlName="isWheelChair">Wheel chair</mat-checkbox>
+    </form>
+  </div>
+
+  <!-- Action buttons -->
+  <div class="h21-search-form_actions">
+    <button type="button" mat-stroked-button color="primary" (click)="openSendRequestDialog()">
+      Send request
+    </button>
+    <div class="w-spacer">&nbsp;</div>
+    <button type="button" mat-button color="primary" (click)="clear()">
+      Clear
+    </button>
+    <button type="button" mat-flat-button color="primary" (click)="submit()" [disabled]="isPending">
+      Search
+    </button>
+  </div>
+
+</div>

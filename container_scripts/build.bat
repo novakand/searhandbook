@@ -1,0 +1,1 @@
+powershell -executionpolicy bypass -File builder.ps1 -choice 2

@@ -1,0 +1,166 @@
+<ng-container *ngIf="loadInProgress">
+  <h21-card-loader></h21-card-loader>
+</ng-container>
+
+<ng-container *ngIf="!loadInProgress">
+  <div class="c-bookings-details fixed-sidenav-container" (scroll)="onScroll()" #sidenavContainer
+       *ngIf="order$ | async as order">
+    <div class="fixed-sidenav" #sidenav>
+      <mat-action-list class="h21-profile-card_sidenav">
+        <button mat-list-item [ngx-scroll-to]="'details'" [class.__is-selected]="activeAnchorName === 'details'">
+          Details
+        </button>
+        <button mat-list-item [ngx-scroll-to]="'travellers'" [class.__is-selected]="activeAnchorName === 'travellers'">
+          Travellers
+        </button>
+        <button mat-list-item [ngx-scroll-to]="'сancellationPolicy'" [class.__is-selected]="activeAnchorName === 'сancellationPolicy'">
+          Cancellation policy
+        </button>
+<!--        <button mat-list-item [ngx-scroll-to]="'customer'" [class.__is-selected]="activeAnchorName === 'customer'">-->
+<!--          Customer-->
+<!--        </button>-->
+        <!--         todo: разделы finance/comments/history спрятаны 04.09.2019 для релиза-->
+        <!--        <button mat-list-item [ngx-scroll-to]="'finance'" [class.__is-selected]="activeAnchorName === 'finance'">-->
+        <!--          Finance-->
+        <!--        </button>-->
+        <!--        <button mat-list-item [ngx-scroll-to]="'comments'" [class.__is-selected]="activeAnchorName === 'comments'">-->
+        <!--          Comments-->
+        <!--        </button>-->
+        <!--        <button mat-list-item [ngx-scroll-to]="'history'" [class.__is-selected]="activeAnchorName === 'history'">-->
+        <!--          History-->
+        <!--        </button>-->
+      </mat-action-list>
+    </div>
+
+    <div class="fixed-sidenav-content" (scroll)="onScroll()">
+      <mat-card class="h21-profile-card">
+        <div class="h21-profile-card_header h21-profile-card_header__with-border" #cardHeader>
+
+          <mat-card-title class="h21-profile-card_title">
+<!--            <ng-container [ngSwitch]="order.orderCancellationState">-->
+<!--              <mat-icon *ngSwitchCase="'none'" class="h21-bookings_cancellation-mark"-->
+<!--                        matTooltip="Non-refundable booking">-->
+<!--                lens-->
+<!--              </mat-icon>-->
+<!--              <mat-icon *ngSwitchCase="'warning'"-->
+<!--                        class="h21-bookings_cancellation-mark h21-bookings_cancellation-mark__warning"-->
+<!--                        matTooltip="Free cancel date is coming">-->
+<!--                lens-->
+<!--              </mat-icon>-->
+<!--              <mat-icon *ngSwitchCase="'alarm'"-->
+<!--                        class="h21-bookings_cancellation-mark h21-bookings_cancellation-mark_alarm"-->
+<!--                        matTooltip="Cancellation with penalty">-->
+<!--                lens-->
+<!--              </mat-icon>-->
+<!--            </ng-container>-->
+            Bookings details
+          </mat-card-title>
+
+          <button mat-mini-fab
+                  color="primary"
+                  class="h21-profile-card_header-collapse-toggle"
+                  (click)="toggleCardHeaderVisibility()"
+                  [matTooltip]="animationState === animationStateType.COLLAPSED ? 'Expand card header': 'Collapse card header'"
+                  matTooltipPosition="below"
+                  [ngSwitch]="animationState">
+            <mat-icon *ngSwitchCase="animationStateType.COLLAPSED">expand_more</mat-icon>
+            <mat-icon *ngSwitchCase="animationStateType.EXPANDED">expand_less</mat-icon>
+          </button>
+
+          <div [@toggleMatExpansion]="animationState">
+            <mat-card-header>
+              <div class="h21-profile-card_meta-data-box">
+                <div class="row large-gutters">
+                  <div class="col-12 col-xxl-6">
+                    <ng-container [ngTemplateOutlet]="cash"
+                                  [ngTemplateOutletContext]="{label: 'Order #', value: order.viewOrderNumber, isMoney: false}"></ng-container>
+                    <ng-container [ngTemplateOutlet]="cash"
+                                  [ngTemplateOutletContext]="{label: 'Client', value: order.customer?.shortName, isMoney: false}"></ng-container>
+<!--                    <ng-container [ngTemplateOutlet]="cash"-->
+<!--                                  [ngTemplateOutletContext]="{label: 'Status', value: order.stateName, isMoney: false}"></ng-container>-->
+                    <ng-container [ngTemplateOutlet]="cash"
+                                  [ngTemplateOutletContext]="{label: 'Payment', value: order.paymentStateName, isMoney: false}"></ng-container>
+<!--                    <ng-container [ngTemplateOutlet]="cash"-->
+<!--                                  [ngTemplateOutletContext]="{label: 'Invoice #', value: order.invoiceNumber, isMoney: false}"></ng-container>-->
+                  </div>
+                  <div class="col-12 col-xxl-6">
+                    <ng-container [ngTemplateOutlet]="cash"
+                                  [ngTemplateOutletContext]="{label: 'Base Cost', value: order.baseCost, isMoney: true}"></ng-container>
+                    <ng-container [ngTemplateOutlet]="cash"
+                                  [ngTemplateOutletContext]="{label: 'Horse Cost', value: order.horseCost, isMoney: true}"></ng-container>
+                    <ng-container [ngTemplateOutlet]="cash"
+                                  [ngTemplateOutletContext]="{label: 'Invoice Cost', value: order.invoiceCost, isMoney: true}"></ng-container>
+                    <ng-container [ngTemplateOutlet]="cash"
+                                  [ngTemplateOutletContext]="{label: 'Final Cost', value: order.finalCost, isMoney: true}"></ng-container>
+                  </div>
+                </div>
+              </div>
+            </mat-card-header>
+          </div>
+        </div>
+        <mat-card-content>
+
+          <mat-divider id="details" class="c-bookings-details_first-anchor"></mat-divider>
+
+          <h21-bookings-transfer-details [data]="order.details"></h21-bookings-transfer-details>
+
+          <mat-divider id="travellers" class="h21-profile-card_separator"></mat-divider>
+
+          <!-- Travellers -->
+          <h3 class="h21-mb-3">Travellers ({{ order.travelers.length }}) for {{ order.corporateName }}</h3>
+          <h21-bookings-travelers-list [data]="order.travelers"></h21-bookings-travelers-list>
+
+<!--          <mat-divider id="customer" class="h21-profile-card_separator"></mat-divider>-->
+
+          <!-- Customer -->
+<!--          <h3 class="h21-mb-3">Customer</h3>-->
+<!--          <h21-bookings-customer [data]="order.customer"></h21-bookings-customer>-->
+
+          <!--         todo: раздел спрятан 04.09.2019 для релиза-->
+
+          <!--          <mat-divider id="finance" class="h21-profile-card_separator"></mat-divider>-->
+
+          <!--          &lt;!&ndash; Finance &ndash;&gt;-->
+          <!--          <h3 class="h21-mb-3">Finance</h3>-->
+          <!--          <div style="height:600px;"></div>-->
+
+          <!--         todo: раздел спрятан 04.09.2019 для релиза-->
+
+          <!--          <mat-divider id="comments" class="h21-profile-card_separator"></mat-divider>-->
+
+          <!--          &lt;!&ndash; Comments &ndash;&gt;-->
+          <!--          <h3 class="h21-mb-3">Comments</h3>-->
+          <!--          <div style="height:600px;"></div>-->
+
+          <!--         todo: раздел спрятан 04.09.2019 для релиза-->
+
+          <!--          <mat-divider id="history" class="h21-profile-card_separator"></mat-divider>-->
+
+          <!--          &lt;!&ndash; History &ndash;&gt;-->
+          <!--          <h3 class="h21-mb-3">history</h3>-->
+          <!--          <div style="height:900px;">-->
+          <!--            <h21-history [entityrefid]="order.id"></h21-history>-->
+          <!--          </div>-->
+
+          <mat-divider id="сancellationPolicy" class="h21-profile-card_separator"></mat-divider>
+
+          <!-- Cancellation policy -->
+          <h3 class="h21-mb-3">Cancellation policy</h3>
+          <h21-bookings-cancellation-policy></h21-bookings-cancellation-policy>
+
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</ng-container>
+
+<ng-template #cash let-label="label" let-value="value" let-isMoney="isMoney">
+  <div class="row no-gutters h21-profile-card_meta-data-item __no-border">
+    <div class="col-4">{{ label }}</div>
+    <div class="col-8">
+      <b>{{ value }}
+        <ng-container *ngIf="isMoney">EUR</ng-container>
+      </b>
+    </div>
+  </div>
+</ng-template>

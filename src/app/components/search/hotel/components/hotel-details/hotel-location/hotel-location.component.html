@@ -1,0 +1,79 @@
+<div class="c-hotel-location">
+  <h21-map #map
+             [fitBounds]="mapOptions.fitBounds"
+             [latitude]="mapOptions.latitude"
+             [longitude]="mapOptions.longitude"
+             [provider]="mapOptions.provider"
+             [isClick]="mapOptions.isClick"
+             [zoom]="mapOptions.zoom"
+             [minZoom]="mapOptions.minZoom"
+             [maxZoom]="mapOptions.maxZoom"
+             [defaultCursor]="mapOptions.defaultCursor"
+             (centerChange)="infoBoxOptions.isShow = false"
+             (boundsChange)="infoBoxOptions.isShow = false"
+             (zoomChange)="infoBoxOptions.isShow = false"
+             (mapReady)="onMapReady()">
+    <div class="c-h21-map-toolbar-vertical">
+      <div class="flex-fill"></div>
+      <h21-map-zoom-control></h21-map-zoom-control>
+      <div class="flex-fill"></div>
+      <h21-map-fullscreen-control [isShowFullscreen]="false"></h21-map-fullscreen-control>
+    </div>
+
+    <h21-map-preloader [isShowPreloader]="mapOptions.preloaderIsOpen"></h21-map-preloader>
+    <span h21MapMarker *ngFor="let m of markers; trackBy: trackByFn;"
+                            [latitude]="m.latitude"
+                            [longitude]="m.longitude"
+                            [isCluster]="m.isCluster"
+                            [iconHeight]="m.iconHeight || 33"
+                            [fitBounds]="m.fitBounds"
+                            [iconUrl]="m.iconUrl"
+                            [animate]="m.animate"
+                            [iconZIndex]="m.iconZIndex"
+                            (markerMouseOut)="onMarkerMouseOut(m)"
+                            (markerMouseOver)="onMarkerMouseOver($event, m)">
+    </span>
+    <span h21MapCluster
+    [gridSize]="clusterOptions.gridSize"
+    [iconUrl]="clusterOptions.iconUrl"
+    [maxZoom]="clusterOptions.maxZoom"
+    [minimumClusterSize]="clusterOptions.minimumClusterSize">
+    </span>
+    <h21-map-info-box [clientX]="infoBoxOptions.clientX"
+                      [clientY]="infoBoxOptions.clientY"
+                      [isShow]="infoBoxOptions.isShow">
+      <div class="h21-hotel-card h21-hotel-card__on-map" *ngIf="!!infoBoxOptions.hotel">
+        <div class="h21-hotel-card_photo-wrapper">
+          <img *ngIf="infoBoxOptions.hotel.image.fileUrl" [src]="infoBoxOptions.hotel.image?.fileUrl" alt="" />
+          <img *ngIf="!infoBoxOptions.hotel.image.fileHash && !infoBoxOptions.hotel.image.fileUrl"
+            src="./assets/img/hotel-none-photo.svg" alt="" />
+          <ng-container *ngIf="infoBoxOptions.hotel.isFavorite">
+            <mat-icon class="h21-hotel-card_favorite-mark" [class.__is-active]="infoBoxOptions.hotel.isFavorite">
+              favorite
+            </mat-icon>
+          </ng-container>
+        </div>
+        <div class="h21-hotel-card_wrapper">
+          <h21-rate size="s" *ngIf="infoBoxOptions.hotel.hotelRating && infoBoxOptions.isShow"
+          [rate]="infoBoxOptions.hotel.hotelRating"
+            class="h21-hotel-card_rating"></h21-rate>
+          <h3 class="__color-accent __fs-m __fw-medium __mt-0 __mb-1">{{ infoBoxOptions.hotel.hotelName }}</h3>
+          <div class="h21-hotel-card_location __mb-2">
+            <mat-icon class="__color-gray">location_on</mat-icon>
+            <p>{{ infoBoxOptions.hotel.hotelAddress }}</p>
+          </div>
+          <div class="flex-row __align-items-center __justify-content-between">
+            <img *ngIf="showProviderImg"
+                 class="h21-hotel-card_provider-logo __flex-none"
+                 alt=""
+                 [src]="infoBoxOptions.hotel.supplierLogoUrl"
+                 (error)="showProviderImg = false" />
+            <span class="__fw-medium __color-accent" *ngIf="infoBoxOptions.hotel.amount">
+              {{ infoBoxOptions.hotel.amount }} {{ infoBoxOptions.hotel.currency }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </h21-map-info-box>
+  </h21-map>
+</div>

@@ -1,0 +1,45 @@
+<div class="c-bookings-order-travelers">
+  <ng-container *ngIf="order.travelerLinks?.length > 0">
+    <ng-container *ngFor="let item of order.travelerLinks; trackBy: trackByFn;">
+      <div class="row">
+        <div class="col-6">
+          <div class="c-bookings-order-travelers_card">
+            <div class="__flex-none __mr-2">
+              <h21-profile-image [firstName]="item.firstName"
+                                 [lastName]="item.lastName"
+                                 [fileHash]="item.photoFileHash"
+                                 size='medium'></h21-profile-image>
+            </div>
+            <div class="__color-accent __align-self-center __w-100">
+              <div class="__fs-xl __fw-light">
+                {{ item.firstName }} {{ item.middleName }}
+                <span class="__nowrap">
+                  {{ item.lastName }}
+                  <span class="c-bookings-order-travelers_card-primary-marker" *ngIf="item.isPrimary">Customer</span>
+                </span>
+              </div>
+              <div class="__fs-s __fw-medium" *ngIf="item.customerCompanyName">{{ item.customerCompanyName }}</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 __align-self-center">
+          <ng-container *ngIf="item.email" [ngTemplateOutlet]="propertyRow"
+                        [ngTemplateOutletContext]="{ label: 'Email', value: item.email }"></ng-container>
+          <ng-container *ngIf="item.phoneNumber && order.bookingType === bookingTypes.Transfer && item.isPrimary" [ngTemplateOutlet]="propertyRow"
+                        [ngTemplateOutletContext]="{ label: 'Phone', value: item.phoneNumber }"></ng-container>
+          <ng-container *ngIf="item.countryName && item.isPrimary" [ngTemplateOutlet]="propertyRow"
+                        [ngTemplateOutletContext]="{ label: 'Country', value: item.countryName }"></ng-container>
+        </div>
+      </div>
+    </ng-container>
+  </ng-container>
+</div>
+
+<ng-template #propertyRow let-label="label" let-value="value">
+  <div class="row no-gutters">
+    <div class="col-5 __color-gray">{{ label }}</div>
+    <div class="col-7">
+      <div class="__word-break-all">{{ value }}</div>
+    </div>
+  </div>
+</ng-template>

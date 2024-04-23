@@ -1,0 +1,22 @@
+<div class="c-support page_content-wrapper">
+	<h2>{{ title }}</h2>
+
+	<div class="c-support_list-wrapper" *ngIf="supportEmails">
+		<div class="c-support_email" *ngFor="let item of supportEmails">
+			<mat-icon>email</mat-icon>
+      <a [href]="getDashboardEmailLink(item.email)">{{ item.email }}</a>
+		</div>
+	</div>
+
+	<div class="c-support_separator">&nbsp;</div>
+
+	<div class="c-support_phone-list-wrapper" *ngIf="supportPhones">
+		<div class="row">
+			<div class="col-6 c-support_phone" *ngFor="let item of supportPhones; trackBy: trackByFn">
+				<img src="{{ item.flagUrl }}" alt="{{ item.countryCode }}" />
+				<mat-icon>perm_phone_msg</mat-icon>
+				<span>{{ item.phoneNumber }}</span>
+			</div>
+		</div>
+	</div>
+</div>

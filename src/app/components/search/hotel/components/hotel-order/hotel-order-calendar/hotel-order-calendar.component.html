@@ -1,0 +1,37 @@
+<div class="c-hotel-order-calendar">
+  <div class="c-hotel-order-calendar_toolbar">
+    <button type="button"
+            mat-button
+            [class.__active]="currentIndex === i"
+            (click)="currentIndex = i"
+            *ngFor="let item of toolbarMonths; trackBy: trackByFn; let i = index">
+      {{ item }}
+    </button>
+  </div>
+
+  <div class="c-hotel-order-calendar_header">
+    <div class="c-hotel-order-calendar_header-cell" *ngFor="let day of weekDayNames; trackBy: trackByFn">
+      {{ day }}
+    </div>
+  </div>
+
+  <mat-tab-group dynamicHeight class="c-hotel-order-calendar_tabs" [selectedIndex]="currentIndex">
+    <mat-tab *ngFor="let month of cells; trackBy: trackByFn;">
+        <div class="c-hotel-order-calendar_body-wrapper">
+          <div class="c-hotel-order-calendar_body">
+            <div class="c-hotel-order-calendar_body-row" *ngFor="let week of month; trackBy: trackByFn;">
+              <div class="c-hotel-order-calendar_body-cell"
+                   [class.c-hotel-order-calendar_body-cell__empty]="!day"
+                   [class.c-hotel-order-calendar_body-cell__no-price]="!!day && !day.price"
+                   *ngFor="let day of week; trackBy: trackByFn;">
+                <ng-container *ngIf="!!day">
+                  <div class="c-hotel-order-calendar_body-cell-day">{{ day.date }}</div>
+                  <div class="c-hotel-order-calendar_body-cell-price" *ngIf="!!day.price">{{ day.price }} {{ day.currency }}</div>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+        </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>

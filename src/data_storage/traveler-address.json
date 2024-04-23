@@ -1,0 +1,9 @@
+{
+  "id": 1,
+  "addressTypeId": 1,
+  "postalCode": "55555",
+  "countryId": 1,
+  "cityId": 1,
+  "address": "str. Lenina 1",
+  "travelerId": 1
+}

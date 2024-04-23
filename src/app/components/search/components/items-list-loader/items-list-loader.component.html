@@ -1,0 +1,21 @@
+<div class="c-items-list-loader"
+     [class.c-items-list-loader__empty]="showNoResult">
+  <ng-container *ngIf="!showNoResult">
+    <div class="c-items-list-loader_toolbar" *ngIf="showToolbar">
+      <div class="c-items-list-loader_caption">&nbsp;</div>
+      <div class="w-spacer">&nbsp;</div>
+      <div class="c-items-list-loader_field">&nbsp;</div>
+    </div>
+    <div class="c-items-list-loader_item"
+         [class.c-items-list-loader_item__small]="small"
+         *ngFor="let i of counts$ | async; trackBy: trackByFn">
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="showNoResult">
+    <div class="c-items-list-loader_empty-label">
+      <mat-icon>not_interested</mat-icon>
+      <p>{{ noResultText }}</p>
+    </div>
+  </ng-container>
+</div>

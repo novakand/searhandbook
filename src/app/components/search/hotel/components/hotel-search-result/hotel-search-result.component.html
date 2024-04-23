@@ -1,0 +1,139 @@
+<div class="c-hotel-search-result h21-search-result-list" *ngIf="filter$ | async as filter">
+  <div class="h21-search-result-list_wrapper">
+
+    <div class="h21-search-result-nav-tabs-wrapper">
+      <nav mat-tab-nav-bar class="h21-search-result-nav-tabs">
+        <a mat-tab-link
+           *ngFor="let group of searchResultGroupsList"
+           (click)="loadByType(group)"
+           [active]="group === currentGroup">
+          {{ group }}
+        </a>
+      </nav>
+
+      <div class="h21-search-result-nav-tabs-flat-buttons">
+        <button type="button" *ngIf="tabletMode" mat-stroked-button color="primary" class="__mr-2" (click)="toggleFilterVisibility()">
+          <mat-icon>filter_list</mat-icon>
+          Filter
+        </button>
+        <button type="button" mat-stroked-button color="primary" (click)="showResultOnMap()">
+          <mat-icon>language</mat-icon>
+          Show on map
+        </button>
+      </div>
+    </div>
+
+    <mat-toolbar class="c-transfer-search-result_toolbar">
+      <div class="c-transfer-search-result_toolbar-location"
+           *ngIf="filter?.destination"
+           [matTooltip]="filter.destination"
+           [matTooltipClass]="'c-transfer-search-result_toolbar-location-tooltip'">
+        {{ filter.destination }}
+      </div>
+      <ng-container *ngIf="searchData && (!searchData.isCompleted && !dataSearch?.length); else searched">
+        <div>: loading hotels...</div>
+      </ng-container>
+
+      <ng-template #searched>
+        <div>: <b>{{ currentGroup === 'Favorites' ? dataFavorites?.length : dataSearch?.length }}</b> hotels found</div>
+      </ng-template>
+
+      <div class="w-spacer">&nbsp;</div>
+
+      <mat-form-field class="h21-sort-by-field" [appearance]="formFieldAppearance">
+        <mat-select panelClass="h21-select-panel" placeholder="Sort by" [disabled]="isPending" [(ngModel)]="currentSort"
+                    (selectionChange)="onSortChange($event.value)">
+          <mat-select-trigger>
+            {{ currentSort?.name }}
+            <mat-icon *ngIf="currentSort"
+                      class="h21-sort-by-field_sort-icon"
+                      [class.h21-sort-by-field_sort-icon__asc]="!currentSort.desc"
+                      [class.h21-sort-by-field_sort-icon__desc]="currentSort.desc">
+              sort
+            </mat-icon>
+          </mat-select-trigger>
+          <mat-option *ngFor="let field of sortByList" class="h21-sort-by-field_sort-option" [value]="field">
+            {{ field.name }}
+            <mat-icon class="h21-sort-by-field_sort-icon"
+                      [class.h21-sort-by-field_sort-icon__asc]="!field.desc"
+                      [class.h21-sort-by-field_sort-icon__desc]="field.desc">
+              sort
+            </mat-icon>
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </mat-toolbar>
+
+    <h21-hotel-search-result-filter-toolbar></h21-hotel-search-result-filter-toolbar>
+
+    <ng-container *ngIf="noProgress">
+      <h21-items-list-loader [showNoResult]="true" [showToolbar]="false"></h21-items-list-loader>
+    </ng-container>
+
+    <ng-container *ngIf="inProgress">
+      <ng-container *ngFor="let i of counts3; trackBy: trackByFn" [ngTemplateOutlet]="loader"></ng-container>
+    </ng-container>
+
+    <ng-container *ngIf="main$ | async">
+      <ng-container *ngIf="!inProgress && !noProgress">
+        <ng-container [ngSwitch]="currentGroup">
+          <ng-container *ngSwitchCase="searchResultGroupsList[0]">
+            <h21-hotel-search-result-item *ngFor="let item of dataSearch; trackBy: trackByFn;" [items]="dataSearch" [selectedHotelId]="filter.hotelId"
+                                          [item]="item" (emitItem)="updateList($event)"></h21-hotel-search-result-item>
+          </ng-container>
+          <ng-container *ngSwitchCase="searchResultGroupsList[1]">
+            <h21-hotel-search-result-item *ngFor="let item of dataFavorites; trackBy: trackByFn;" [items]="dataFavorites" [selectedHotelId]="filter.hotelId"
+                                          [item]="item" (emitItem)="updateFavorites()"></h21-hotel-search-result-item>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+    </ng-container>
+  </div>
+</div>
+
+<ng-template #loader>
+  <div class="hotels-loader">
+    <div class="hotels-loader_flex">
+      <div class="hotels-loader_flex-photo">
+        <mat-icon>favorite</mat-icon>
+      </div>
+      <div class="hotels-loader_flex-content">
+        <div class="hotels-loader_text __mb-2" style="width: 50%;"></div>
+        <div class="hotels-loader_text __mb-1" style="width: 90%;"></div>
+        <div class="hotels-loader_text __mb-3" style="width: 75%;"></div>
+        <div class="flex-row __mb-3">
+          <div *ngFor="let i of counts5; trackBy: trackByFn" class="hotels-loader_icon __mr-2"></div>
+        </div>
+        <div class="row small-gutters" style="width: 170px;">
+          <div class="col-6">
+            <div class="hotels-loader_text"></div>
+          </div>
+          <div class="col-6">
+            <div class="hotels-loader_text"></div>
+          </div>
+        </div>
+      </div>
+      <div class="hotels-loader_flex-additional">
+        <div class="row">
+          <div class="col-6">
+            <div class="hotels-loader_text hotels-loader_text__size-xl"></div>
+          </div>
+          <div class="col-6">
+            <div class="hotels-loader_text hotels-loader_text__size-xl"></div>
+          </div>
+        </div>
+        <div class="hotels-loader_divider __mv-3"></div>
+        <div class="row no-gutters __mb-3">
+          <div class="col-4">
+            <div class="hotels-loader_text hotels-loader_text__size-l"></div>
+          </div>
+          <div class="col-4"></div>
+          <div class="col-4">
+            <div class="hotels-loader_text hotels-loader_text__size-l"></div>
+          </div>
+        </div>
+        <div class="hotels-loader_btn d-block"></div>
+      </div>
+    </div>
+  </div>
+</ng-template>

@@ -1,0 +1,269 @@
+<mat-sidenav-container class="c-search" autosize>
+    <mat-sidenav #sidenav class="c-search_sidenav"
+                 position="start"
+                 [mode]="tabletMode? 'over' : 'side'"
+                 [opened]="false"
+                 (closedStart)="sidenavService.opened$.next(false)">
+      <div class="__flex-column __h-100">
+        <div class="__flex-none" *ngIf="showNavigation">
+          <h21-search-navigation-toolbar></h21-search-navigation-toolbar>
+        </div>
+        <div class="flex-fill">
+          <div class="c-search_sidenav-wrapper">
+            <ng-container [ngSwitch]="sidenavViewContent">
+              <!-- Search forms -->
+              <div class="c-search_form" *ngSwitchCase="'airSearch'">
+                <h21-in-development></h21-in-development>
+                <!--<h21-air-search-form [selectedTravelers]="travelersList" [booker]="booker"></h21-air-search-form>-->
+              </div>
+
+              <div class="c-search_form" *ngSwitchCase="'hotelSearch'">
+                <h21-hotel-search-form [position]="position"
+                                       [map]="map"
+                                       [drawInfo]="drawInfo"
+                                       [circleChange]="circleChange"
+                                       [currentDrawMode]="currentDrawMode"
+                                       [drawingOptions]="drawingOptions"
+                                       (isRestore)="onIsRestore($event)"
+                                       (drawingOptionsChange)="onDrawingOptionsChange($event)"
+                                       (clearForm)="onClearForm()"
+                                       (changeDestination)="onChangeDestination()"
+                                       (clearByType)="removeByType($event)"
+                                       (resetPoi)="resetPoi()"
+                                       (trackMapCluster)="onTrackMapCluster($event)"
+                                       (setMarkers)="setMarkersList($event, true)"
+                                       (pointChange)="addMarker($event)">
+                </h21-hotel-search-form>
+                <!--<h21-in-development></h21-in-development>-->
+              </div>
+
+              <div class="c-search_form" *ngSwitchCase="'transferSearch'">
+                <h21-transfer-search-form [selectedTravelers]="travelersList"
+                                          [booker]="booker"
+                                          [map]="map"
+                                          [marker]="marker"
+                                          (drawMarker)="onDrawMarker($event)"
+                                          [position]="position"
+                                          [staticUrl]="routeImgUrl"
+                                          (isRestore)="onIsRestore($event)"
+                                          (routeReady)="onRouteReady($event)"
+                                          (pointChange)="onTransferChanged($event)">
+                </h21-transfer-search-form>
+              </div>
+
+              <div class="c-search_form" *ngSwitchCase="'trainSearch'">
+                <h21-in-development></h21-in-development>
+                <!--<h21-train-search-form [selectedTravelers]="travelersList" [booker]="booker"></h21-train-search-form>-->
+              </div>
+
+              <!-- Search result filters -->
+              <div class="c-search_filter" *ngSwitchCase="'transferFilter'">
+                <h21-transfer-search-result-filter></h21-transfer-search-result-filter>
+              </div>
+
+              <div class="c-search_filter" *ngSwitchCase="'hotelFilter'">
+                <h21-hotel-search-result-filter></h21-hotel-search-result-filter>
+              </div>
+
+              <!-- Other -->
+              <h21-history *ngSwitchCase="'history'"></h21-history>
+
+              <h21-hotel-favorites *ngSwitchCase="'favorites'" [isMapReady]="isReady" (setMarkers)="setMarkersList($event)" (routeReady)="onRouteReady($event)"></h21-hotel-favorites>
+
+              <h21-hotel-poi *ngSwitchCase="'poi'" [poi]="poiDataAction" [isMapReady]="isReady"
+                             (setMarkers)="setMarkersList($event)" (routeReady)="onRouteReady($event)"></h21-hotel-poi>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+      <div class="c-search_map-container">
+        <h21-map #map
+                 [fitBounds]="mapOptions.fitBounds"
+                 [latitude]="mapOptions.latitude"
+                 [longitude]="mapOptions.longitude"
+                 [provider]="mapOptions.provider"
+                 [isClick]="mapOptions.isClick"
+                 [language]="mapOptions.language"
+                 [isMain]="true"
+                 [zoom]="mapOptions.zoom"
+                 [minZoom]="mapOptions.minZoom"
+                 [maxZoom]="mapOptions.maxZoom"
+                 [defaultCursor]="mapOptions.defaultCursor"
+                 (centerChange)="infoBoxOptions.isShow = false"
+                 (boundsChange)="infoBoxOptions.isShow = false"
+                 (zoomChange)="infoBoxOptions.isShow = false"
+                 (mapReady)="onMapReady($event)"
+                 (updateReady)="onMapUpdateReady($event)"
+                 (mapClick)="mapService.onMapClick($event)"
+                 (mapRightClick)="mapService.onMapRightClick($event)">
+          <h21-map-preloader [isShowPreloader]="mapOptions.preloaderIsOpen"></h21-map-preloader>
+
+          <div class="c-h21-map-toolbar-horizontal">
+            <h21-map-drawing-manager #drawManager
+                                     [isShowDrawingControl]="sidenavViewContent === 'poi' || sidenavViewContent === 'hotelSearch'"
+                                     [isShowArea]="sidenavViewContent === 'hotelSearch' "
+                                     [isShowCircle]="sidenavViewContent === 'hotelSearch'"
+                                     [isShowMarker]="sidenavViewContent === 'poi'"
+                                     [areaMaxSquare]="1000"
+                                     [isMoreArea]="false"
+                                     [markerIconUrl]="drawingOptions.markerIconUrl"
+                                     [circleIconUrl]="drawingOptions.circleIconUrl"
+                                     [areaCoordinates]="drawingOptions.areaCoordinates"
+                                     [circleRadius]="drawingOptions.circleRadius"
+                                     [circleMaxRadius]="drawingOptions.circleMaxRadius"
+                                     [drawingMode]="drawingOptions.drawMode"
+                                     [isDraw]="drawingOptions.isDraw"
+                                     [markerLongitude]="drawingOptions.markerLongitude"
+                                     [markerLatitude]="drawingOptions.markerLatitude"
+                                     [markerFitBounds]="drawingOptions.markerFitBounds"
+                                     (areaCreate)="mapService.onAreaCreate($event)"
+                                     (changedDrawingMode)="mapService.onChangedDrawingMode($event)"
+                                     (circleCreate)="mapService.onRadiusComplete($event)"
+                                     (circleRadiusMax)="tooltipOptions.isShow = false"
+                                     (circleCenterComplete)="mapService.onRadiusComplete($event)"
+                                     (circleRadiusComplete)="mapService.onRadiusComplete($event)"
+                                     (circleRadiusChange)="mapService.onRadiusChange($event)"
+                                     (circleCenterChange)="mapService.onRadiusCenterChange($event)"
+                                     (markerClick)="mapService.onMarkerDrawClick(drawingOptions.markerData)"
+                                     (markerMouseOut)="mapService.onMarkerMouseOut(drawingOptions.markerData)"
+                                     (markerMouseOver)="mapService.onMarkerMouseOver($event, drawingOptions.markerData)"
+                                     (markerCreate)="mapService.onMarkerDrawCreate($event)">
+            </h21-map-drawing-manager>
+            <div class="flex-fill"></div>
+            <h21-map-autocomplete #mapAutoComplete
+                              [isShowAutocompleteControl]="sidenavViewContent === 'poi'"
+                              (clickReset)="mapService.onAutocomleteClickReset()"
+                              (changeSelectedAutocomplete)="mapService.onAutocompleteSelected($event)">
+            </h21-map-autocomplete>
+            <h21-map-settings-control class="c-h21-map__left-offset"
+                                      [isShowSettingsControl]="true">
+            </h21-map-settings-control>
+          </div>
+
+          <div class="c-h21-map-toolbar-vertical">
+            <div class="flex-fill"></div>
+            <h21-map-zoom-control></h21-map-zoom-control>
+            <div class="flex-fill"></div>
+            <h21-map-fullscreen-control></h21-map-fullscreen-control>
+          </div>
+
+          <div class="c-h21-map-toolbar-horizontal c-h21-map-toolbar-horizontal__bottom" *ngIf="showPoi && isHotelSearch">
+            <h21-map-poi-toggle-control [checked]="togglePoi" (change)="updatePoiList($event)"></h21-map-poi-toggle-control>
+            <div class="flex-fill"></div>
+          </div>
+
+          <h21-map-slide-panel #sidebarMap>
+            <h21-map-provider-control></h21-map-provider-control>
+            <h21-map-language-control></h21-map-language-control>
+          </h21-map-slide-panel>
+          <span h21MapMarkerCluster
+               [apiUrl]="markerClusterOptions.apiUrl"
+               [minClusterSize]="markerClusterOptions.minClusterSize"
+               [changesMap]="(sidenavViewContent === 'hotelSearch') && markerClusterOptions.changesMap"
+               (markerClick)="mapService.onMarkerClick($event)"
+               (markerMouseOver)="mapService.onMarkerMouseOverCluster($event)"
+               (markerMouseOut)="mapService.onMarkerMouseOutCluster()">
+          </span>
+          <span h21MapMarker
+                *ngFor="let m of markers; trackBy: trackByFn;"
+                [latitude]="m.latitude"
+                [longitude]="m.longitude"
+                [isCluster]="false"
+                [iconHeight]="m.iconHeight || 33"
+                [fitBounds]="m.fitBounds"
+                [iconUrl]="m.iconUrl"
+                [animate]="m.animate"
+                [iconZIndex]="m.iconZIndex"
+                (markerClick)="mapService.onMarkerClick(m)"
+                (markerMouseOut)="mapService.onMarkerMouseOut(m)"
+                (markerMouseOver)="mapService.onMarkerMouseOver($event, m)">
+          </span>
+          <span h21MapRoute
+                *ngFor="let n of routes; trackBy: trackByFn;"
+                [routeMode]="n.routeMode"
+                [startLatitude]="n.startLatitude"
+                [endLatitude]="n.endLatitude"
+                [routeFitBounds]="false"
+                [startLongitude]="n.startLongitude"
+                [endLongitude]="n.endLongitude"
+                [routeStrokeColor]="n.strokeColor"
+                [routeStrokeWeight]="n.strokeWeight"
+                [startIconStaticUrl]="routeOptions.startIconUrl"
+                [endIconStaticUrl]="routeOptions.endIconUrl"
+                (routeReady)='mapService.routeReady($event)'>
+          </span>
+          <h21-map-tooltip
+                [clientX]="tooltipOptions.clientX"
+                [clientY]="tooltipOptions.clientY"
+                [isShow]="tooltipOptions.isShow">
+          <span>radius: {{ tooltipOptions.title }} {{ tooltipOptions.value }}</span>
+          </h21-map-tooltip>
+          <h21-map-info-box [clientX]="infoBoxOptions.clientX"
+                            [clientY]="infoBoxOptions.clientY"
+                            [isShow]="infoBoxOptions.isShow">
+            <div class="h21-hotel-card h21-hotel-card__on-map" *ngIf="!!infoBoxOptions.hotel">
+              <div class="h21-hotel-card_photo-wrapper">
+                <ng-container *ngIf="infoBoxOptions.hotel.image.fileHash && infoBoxImages[infoBoxOptions.hotel.id] | async as img;">
+                  <img *ngIf="img" [src]="img | safeResourceUrl" alt=""/>
+                </ng-container>
+                <img *ngIf="infoBoxOptions.hotel.image.fileUrl" [src]="infoBoxOptions.hotel.image?.fileUrl" alt=""/>
+                <img *ngIf="!infoBoxOptions.hotel.image.fileHash && !infoBoxOptions.hotel.image.fileUrl" src="./assets/img/hotel-none-photo.svg" alt=""/>
+                <ng-container *ngIf="infoBoxOptions.hotel.isFavorite">
+                  <mat-icon class="h21-hotel-card_favorite-mark" [class.__is-active]="infoBoxOptions.hotel.isFavorite">
+                    favorite
+                  </mat-icon>
+                </ng-container>
+              </div>
+              <div class="h21-hotel-card_wrapper">
+                <!--<div class="h21-hotel-card_marks-wrapper"
+                     *ngIf="infoBoxOptions.hotel.isGenius || infoBoxOptions.hotel.isNegotiated">
+                  <div *ngIf="infoBoxOptions.hotel.isGenius" class="h21-hotel-card_mark h21-hotel-card_mark__genius">
+                    Genius
+                  </div>
+                  <div *ngIf="infoBoxOptions.hotel.isNegotiated"
+                       class="h21-hotel-card_mark h21-hotel-card_mark__negotiated">
+                    Negotiated rate
+                  </div>
+                </div>-->
+                <h21-rate size="s" *ngIf="(infoBoxOptions.hotel.hotelRating || infoBoxOptions.hotel.rating)  && infoBoxOptions.isShow"
+                          [rate]="infoBoxOptions.hotel.hotelRating || infoBoxOptions.hotel.rating" class="h21-hotel-card_rating"></h21-rate>
+                <h3 class="__color-accent __fs-m __fw-medium __mt-0 __mb-1">{{ infoBoxOptions.hotel.hotelName || infoBoxOptions.hotel.name }}</h3>
+                <div class="h21-hotel-card_location">
+                  <mat-icon class="__color-gray">location_on</mat-icon>
+                  <p>{{ infoBoxOptions.hotel.hotelAddress ||  infoBoxOptions.hotel.address }}</p>
+                </div>
+
+                <!--
+                <div class="flex-row __align-items-center __justify-content-between">
+                    <img src="./assets/provider-logos/booking.png" class="h21-hotel-card_provider-logo __flex-none" alt="booking" />
+                </div>
+                -->
+              </div>
+            </div>
+          </h21-map-info-box>
+        </h21-map>
+      </div>
+
+      <div [style.position]="'fixed'"
+           [style.left]="contextMenuPosition.x"
+           [style.top]="contextMenuPosition.y"
+           [matMenuTriggerFor]="contextMenu"
+           [matMenuTriggerData]="{ item: contextMenu.menuData }">
+      </div>
+
+      <div class="c-search_content" *ngIf="sidenavContentViewContent === 'outlet'">
+        <router-outlet></router-outlet>
+      </div>
+
+      <mat-menu #contextMenu="matMenu" [overlapTrigger]="true">
+        <ng-template matMenuContent let-item="item">
+          <button mat-menu-item (click)="onRoute(item, point.pickUp)">build a route from here?</button>
+          <button mat-menu-item (click)="onRoute(item, point.dropDown)">build a route to here?</button>
+        </ng-template>
+      </mat-menu>
+
+    </mat-sidenav-content>
+  </mat-sidenav-container>

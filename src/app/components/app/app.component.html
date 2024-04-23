@@ -1,0 +1,175 @@
+<div class="container-fluid page_box mat-typography" *ngIf="hasValidTokens && isShow$ | async">
+  <div class="row no-gutters page_header-box">
+    <div class="col-12 no-gutters">
+      <h21-header [logotypeUrl]="logoUrl"
+                  [showNotifications]="true"
+                  [notificationCount]="notificationCount"
+                  [notifications]="notifications"
+                  [showServicesMenuBtn]="false"
+                  (notificationsDialogClose)="resetNotifications()"
+                  [actions]="actions"
+                  (cardAction)="onAction($event)">
+      </h21-header>
+
+      <mat-toolbar class="h21-header-toolbar">
+        <div class="h21-header-toolbar_toggle-sidebar-nav-view-mode-button">
+          <button mat-icon-button (click)="toggleSidebarNavViewMode()">
+            <ng-container *ngIf="!tabletMode">
+              <mat-icon *ngIf="sidebarNavViewMode === viewModeType.Collapsed">menu</mat-icon>
+              <mat-icon *ngIf="sidebarNavViewMode === viewModeType.Expanded">close</mat-icon>
+            </ng-container>
+            <ng-container *ngIf="tabletMode">
+              <mat-icon *ngIf="!sidenavService.opened$.value">menu</mat-icon>
+              <mat-icon *ngIf="sidenavService.opened$.value">close</mat-icon>
+            </ng-container>
+          </button>
+        </div>
+
+        <div class="h21-header-toolbar_search-back" *ngIf="showBackToSearch || showBackToSearchResult">
+          <button type="button" mat-flat-button class="h21-header-toolbar_search-back-btn"
+                  *ngIf="showBackToSearch" (click)="backToSearch()">
+            <mat-icon>arrow_back</mat-icon>
+            <span>Back to search</span>
+          </button>
+          <button type="button" mat-flat-button class="h21-header-toolbar_search-back-btn"
+                  *ngIf="showBackToSearchResult" (click)="backToSearchResult()">
+            <mat-icon>arrow_back</mat-icon>
+            <span>Back to search result</span>
+          </button>
+        </div>
+
+        <h21-breadcrumbs *ngIf="breadcrumbs?.length > 1"
+                         [lastIsLink]="false"
+                         [breadcrumbsData]="breadcrumbs"
+                         [linkMode]="'ROUTER_LINK'">
+        </h21-breadcrumbs>
+
+        <div class="h21-header-toolbar_search-toolbar-container">
+          <div class="h21-header-toolbar_search-toolbar-wrapper">
+            <h21-hotel-search-toolbar *ngIf="showSearchHotelToolbar"></h21-hotel-search-toolbar>
+            <h21-transfer-search-toolbar *ngIf="showSearchTransferToolbar"></h21-transfer-search-toolbar>
+          </div>
+        </div>
+
+        <div class="w-spacer" *ngIf="!showSearchHotelToolbar && !showSearchTransferToolbar">&nbsp;</div>
+
+        <nav class="h21-header-toolbar_action-buttons-wrapper" *ngIf="toolbarActions$ | async as toolbarActions">
+          <ng-container *ngFor="let action of toolbarActions; trackBy: trackByFn">
+
+            <!-- Single button -->
+            <ng-container *ngIf="!action.children">
+              <ng-container *ngIf="!action.isSimpleButton">
+                <button mat-icon-button
+                        class="h21-header-toolbar_action-button"
+                        *ngIf="action.visible !== false"
+                        [ngClass]="action.cssClass"
+                        [matTooltip]="action.tooltipText"
+                        [disabled]="action.disabled"
+                        (click)="toolbarActionClick(action)">
+                  <mat-icon *ngIf="action.isSvgIcon" [svgIcon]="action.icon"></mat-icon>
+                  <mat-icon *ngIf="!action.isSvgIcon">{{ action.icon }}</mat-icon>
+                </button>
+              </ng-container>
+              <ng-container *ngIf="action.isSimpleButton">
+                <button mat-flat-button
+                        *ngIf="action.visible !== false"
+                        [ngClass]="action.cssClass"
+                        [class.__pl-1]="action.icon"
+                        [matTooltip]="action.tooltipText"
+                        [disabled]="action.disabled"
+                        (click)="toolbarActionClick(action)">
+                  <mat-icon *ngIf="action.icon" class="__mr-05">{{ action.icon }}</mat-icon>
+                  {{ action.simpleButtonText }}
+                </button>
+              </ng-container>
+            </ng-container>
+
+            <!-- Button with menu -->
+            <ng-container *ngIf="!!action.children && action.children.length > 0">
+              <ng-container *ngIf="!action.isSimpleButton">
+                <button mat-icon-button
+                        class="h21-header-toolbar_action-button"
+                        *ngIf="action.visible !== false"
+                        [ngClass]="action.cssClass"
+                        [matTooltip]="action.tooltipText"
+                        [disabled]="action.disabled"
+                        (click)="toolbarActionClick(action)"
+                        [matMenuTriggerFor]="toolbarActionSubMenu">
+                  <mat-icon *ngIf="action.isSvgIcon" [svgIcon]="action.icon"></mat-icon>
+                  <mat-icon *ngIf="!action.isSvgIcon">{{ action.icon }}</mat-icon>
+                </button>
+              </ng-container>
+              <ng-container *ngIf="action.isSimpleButton">
+                <button mat-button
+                        *ngIf="action.visible !== false"
+                        [ngClass]="action.cssClass"
+                        [matTooltip]="action.tooltipText"
+                        [disabled]="action.disabled"
+                        (click)="toolbarActionClick(action)"
+                        [matMenuTriggerFor]="toolbarActionSubMenu">
+                  <mat-icon *ngIf="action.icon" class="__ml-05">{{ action.icon }}</mat-icon>
+                  {{ action.simpleButtonText }}
+                </button>
+              </ng-container>
+
+              <mat-menu #toolbarActionSubMenu="matMenu"
+                        class="h21-header-toolbar_submenu-panel">
+                <ng-container *ngFor="let subMenuBtn of action.children; trackBy: trackByFn">
+                  <button mat-menu-item
+                          *ngIf="subMenuBtn.visible !== false"
+                          [ngClass]="subMenuBtn.cssClass"
+                          [disabled]="subMenuBtn.disabled"
+                          (click)="toolbarActionClick(subMenuBtn)">
+                    <ng-container *ngIf="!subMenuBtn.isSimpleButton">
+                      <mat-icon *ngIf="subMenuBtn.isSvgIcon && !!subMenuBtn.icon" [svgIcon]="subMenuBtn.icon"></mat-icon>
+                      <mat-icon *ngIf="!subMenuBtn.isSvgIcon  && !!subMenuBtn.icon">{{ subMenuBtn.icon }}</mat-icon>
+                      <span>{{ subMenuBtn.tooltipText }}</span>
+                    </ng-container>
+                    <ng-container *ngIf="subMenuBtn.isSimpleButton">
+                      {{ subMenuBtn.simpleButtonText }}
+                    </ng-container>
+                  </button>
+                </ng-container>
+              </mat-menu>
+            </ng-container>
+          </ng-container>
+        </nav>
+      </mat-toolbar>
+    </div>
+  </div>
+
+  <div class="row no-gutters page_content-box">
+    <div class="col-12 no-gutters"
+         [class.__has-sidebar]="sidebarNavViewMode === viewModeType.Collapsed"
+         [class.__has-expanded-sidebar]="sidebarNavViewMode === viewModeType.Expanded">
+      <h21-sidebar-nav [selected]="sidebarNavActiveTab"
+                       [disabled]="sidebarNavDisabled"
+                       [tabs]="sidebarNavTabs"
+                       [viewMode]="sidebarNavViewMode"
+                       (changed)="openDashboard($event.name)">
+      </h21-sidebar-nav>
+      <div class="page_content __position-relative" cdkScrollable>
+        <mat-progress-bar *ngIf="showProgress"
+                          class="page_content-preloader"
+                          color="primary"
+                          mode="indeterminate">
+        </mat-progress-bar>
+        <router-outlet (activate)="onActivateRouterOutlet()"></router-outlet>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<ng-container *ngIf="isChatVisible$ | async">
+  <button mat-button
+          class="open-chat-button"
+          [class.open-chat-button__expanded-view]="sidebarNavViewMode === viewModeType.Expanded"
+          [disabled]="!(chatLoaded$ | async)"
+          [matTooltip]="sidebarNavViewMode === viewModeType.Collapsed ? 'Support chat' : null"
+          matTooltipPosition="after"
+          (click)="openChat()">
+    <mat-icon>forum</mat-icon>
+    <span *ngIf="sidebarNavViewMode === viewModeType.Expanded">Support chat</span>
+  </button>
+</ng-container>

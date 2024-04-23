@@ -1,0 +1,96 @@
+<div class="c-bookings-transfer-details">
+
+  <div class="row large-gutters">
+    <div class="col-6 h21-mb-2">
+      <div class="row no-gutters">
+        <div class="col-4 h21-profile-card_option-name">Pick Up</div>
+        <div class="col-8">
+          <div class="h21-profile-card_option-value">{{ data.pickUp }}</div>
+          <div class="h21-profile-card_option-value-addition">{{ data.pickUpCoordinates }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 h21-mb-2">
+      <div class="row no-gutters">
+        <div class="col-4 h21-profile-card_option-name">Drop off</div>
+        <div class="col-8 h21-profile-card_option-value">
+          <div class="h21-profile-card_option-value">{{ data.dropDown }}</div>
+          <div class="h21-profile-card_option-value-addition">{{ data.dropDownCoordinates }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 h21-mb-2">
+      <ng-container [ngTemplateOutlet]="optionRow" [ngTemplateOutletContext]="{ name: 'Start', value: data.start }"></ng-container>
+    </div>
+    <div class="col-6 h21-mb-2">
+      <ng-container [ngTemplateOutlet]="optionRow" [ngTemplateOutletContext]="{ name: 'Cancellation term', value: data.cancellationTerm }"></ng-container>
+    </div>
+    <div class="col-6 h21-mb-2">
+      <ng-container [ngTemplateOutlet]="optionRow" [ngTemplateOutletContext]="{ name: 'Book code', value: data.bookCode }"></ng-container>
+    </div>
+    <div class="col-6 h21-mb-2">
+      <ng-container [ngTemplateOutlet]="optionRow" [ngTemplateOutletContext]="{ name: 'Adult', value: data.adult }"></ng-container>
+    </div>
+    <div class="col-6 h21-mb-2">
+      <ng-container [ngTemplateOutlet]="optionRow" [ngTemplateOutletContext]="{ name: 'Distance', value: data.distance, postfix: data.distancePostfix }"></ng-container>
+    </div>
+    <div class="col-6 h21-mb-2">
+      <ng-container [ngTemplateOutlet]="optionRow" [ngTemplateOutletContext]="{ name: 'Duration', value: data.duration, postfix: 'min' }"></ng-container>
+    </div>
+    <div class="col-6 h21-mb-2">
+      <ng-container [ngTemplateOutlet]="optionRow" [ngTemplateOutletContext]="{ name: 'PIN', value: data.pin }"></ng-container>
+    </div>
+<!--    <div class="col-6 h21-mb-2">-->
+<!--      <ng-container [ngTemplateOutlet]="optionRow" [ngTemplateOutletContext]="{ name: 'PNR', value: data.pnr }"></ng-container>-->
+<!--    </div>-->
+<!--    <div class="col-6 h21-mb-2">-->
+<!--      <ng-container [ngTemplateOutlet]="optionRow" [ngTemplateOutletContext]="{ name: 'URL', value: data.url }"></ng-container>-->
+<!--    </div>-->
+  </div>
+
+  <mat-divider class="h21-profile-card_separator"></mat-divider>
+
+  <h4 class="h21-mb-3">Options</h4>
+  <div class="row large-gutters">
+    <div class="col-6 h21-mb-2">
+      <ng-container [ngTemplateOutlet]="optionRow" [ngTemplateOutletContext]="{ name: 'Luggage', value: data.luggage }"></ng-container>
+    </div>
+    <div class="col-6 h21-mb-2">
+      <div class="row no-gutters">
+        <div class="col-4 h21-profile-card_option-name">Wheel chair</div>
+        <div class="col-8 h21-profile-card_option-value">{{ data.wheelChair ? 'Yes' : 'No' }}</div>
+      </div>
+    </div>
+    <div class="col-6 h21-mb-2">
+      <ng-container [ngTemplateOutlet]="optionRow" [ngTemplateOutletContext]="{ name: 'Pets', value: data.pets }"></ng-container>
+    </div>
+  </div>
+
+  <mat-divider class="h21-profile-card_separator"></mat-divider>
+
+  <h4 class="h21-mb-3">Vehicle info</h4>
+  <div class="row large-gutters">
+    <div class="col-6">
+      <div class="h21-mb-2">
+        <ng-container [ngTemplateOutlet]="optionRow" [ngTemplateOutletContext]="{ name: 'Vehicle model', value: data.vehicleModel }"></ng-container>
+      </div>
+      <div class="h21-mb-2">
+        <ng-container [ngTemplateOutlet]="optionRow" [ngTemplateOutletContext]="{ name: 'Comfort', value: data.comfort }"></ng-container>
+      </div>
+      <div class="h21-mb-2">
+        <ng-container [ngTemplateOutlet]="optionRow" [ngTemplateOutletContext]="{ name: 'Wait time', value: data.waitTime }"></ng-container>
+      </div>
+    </div>
+    <div class="col-6 __text-center">
+      <img [src]="data.vehicleImg" alt="" />
+    </div>
+  </div>
+
+</div>
+
+<ng-template #optionRow let-name="name" let-value="value" let-postfix="postfix">
+  <div class="row no-gutters">
+    <div class="col-4 h21-profile-card_option-name">{{ name }}</div>
+    <div class="col-8 h21-profile-card_option-value">{{ value }} <ng-container *ngIf="postfix">{{ postfix }}</ng-container></div>
+  </div>
+</ng-template>

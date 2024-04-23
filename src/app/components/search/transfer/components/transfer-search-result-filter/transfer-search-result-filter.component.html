@@ -1,0 +1,101 @@
+<div class="c-transfer-search-result-filter h21-search-filter" *ngIf="transferFilter">
+
+  <div class="h21-search-filter_content">
+    <!--<div class="h21-search-filter_trip-info">-->
+      <!--<div class="row small-gutters h21-mb-1">-->
+        <!--<div class="col-8">-->
+          <!--<div class="h21-search-filter_trip-info-flex">-->
+            <!--<mat-icon class="__size-s">location_on</mat-icon>-->
+            <!--<p>{{ route.fromLocation.address }}</p>-->
+          <!--</div>-->
+        <!--</div>-->
+        <!--<div class="col-4">-->
+          <!--<div class="h21-search-filter_trip-info-flex">-->
+            <!--<mat-icon class="__size-s">date_range</mat-icon>-->
+            <!--<p>{{ route.fromDate | h21Date }}</p>-->
+          <!--</div>-->
+        <!--</div>-->
+      <!--</div>-->
+      <!--<div class="row small-gutters">-->
+        <!--<div class="col-8">-->
+          <!--<div class="h21-search-filter_trip-info-flex">-->
+            <!--<mat-icon class="__size-s">location_on</mat-icon>-->
+            <!--<p>{{ route.toLocation.address }}</p>-->
+          <!--</div>-->
+        <!--</div>-->
+        <!--<div class="col-4">-->
+          <!--<div class="h21-search-filter_trip-info-flex">-->
+            <!--<mat-icon class="__size-s">access_time</mat-icon>-->
+            <!--<p>{{ route.fromDate | h21Time }}</p>-->
+          <!--</div>-->
+        <!--</div>-->
+      <!--</div>-->
+    <!--</div>-->
+
+    <mat-accordion class="h21-search-filter_accordion" [multi]="true">
+      <mat-expansion-panel class="first-child" [expanded]="!inProgress" [disabled]="inProgress">
+        <mat-expansion-panel-header [collapsedHeight]="height"
+                                    [expandedHeight]="height">
+          <mat-panel-title>Price</mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <ng-template matExpansionPanelContent>
+          <div class="h21-search-filter_slider">
+            <div class="h21-search-filter_slider-fields-wrapper">
+              <mat-form-field color="primary" appearance="outline" floatLabel="always">
+                <mat-label>From </mat-label>
+                <input type="number"
+                       matInput
+                       placeholder="0"
+                       autocomplete="off"
+                       (input)='minChanged$.next()'
+                       [(ngModel)]="fakeFilter.filter.minCost"/>
+              </mat-form-field>
+              <mat-form-field color="primary" appearance="outline" floatLabel="always">
+                <mat-label>To</mat-label>
+                <input type="number"
+                       matInput
+                       autocomplete="off"
+                       [placeholder]="maxPlaceholder"
+                       (input)='maxChanged$.next()'
+                       [(ngModel)]="fakeFilter.filter.maxCost"/>
+              </mat-form-field>
+            </div>
+            <div class="h21-search-filter_slider-wrapper">
+              <ng5-slider class="h21-range-slider"
+                          [(value)]="query.filter.minCost"
+                          [(highValue)]="query.filter.maxCost"
+                          [options]="options"
+                          (userChangeEnd)="onUserChangeEnd()">
+              </ng5-slider>
+            </div>
+          </div>
+        </ng-template>
+      </mat-expansion-panel>
+
+      <mat-expansion-panel [expanded]="!inProgress" [disabled]="inProgress">
+        <mat-expansion-panel-header [collapsedHeight]="height"
+                                    [expandedHeight]="height">
+          <mat-panel-title>Booking class</mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <ng-template matExpansionPanelContent>
+          <div class="h21-search-filter_checkbox-group">
+            <ng-container [ngTemplateOutlet]="type" [ngTemplateOutletContext]="{ type: comfort.taxi }"></ng-container>
+            <ng-container [ngTemplateOutlet]="type"
+                          [ngTemplateOutletContext]="{ type: comfort.economy }"></ng-container>
+            <ng-container [ngTemplateOutlet]="type"
+                          [ngTemplateOutletContext]="{ type: comfort.business }"></ng-container>
+            <ng-container [ngTemplateOutlet]="type" [ngTemplateOutletContext]="{ type: comfort.first }"></ng-container>
+          </div>
+        </ng-template>
+
+        <ng-template #type let-type="type">
+          <mat-checkbox color="primary" [checked]="isChecked(type)" (change)="onComfortChange($event.checked, type)">
+            {{ type }}
+          </mat-checkbox>
+        </ng-template>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+</div>

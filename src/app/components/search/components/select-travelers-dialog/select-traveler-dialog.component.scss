@@ -1,0 +1,192 @@
+//----------------------------------------------------------------------------------------------------------------------
+// Select traveler dialog style
+
+.c-select-traveler-dialog {
+  width: 550px;
+  padding-bottom: 0;
+}
+
+.c-select-traveler-dialog_empty-list {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  svg {
+    margin-bottom: 32px;
+  }
+}
+
+.h21-dialog-panel_actions {
+  position: absolute;
+  width: 100%;
+  bottom: 24px;
+}
+
+::ng-deep .c-select-traveler-dialog_cards-list.mat-list {
+  padding: 0;
+  margin: 0 -24px;
+
+  .mat-list-item {
+    height: auto;
+
+    .mat-list-item-content {
+      padding: 0;
+    }
+  }
+}
+
+::ng-deep .c-select-traveler-dialog_card.mat-card {
+  padding: 12px 24px;
+  width: 100%;
+  min-height: 80px;
+  background-color: var(--background-hex);
+  transition: background-color 120ms ease-in-out;
+  display: flex;
+  flex-direction: row;
+  border-radius: 0;
+
+  &.__is-selected {
+    background-color: rgba(var(--success-rgb), 0.22);
+
+    .c-select-traveler-dialog_card-selection-mark {
+      background-color: rgba(var(--accent-rgb), 0.6);
+      color: var(--on-accent-hex);
+      opacity: 1;
+
+      &::before {
+        display: block;
+        content: 'check';
+      }
+    }
+  }
+
+  &:focus,
+  &:hover {
+    background-color: rgba(var(--foregraund-rgb), .07);
+    .mat-card-actions.h21-card-list_card-float-buttons {
+      transform: scaleX(1);
+    }
+
+    &.__is-selected:not(.__disableRemove) .c-select-traveler-dialog_card-selection-mark {
+      background-color: rgba(var(--warn-rgb), 0.6);
+      color: var(--on-warn-hex);
+      opacity: 1;
+
+      &::before {
+        display: block;
+        content: 'clear';
+      }
+    }
+
+    &:not(.__is-selected) .c-select-traveler-dialog_card-selection-mark {
+      background-color: rgba(var(--primary-rgb), 0.6);
+      color: var(--on-primary-hex);
+      opacity: 1;
+
+      &::before {
+        display: block;
+        content: 'add';
+      }
+    }
+  }
+
+  &:not([class*=mat-elevation-z]) {
+    box-shadow: none;
+  }
+
+  .mat-card-header {
+    width: 100%;
+    flex: 1 1 auto;
+
+    .mat-card-avatar {
+      width: 54px;
+      height: 54px;
+      position: relative;
+    }
+
+    .mat-card-header-text {
+      width: 100%;
+      margin-left: 12px;
+      margin-right: 12px;
+    }
+
+    .mat-card-title {
+      color: var(--textAccent-hex);
+      font-size: 18px;
+      font-weight: 300;
+      margin-bottom: 8px;
+      line-height: 24px;
+    }
+
+    .mat-card-subtitle {
+      font-size: 14px;
+      color: var(--textAccent-hex);
+      font-weight: 700;
+      margin-bottom: 0;
+      line-height: 24px;
+    }
+  }
+}
+
+.c-select-traveler-dialog_card-additionally {
+  flex: none;
+  max-width: 160px;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.2em;
+  color: var(--textAccent-hex);
+  text-align: right;
+  white-space: pre-line;
+}
+
+.c-select-traveler-dialog_card-additionally-tooltip {
+  white-space: pre-line;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.6em;
+}
+
+.c-select-traveler-dialog_card-payment-systems {
+  white-space: nowrap;
+  padding: 12px 0 0 0;
+
+  img {
+    width: 26px;
+    height: 19px;
+
+    &:not(:first-of-type) {
+      margin-left: 4px;
+    }
+  }
+}
+
+.c-select-traveler-dialog_card-selection-mark {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  position: absolute;
+  display: flex;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  transition: opacity 120ms ease-in-out;
+
+  &::before {
+    display: none;
+    margin: auto;
+    color: currentColor;
+    height: 24px;
+    width: 24px;
+    font: normal normal 24px/1 'Material Icons';
+    letter-spacing: normal;
+    word-wrap: normal;
+    white-space: nowrap;
+    direction: ltr;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: 'liga';
+  }
+}

@@ -1,0 +1,148 @@
+<div class="c-bookings-trip-card page_content-wrapper" *ngIf="items$ | async as items">
+  <div class="c-bookings-trip-card_wrapper">
+    <h2 class="__fs-xxl __ma-0 __fw-medium __color-accent">{{ tripName }}</h2>
+    <p class="__color-gray __fs-xs __fw-medium __mb-4">Trip ID: {{ tripId }}</p>
+    <div class="sb-trip-list">
+      <div class="sb-trip-item __ml-0 __d-b __no-before" *ngFor="let item of items; trackBy: trackByFn">
+        <div class="flex-row __align-items-center __mb-2">
+          <mat-icon class="sb-trip-item_icon __position-static __mr-2" [ngSwitch]="item.type">
+            <ng-container *ngSwitchCase="itemTypes.hotel">business</ng-container>
+            <ng-container *ngSwitchCase="itemTypes.transfer">local_taxi</ng-container>
+          </mat-icon>
+          <h3 class="__fs-xl __fw-medium __color-base __ma-0" [ngSwitch]="item.type">
+            <ng-container *ngSwitchCase="itemTypes.hotel">Hotel</ng-container>
+            <ng-container *ngSwitchCase="itemTypes.transfer">Transfer</ng-container>
+          </h3>
+        </div>
+        <div class="sb-trip-item_card __flex-none" [ngSwitch]="item.type">
+          <ng-container *ngSwitchCase="itemTypes.hotel"
+                        [ngTemplateOutlet]="hotelCard"
+                        [ngTemplateOutletContext]="{ data: item }"></ng-container>
+          <ng-container *ngSwitchCase="itemTypes.transfer"
+                        [ngTemplateOutlet]="transferCard"
+                        [ngTemplateOutletContext]="{ data: item }"></ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Hotel card template -->
+<ng-template #hotelCard let-data="data">
+  <div class="flex-row __mb-1">
+    <div>
+      <div class="__color-accent __fw-medium __fs-m __mb-1">{{ data.name }}</div>
+      <div class="h21-hotel-card_location">
+        <mat-icon>location_on</mat-icon>
+        <p>{{ data.address }}</p>
+      </div>
+    </div>
+    <div class="w-spacer">&nbsp;</div>
+    <div class="__ta-r">
+      <h21-rate [rate]="data.rating" size="s" class="__mb-1"></h21-rate><br />
+      <ng-container [ngTemplateOutlet]="providerLogo"  [ngTemplateOutletContext]="{ providerType: data.providerType, providerName: data.providerName }"></ng-container>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-4">
+      <dl class="__line-height-normal __ma-0">
+        <dt class="__fs-xxxs __fw-bold">Check-in</dt>
+        <dd class="__fs-s __color-gray __ml-0 __mb-1">{{ data.checkInDate | date:'dd MMM yyyy' }}</dd>
+        <dt class="__fs-xxxs __fw-bold">Check-out</dt>
+        <dd class="__fs-s __color-gray __ma-0">{{ data.checkOutDate | date:'dd MMM yyyy' }}</dd>
+      </dl>
+    </div>
+    <div class="col-6">
+      <div class="" *ngFor="let traveler of data.travelers; trackBy: trackByFn">
+        <mat-icon class="__size-s __color-accent __va-m __mr-1" svgIcon="traveler-account"></mat-icon>
+        <span class="__color-gray __fs-s">{{ traveler.firstName }} {{ traveler.lastName }}</span>
+      </div>
+    </div>
+    <div class="col-2 __ta-r">
+      <div class="__fs-xs">Price</div>
+      <div class="__color-accent __fs-s __fw-bold">{{ data.price | number: '1.2-2' }} {{ data.currency }}</div>
+    </div>
+  </div>
+
+  <div class="sb-trip-item_separator">&nbsp;</div>
+
+  <div class="row __align-items-center">
+    <div class="col-4">Amount of rooms {{ data.roomsAmount }} </div>
+    <div class="col-8">
+      <span *ngIf="data.cancellationTerm" [ngClass]="data.cancellationClass">
+        {{ data.cancellationTerm }}
+      </span>
+    </div>
+  </div>
+
+  <div class="sb-trip-item_separator">&nbsp;</div>
+
+  <div>
+    <h4 class="__color-accent __line-height-normal __fs-s __fw-medium __mb-1">{{ data.roomInfo }}</h4>
+    <p class="__color-gray __fs-xs __ma-0 __line-height-normal" [innerHTML]="data.tariffInfo | safeHtml"></p>
+  </div>
+
+<!--  <ng-container *ngIf="data.pnr">-->
+<!--    <div class="sb-trip-item_separator">&nbsp;</div>-->
+
+<!--    <div class="flex-row __w-50">-->
+<!--      <p class="__ma-0 __fs-s">PNR: {{ data.pnr }}</p>-->
+<!--      <div class="w-spacer">&nbsp;</div>-->
+<!--      <img [src]="data.pnrProviderLogo" class="sb-trip-item_provider-logo" [alt]="data.pnrProviderName || ''" />-->
+<!--    </div>-->
+<!--  </ng-container>-->
+</ng-template>
+
+<!-- Transfer card template -->
+<ng-template #transferCard let-data="data">
+  <div class="row">
+    <div class="col-6">
+      <dl class="__line-height-normal __ma-0">
+        <dt class="__fs-xxxs __fw-bold">Pick up</dt>
+        <dd class="__fs-s __color-gray __ml-0 __mb-1">{{ data.pickUp }}</dd>
+        <dt class="__fs-xxxs __fw-bold">Drop off</dt>
+        <dd class="__fs-s __color-gray __ml-0 __mb-1">{{ data.dropDown }}</dd>
+        <dt class="__fs-xxxs __fw-bold">Date / Local time</dt>
+        <dd class="__fs-s __color-gray __ma-0">{{ data.arrivalDate | date:'dd MMM yyyy HH:mm' }}</dd>
+      </dl>
+    </div>
+    <div class="col-6 sb-trip-item_vertical-separator">
+      <div class="flex-row __mb-1">
+        <dl class="__line-height-normal __ma-0">
+          <dt class="__fs-xxxs __fw-bold">Booking class</dt>
+            <dd class="__fs-s __color-gray __ma-0">{{ data.bookingClass }}</dd>
+        </dl>
+        <div class="w-spacer">&nbsp;</div>
+        <ng-container [ngTemplateOutlet]="providerLogo"  [ngTemplateOutletContext]="{ providerType: data.providerType, providerName: data.providerType.name }"></ng-container>
+      </div>
+      <div class="flex-row">
+        <div>
+          <div *ngFor="let traveler of data.travelers; trackBy: trackByFn">
+            <mat-icon class="__size-s __color-accent __va-m __mr-1" svgIcon="traveler-account"></mat-icon>
+            <span class="__color-gray __fs-s">{{ traveler.firstName }} {{ traveler.lastName }}</span>
+          </div>
+        </div>
+        <div class="w-spacer">&nbsp;</div>
+        <div class="__ta-r">
+          <div class="__fs-xs">Price</div>
+          <div class="__color-accent __fs-s __fw-bold">{{ data.price | number: '1.2-2' }} {{ data.currency }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!--  <ng-container *ngIf="data.pnr">-->
+<!--    <div class="sb-trip-item_separator">&nbsp;</div>-->
+
+<!--    <div class="flex-row __w-50">-->
+<!--      <p class="__ma-0 __fs-s">PNR: {{ data.pnr }}</p>-->
+<!--      <div class="w-spacer">&nbsp;</div>-->
+<!--      <img [src]="data.pnrProviderLogo" class="sb-trip-item_provider-logo" [alt]="data.pnrProviderName" />-->
+<!--    </div>-->
+<!--  </ng-container>-->
+</ng-template>
+
+<ng-template #providerLogo let-providerType="providerType" let-providerName="providerName">
+  <img [hidden]="!providerType?.logoBase64" [src]="providerType?.logoBase64" class="sb-trip-item_provider-logo" [alt]="providerType?.name || ''" />
+  <span [hidden]="providerType?.logoBase64">{{ providerName }}</span>
+</ng-template>

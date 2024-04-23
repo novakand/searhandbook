@@ -1,0 +1,63 @@
+<div class="c-transfer-search-result-item" [class.c-transfer-search-result-item__compact-view]="compactView">
+  <span *ngIf="isTaxi(data)" class="c-transfer-search-result-item_is-taxi">
+    Taxi
+  </span>
+
+  <div class="c-transfer-search-result-item_provider">
+    <img [src]="talixoLogoUrl" alt="" />
+  </div>
+
+  <div class="c-transfer-search-result-item_flex">
+
+    <div class="c-transfer-search-result-item_picture-wrapper">
+      <img alt="" [src]="data.imageUrl"/>
+    </div>
+
+    <div class="c-transfer-search-result-item_data-wrapper">
+      <h3 class="c-transfer-search-result-item_car-name">{{ data.comfortable }}</h3>
+      <p class="c-transfer-search-result-item_car-model">{{ data.carModel }}</p>
+      <div class="h21-search-check-label __mb-2">
+        Free cancellation before {{ data.cancelPenaltyDate | h21Date }}, {{ data.cancelPenaltyDate | h21Time }} local time
+      </div>
+      <div class="row c-transfer-search-result-item_options">
+        <div class="col-6 c-transfer-search-result-item_option">
+          <mat-icon class="__size-s">person</mat-icon>
+          <span>{{ data.maxPassengerQuantity }} passengers</span>
+        </div>
+        <div class="col-6 c-transfer-search-result-item_option">
+          <mat-icon class="__size-s">business_center</mat-icon>
+          <span>{{ data.luggageQuantity }} standard bags</span>
+        </div>
+        <div class="col-6 c-transfer-search-result-item_option">
+          <mat-icon class="__size-s">access_time</mat-icon>
+          <span>{{ data.waitingTime }} minutes waiting time</span>
+        </div>
+      </div>
+    </div>
+
+    <ng-container *ngIf="compactView">
+      <div class="c-transfer-search-result-item_trip">
+        <p><b>Pick up</b>: {{ route.fromLocation.address }}</p>
+        <p><b>Drop off</b>: {{ route.toLocation.address }}</p>
+        <div class="row">
+          <div class="col-6"><b>Date</b>: {{ route.fromDate | h21Date }}</div>
+          <div class="col-6"><b>Local time</b>: {{ route.fromDate | h21Time }}</div>
+        </div>
+      </div>
+    </ng-container>
+
+    <div class="c-transfer-search-result-item_price-wrapper">
+      <div class="c-transfer-search-result-item_price">{{ data.cost | number:'1.2-2' }} {{ data.currency }}</div>
+      <button mat-flat-button color="primary" *ngIf="showBookButton" (click)="book()">
+        Book
+      </button>
+    </div>
+
+    <ng-container *ngIf="compactView">
+      <div class="c-transfer-search-result-item_map-snapshot">
+        <img alt="" [src]="filter.staticUrl">
+      </div>
+    </ng-container>
+
+  </div>
+</div>

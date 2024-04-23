@@ -1,0 +1,95 @@
+<div class="row">
+  <div class="col-6">
+    <div class="row no-gutters __mb-2">
+      <div class="col-6 __color-gray">Order status</div>
+      <div class="col-6">
+        <mat-chip-list class="h21-chip-list">
+          <mat-chip class="h21-chip"
+                    [h21OrderState]="order.orderStateName"
+                    [selectable]="false"
+                    [disableRipple]="true">
+            {{ order.orderStateName }}
+          </mat-chip>
+        </mat-chip-list>
+      </div>
+    </div>
+  </div>
+  <div class="col-6">
+    <div class="row no-gutters __mb-2">
+      <div class="col-6 __color-gray">Payment status</div>
+      <div class="col-6">
+        <mat-chip-list class="h21-chip-list">
+          <mat-chip class="h21-chip"
+                    [h21OrderState]="order.paymentStateName"
+                    [selectable]="false"
+                    [disableRipple]="true">
+            {{ order.paymentStateName }}
+          </mat-chip>
+        </mat-chip-list>
+      </div>
+    </div>
+  </div>
+  <div class="col-6" *ngIf="order.viewOrderNumber">
+    <ng-container [ngTemplateOutlet]="textPropertyRow"
+                  [ngTemplateOutletContext]="{ label: 'Order number', value: order.viewOrderNumber }"></ng-container>
+  </div>
+  <div class="col-6" *ngIf="order.invoiceNumber">
+    <ng-container [ngTemplateOutlet]="textPropertyRow"
+                  [ngTemplateOutletContext]="{ label: 'Invoice number', value: order.invoiceNumber }"></ng-container>
+  </div>
+  <div class="col-6" *ngIf="order.bookingCode">
+    <ng-container [ngTemplateOutlet]="textPropertyRow"
+                  [ngTemplateOutletContext]="{ label: 'Booking code', value: order.bookingCode }"></ng-container>
+  </div>
+  <div class="col-6" *ngIf="order.providerConfirmation">
+    <ng-container [ngTemplateOutlet]="textPropertyRow"
+                  [ngTemplateOutletContext]="{ label: 'Provider confirmation', value: order.providerConfirmation }"></ng-container>
+  </div>
+  <div class="col-6" *ngIf="order.orderPlacedDate">
+    <ng-container [ngTemplateOutlet]="dateRow"
+                  [ngTemplateOutletContext]="{ label: 'Receiving', value: order.orderPlacedDate }"></ng-container>
+  </div>
+  <div class="col-6" *ngIf="order.finalCost">
+    <ng-container [ngTemplateOutlet]="pricePropertyRow"
+                  [ngTemplateOutletContext]="{ label: 'Order total rate', value: order.finalCost, currency: order.currency }"></ng-container>
+  </div>
+  <div class="col-6" *ngIf="order.customerName">
+    <ng-container [ngTemplateOutlet]="personPropertyRow"
+                  [ngTemplateOutletContext]="{ label: 'Customer', name: order.customerName, company: order.companyName }"></ng-container>
+  </div>
+  <div class="col-6" *ngIf="order.bookerName">
+    <ng-container [ngTemplateOutlet]="personPropertyRow"
+                  [ngTemplateOutletContext]="{ label: 'Booker', name: order.bookerName, company: order.companyName }"></ng-container>
+  </div>
+</div>
+
+<ng-template #dateRow let-label="label" let-value="value">
+  <div class="row no-gutters __mb-2">
+    <div class="col-6 __color-gray">{{ label }}</div>
+    <div class="col-6">{{ value | date:'dd MMM yyyy' }}</div>
+  </div>
+</ng-template>
+
+<ng-template #textPropertyRow let-label="label" let-value="value">
+  <div class="row no-gutters __mb-2">
+    <div class="col-6 __color-gray">{{ label }}</div>
+    <div class="col-6">{{ value }}</div>
+  </div>
+</ng-template>
+
+<ng-template #pricePropertyRow let-label="label" let-value="value" let-currency="currency">
+  <div class="row no-gutters __mb-2">
+    <div class="col-6 __color-gray">{{ label }}</div>
+    <div class="col-6"><b>{{ value | number: '1.2-2' }} {{ currency }}</b></div>
+  </div>
+</ng-template>
+
+<ng-template #personPropertyRow let-label="label" let-name="name" let-company="company">
+  <div class="row no-gutters __mb-2">
+    <div class="col-6 __color-gray">{{ label }}</div>
+    <div class="col-6">
+      <div>{{ name }}</div>
+      <div class="__fs-xxs __color-gray">{{ company }}</div>
+    </div>
+  </div>
+</ng-template>

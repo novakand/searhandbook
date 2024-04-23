@@ -1,0 +1,125 @@
+<div class="c-bookings-order-transfer-details">
+  <div class="row">
+
+    <!-- Pick up -->
+    <div class="col-6">
+      <ng-container [ngTemplateOutlet]="textPropertyRow"
+                    [ngTemplateOutletContext]="{ label: 'Pick up', value: order.details.pickUp }"></ng-container>
+    </div>
+
+    <!-- Provider -->
+    <div class="col-6">
+      <ng-container [ngTemplateOutlet]="textPropertyRow"
+                    [ngTemplateOutletContext]="{ label: 'Provider', value: order.providerName }"></ng-container>
+    </div>
+
+    <!-- Drop off -->
+    <div class="col-6">
+      <ng-container [ngTemplateOutlet]="textPropertyRow"
+                    [ngTemplateOutletContext]="{ label: 'Drop off', value: order.details.dropDown }"></ng-container>
+    </div>
+
+    <!-- Booking class -->
+    <div class="col-6">
+      <ng-container [ngTemplateOutlet]="textPropertyRow"
+                    [ngTemplateOutletContext]="{ label: 'Booking class', value: order.details.comfort }"></ng-container>
+    </div>
+
+    <!-- Date, local time -->
+    <div class="col-6">
+      <ng-container [ngTemplateOutlet]="datePropertyRow"
+                    [ngTemplateOutletContext]="{ label: 'Date, local time', date: order.arrivalDate }"></ng-container>
+    </div>
+
+    <!-- Model -->
+    <div class="col-6">
+      <ng-container [ngTemplateOutlet]="textPropertyRow"
+                    [ngTemplateOutletContext]="{ label: 'Model', value: order.details.vehicleModel }"></ng-container>
+    </div>
+
+    <!-- Luggage -->
+    <div class="col-6">
+      <ng-container [ngTemplateOutlet]="textPropertyRow"
+                    [ngTemplateOutletContext]="{ label: 'Luggage', value: order.details.luggage }"></ng-container>
+    </div>
+
+    <!-- Wait time -->
+    <div class="col-6">
+      <ng-container [ngTemplateOutlet]="textPropertyRow"
+                    [ngTemplateOutletContext]="{ label: 'Wait time', value: order.details.waitTime }"></ng-container>
+    </div>
+
+    <!-- Pets -->
+    <div class="col-6">
+      <ng-container [ngTemplateOutlet]="textPropertyRow"
+                    [ngTemplateOutletContext]="{ label: 'Pets', value: order.details.pets }"></ng-container>
+    </div>
+
+    <!-- Driver -->
+    <div class="col-6" *ngIf="order.details.driver?.trim()">
+      <ng-container [ngTemplateOutlet]="textPropertyRow"
+                    [ngTemplateOutletContext]="{ label: 'Driver', value: order.details.driver }"></ng-container>
+    </div>
+
+    <!-- Wheel chair -->
+    <div class="col-6">
+      <ng-container [ngTemplateOutlet]="textPropertyRow"
+                    [ngTemplateOutletContext]="{ label: 'Wheel chair', value: order.details.wheelChair }"></ng-container>
+    </div>
+
+    <!-- Cancellation term -->
+    <div class="col-6" *ngIf="order.cancelBeforeDate">
+      <div class="row no-gutters __mb-2">
+        <div class="col-5 __color-gray">Cancellation term</div>
+        <div class="col-7">Free cancellation before {{ order.cancelBeforeDate | date:'dd MMM yyyy, HH:mm' }} local time</div>
+      </div>
+    </div>
+  </div>
+
+  <mat-divider class="h21-profile-card_separator"></mat-divider>
+
+  <!-- Cancellation policy -->
+  <h4 class="__color-accent __mb-2 __fs-m __fw-normal">Cancellation policy</h4>
+  <p class="__mb-05 __fw-bold">IMPORTANT INFORMATION</p>
+  <p class="__mb-3">
+    The time limit for cancellation is 24 hours before the scheduled departure time for standard bookings. Cancellation is
+    free of charge prior to the time limit for cancellation. After the time limit for cancellation has passed, the full
+    fare for the booking will be charged in the event of a cancellation.<br />
+    One piece of hand luggage is included per passenger (max = 20 kg each).<br />
+    The customer shall contact the driver if (s)he is late.
+  </p>
+  <p class="__mb-3">If the provider is a taxi company, waiting time and non-attendance fees will be charged to the customer in accordance with
+    the applicable taxi fare regulations. For example, the base charge plus 15 minutes waiting time will be charged as a flat fee
+    in case of non-attendance.</p>
+  <p class="__mb-0">If the provider is a private hire vehicle company, the waiting-time fees set by the provider shall be charged after the
+    waiting time included in the fare (depending on the place of pick-up and booking class) has passed. In the event of
+    non-attendance without prior cancellation, the provider may charge the full fare to the customer.</p>
+
+  <ng-container *ngIf="order.details.comment">
+    <mat-divider class="h21-profile-card_separator"></mat-divider>
+
+    <!-- Message for driver -->
+    <h4 class="__color-accent __mb-2 __fs-m __fw-normal">Message</h4>
+    <p class="__mb-0">
+      {{ order.details.comment }}
+    </p>
+  </ng-container>
+</div>
+
+<!-- Text row template -->
+<ng-template #textPropertyRow let-label="label" let-value="value">
+  <div class="row no-gutters __mb-2">
+    <div class="col-5 __color-gray">{{ label }}</div>
+    <div class="col-7">{{ value }}</div>
+  </div>
+</ng-template>
+
+<!-- Date row template -->
+<ng-template #datePropertyRow let-label="label" let-date="date">
+  <div class="row no-gutters __mb-2">
+    <div class="col-5 __color-gray">{{ label }}</div>
+    <div class="col-7">
+      {{ date | date:'dd MMM yyyy, HH:mm' }}
+    </div>
+  </div>
+</ng-template>

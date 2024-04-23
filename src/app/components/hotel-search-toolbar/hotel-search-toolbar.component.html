@@ -1,0 +1,166 @@
+<div class="c-hotel-search-toolbar" *ngIf="filter$ | async as filter">
+  <div class="flex-row __justify-content-start">
+    <button mat-button class="c-hotel-search-toolbar_item c-hotel-search-toolbar_flex-fill-button"
+            #destinationMenuBtn="matMenuTrigger" [matMenuTriggerFor]="destinationMenu">
+      <mat-icon [class.__color-ui-warn]="filter.point.subtype === 'poi'">
+        {{ iconType[filter.point.subtype] }}
+      </mat-icon>
+      <span *ngIf="filter.destination; else emptyDest">{{ filter.destination }}</span>
+      <ng-template #emptyDest>
+        <span class="c-h21-hotel-toolbar__invalid">You must choose a destination</span>
+      </ng-template>
+    </button>
+
+    <mat-divider [vertical]="true"></mat-divider>
+
+    <button mat-button class="c-hotel-search-toolbar_item" (click)="calendar.openDialog()">
+      <mat-icon>date_range</mat-icon>
+      <ng-container *ngIf="arrival && departure; else emptyDates">
+        <span>
+          {{ arrival | date:'dd MMM yyyy' }} - {{ departure | date:'dd MMM yyyy' }}
+        </span>
+      </ng-container>
+      <ng-template #emptyDates>
+        <span class="c-h21-hotel-toolbar__invalid">You must choose dates</span>
+      </ng-template>
+    </button>
+
+    <mat-divider [vertical]="true"></mat-divider>
+
+    <button mat-button class="c-hotel-search-toolbar_item"
+            matTooltipClass="__pre"
+            [matTooltip]="hideRoomsInfo ? getRoomsTooltipText(filter) : null"
+            #roomsMenuBtn="matMenuTrigger"
+            [matMenuTriggerFor]="roomsMenu">
+      <mat-icon>meeting_room</mat-icon>
+      <span>{{ filter.amountOfRooms }}</span>
+      <span [hidden]="hideRoomsInfo"> Room(s)</span>
+      <mat-icon class="__ml-1">group</mat-icon>
+      <span>{{ filter.adultsPerRoom }}</span>
+      <span [hidden]="hideRoomsInfo"> Adults per room</span>
+      <mat-icon *ngIf="hasError" color="warn" class="__ml-05">warning</mat-icon>
+    </button>
+
+    <button mat-stroked-button color="primary" class="__ml-4 __flex-none" [disabled]="disabled || hasError || isPending" (click)="update(filter)">
+      Search
+    </button>
+  </div>
+
+  <div style="display: none;">
+    <h21-two-month-calendar #calendar
+                            [formFieldAppearance]="formFieldAppearance"
+                            fromLabel="Check-in"
+                            toLabel="Check-out"
+                            [selectedFromDate]="arrival"
+                            [selectedToDate]="departure"
+                            [required]="true"
+                            [maxRangeInDays]="30"
+                            [isSB]="true"
+                            [datePattern]="'dd MMM yyyy'"
+                            (selectedFromDateChange)="onDateChange('arrival', $event, filter)"
+                            (selectedToDateChange)="onDateChange('departure', $event, filter)">
+    </h21-two-month-calendar>
+  </div>
+
+  <mat-menu #destinationMenu="matMenu" class="c-hotel-search-toolbar_destination-menu">
+    <ng-template matMenuContent>
+      <div (click)="$event.stopPropagation();">
+        <div class="__pa-2">
+          <mat-form-field appearance="outline" color="primary" class="h21-simplified-form-field c-hotel-search-toolbar_menu-form-field">
+            <input type="text" matInput autocomplete="off" [formControl]="destinationCtrl" />
+            <mat-icon matSuffix class="__color-accent" *ngIf="!destinationCtrl.value">search</mat-icon>
+            <button matSuffix mat-icon-button type="button" *ngIf="destinationCtrl.value" (click)="destinationCtrl.reset()">
+              <mat-icon>close</mat-icon>
+            </button>
+          </mat-form-field>
+        </div>
+      </div>
+      <ng-container *ngIf="destinations$ | async as destinations; else notingFound;">
+        <button mat-menu-item
+                class="c-hotel-search-toolbar_menu-item"
+                *ngFor="let point of destinations; trackBy: trackByFn;"
+                (click)="selectDestination(point, filter)">
+          <span class="c-hotel-search-toolbar_menu-item-wrapper">
+            <mat-icon class="c-hotel-search-toolbar_menu-item-icon"
+                      [class.c-hotel-search-toolbar_menu-item-icon__poi]="point.subtype === 'poi'">
+              {{ iconType[point.subtype] }}
+            </mat-icon>
+            <span class="c-hotel-search-toolbar_menu-item-text">
+              <span class="c-hotel-search-toolbar_menu-item-text-name">
+                {{ point.name }}
+                <ng-container *ngIf="point.tags && point.tags.length">
+                  (
+                  <ng-container *ngFor="let v of point.tags; let last = last">
+                    #{{ v }}<ng-container *ngIf="!last">,</ng-container>
+                  </ng-container>
+                  )
+                </ng-container>
+              </span>
+              <span *ngIf="point.address?.description" class="c-hotel-search-toolbar_menu-item-text-destination">{{ point.address?.description }}</span>
+            </span>
+          </span>
+        </button>
+      </ng-container>
+      <ng-template #notingFound>
+        <div class="c-hotel-search-toolbar_menu-empty-label" (click)="$event.stopPropagation();">
+          <mat-icon>not_interested</mat-icon>
+          <p>Nothing found</p>
+        </div>
+      </ng-template>
+    </ng-template>
+  </mat-menu>
+
+  <mat-menu #roomsMenu="matMenu" class="c-hotel-search-toolbar_menu">
+    <ng-template matMenuContent>
+      <div (click)="$event.stopPropagation();">
+        <div class="row __mb-2">
+          <div class="col-6 __fs-xs __align-self-center">Adults per room</div>
+          <div class="col-6">
+            <h21-counter [min]="1"
+                         [max]="9"
+                         [value]="filter.adultsPerRoom"
+                         (changed)="filter.adultsPerRoom = $event">
+            </h21-counter>
+          </div>
+        </div>
+        <div class="row __mb-2">
+          <div class="col-6 __fs-xs __align-self-center">Amount of rooms</div>
+          <div class="col-6">
+            <h21-counter [min]="1"
+                         [max]="6"
+                         [value]="filter.amountOfRooms"
+                         (changed)="filter.amountOfRooms = $event">
+            </h21-counter>
+          </div>
+        </div>
+        <!--<div class="row" [class.__mb-2]="form.get('children')['controls'].length > 0">
+          <div class="col-6 __fs-xs __align-self-center">Children</div>
+          <div class="col-6">
+            <h21-counter #counter min="0" max="4" (changedInfo)="changeChildrenCount($event, filter)" [value]="filter.children.length"></h21-counter>
+          </div>
+        </div>-->
+        <form [formGroup]="form">
+          <ng-container *ngIf="form.get('children')['controls'].length > 0">
+            <div class="row" formArrayName="children">
+              <div class="col-6" *ngFor="let age of form.get('children')['controls']; trackBy: trackByFn; let i = index;">
+                <div [formGroupName]="i">
+                  <mat-form-field class="__w-100" color="primary" [appearance]="formFieldAppearance" floatLabel="always">
+                    <mat-label>Child {{ i + 1 }}</mat-label>
+                    <mat-select panelClass="h21-select-panel" placeholder="Age" formControlName="age">
+                      <mat-option *ngFor="let item of ages$ | async; trackBy: trackByFn;" [value]="item">
+                        {{ item }}
+                      </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="age.get('age').hasError('required')">
+                      Enter a value
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+        </form>
+      </div>
+    </ng-template>
+  </mat-menu>
+</div>

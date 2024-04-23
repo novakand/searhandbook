@@ -1,0 +1,12 @@
+<h21-three-line-preloader [message]="waitingMessage" *ngIf="showPreloader"></h21-three-line-preloader>
+<ng-container [ngSwitch]="resultState$ | async">
+  <ng-container *ngSwitchCase="resultStateType.Success">
+    <div class="page_content-wrapper">
+      <h21-payment-success [tripId]="tripId"></h21-payment-success>
+    </div>
+  </ng-container>
+
+  <ng-container *ngSwitchCase="resultStateType.Failed">
+    <h21-payment-failed></h21-payment-failed>
+  </ng-container>
+</ng-container>

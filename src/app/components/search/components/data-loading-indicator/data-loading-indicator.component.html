@@ -1,0 +1,9 @@
+<div class="c-data-loading-indicator">
+  <div class="c-data-loading-indicator_title">Providers:</div>
+  <div class="c-data-loading-indicator_wrapper">
+    <div class="c-data-loading-indicator_flashlight" [class.__is-active]="loaded < totalCount"></div>
+    <span class="c-data-loading-indicator_statistic">
+      <b>{{ loaded }}</b> | {{ totalCount }}
+    </span>
+  </div>
+</div>
